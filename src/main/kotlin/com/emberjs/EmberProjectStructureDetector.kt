@@ -6,6 +6,8 @@ import com.intellij.ide.util.projectWizard.importSources.DetectedContentRoot
 import com.intellij.ide.util.projectWizard.importSources.DetectedProjectRoot
 import com.intellij.ide.util.projectWizard.importSources.ProjectFromSourcesBuilder
 import com.intellij.ide.util.projectWizard.importSources.ProjectStructureDetector
+import com.intellij.lang.javascript.dialects.JSLanguageLevel
+import com.intellij.lang.javascript.settings.JSRootConfiguration
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE
@@ -60,6 +62,12 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
                         entry.addExcludeFolder("${entry.url}/dist")
                         entry.addExcludeFolder("${entry.url}/tmp")
                     }
+
+                    // Adjust JavaScript settings for the project
+                    val project = module.project
+                    val configuration = JSRootConfiguration.getInstance(project)
+                    configuration?.storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
+                    configuration?.storePreferStrict(true)
                 }
             })
         }
