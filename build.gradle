@@ -4,8 +4,13 @@ buildscript {
     }
 }
 
+plugins {
+    id "org.jetbrains.intellij" version "0.0.28"
+}
+
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'org.jetbrains.intellij'
 
 repositories {
     jcenter()
@@ -13,4 +18,12 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+}
+
+intellij {
+    version = 'IU-15.0.1'
+    pluginName = 'Ember.js'
+    plugins = ['JavaScriptLanguage']
+
+    sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 }

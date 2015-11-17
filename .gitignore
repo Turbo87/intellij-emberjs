@@ -1,3 +1,5 @@
+.sandbox/
+
 ## Gradle.gitignore
 
 .gradle
