@@ -9,6 +9,7 @@ import com.intellij.ide.util.projectWizard.importSources.ProjectStructureDetecto
 import com.intellij.lang.javascript.dialects.JSLanguageLevel
 import com.intellij.lang.javascript.settings.JSRootConfiguration
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModifiableRootModel
 import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
@@ -51,25 +52,30 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
         projectDescriptor.modules.forEach { module ->
             module.addConfigurationUpdater(object : ModuleBuilder.ModuleConfigurationUpdater() {
                 override fun update(module: Module, rootModel: ModifiableRootModel) {
-
-                    // Mark special folders for each module
-                    rootModel.contentEntries.forEach { entry ->
-                        entry.addSourceFolder("${entry.url}/app", SOURCE)
-                        entry.addSourceFolder("${entry.url}/public", RESOURCE)
-                        entry.addSourceFolder("${entry.url}/tests", TEST_SOURCE)
-                        entry.addSourceFolder("${entry.url}/tests/unit", TEST_SOURCE)
-                        entry.addSourceFolder("${entry.url}/tests/integration", TEST_SOURCE)
-                        entry.addExcludeFolder("${entry.url}/dist")
-                        entry.addExcludeFolder("${entry.url}/tmp")
-                    }
-
-                    // Adjust JavaScript settings for the project
-                    val project = module.project
-                    val configuration = JSRootConfiguration.getInstance(project)
-                    configuration?.storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
-                    configuration?.storePreferStrict(true)
+                    setupProject(module.project)
+                    setupModule(rootModel)
                 }
             })
+        }
+    }
+
+    private fun setupProject(project: Project) {
+        // Adjust JavaScript settings for the project
+        val configuration = JSRootConfiguration.getInstance(project)
+        configuration?.storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
+        configuration?.storePreferStrict(true)
+    }
+
+    private fun setupModule(rootModel: ModifiableRootModel) {
+        // Mark special folders for each module
+        rootModel.contentEntries.forEach { entry ->
+            entry.addSourceFolder("${entry.url}/app", SOURCE)
+            entry.addSourceFolder("${entry.url}/public", RESOURCE)
+            entry.addSourceFolder("${entry.url}/tests", TEST_SOURCE)
+            entry.addSourceFolder("${entry.url}/tests/unit", TEST_SOURCE)
+            entry.addSourceFolder("${entry.url}/tests/integration", TEST_SOURCE)
+            entry.addExcludeFolder("${entry.url}/dist")
+            entry.addExcludeFolder("${entry.url}/tmp")
         }
     }
 }
