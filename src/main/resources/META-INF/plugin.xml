@@ -2,7 +2,7 @@
     <id>com.emberjs</id>
     <name>Ember.js</name>
     <version>1.0</version>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <vendor url="https://github.com/turbo87/">Tobias Bieniek</vendor>
 
     <description><![CDATA[
       Enter short description for your plugin here.<br>
