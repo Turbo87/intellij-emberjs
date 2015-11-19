@@ -7,6 +7,8 @@ Changelog
 
 - Quick navigation via `Navigate → Class...` for all major app components
 
+  ![Navigate → Class...](doc/goto-class.png)
+
 
 ## v1.0.2
 
