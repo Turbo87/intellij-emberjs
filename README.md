@@ -15,6 +15,9 @@ Features
   existing sources
 - Automatically sets the language level to ES6
 - Marks app, public and tests folders as special folders
+- Quick navigation via `Navigate → Class...` for all major app components
+
+  ![Navigate → Class...](doc/goto-class.png)
 
 
 Installation
@@ -46,3 +49,6 @@ License
 -------------------------------------------------------------------------------
 
 This project is licensed under the [Apache 2.0 License](LICENSE).
+
+- [Font-Awesome-SVG-PNG](https://github.com/encharm/Font-Awesome-SVG-PNG) is licensed under the MIT license
+- [Font-Awesome](http://fontawesome.io/) is licensed under the [SIL OFL 1.1](http://scripts.sil.org/OFL)

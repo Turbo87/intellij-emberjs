@@ -35,6 +35,26 @@
         <moduleType id="EMBER_MODULE" implementationClass="com.emberjs.EmberModuleType"/>
         <moduleBuilder builderClass="com.emberjs.EmberModuleBuilder"/>
         <projectStructureDetector implementation="com.emberjs.EmberProjectStructureDetector"/>
+
+        <fileBasedIndex implementation="com.emberjs.index.EmberAdapterIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberComponentIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberControllerIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberHelperIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberModelIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberRouteIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberSerializerIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberServiceIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberTransformIndex"/>
+
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberAdapterGotoClassContributor"/>
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberComponentGotoClassContributor"/>
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberControllerGotoClassContributor"/>
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberHelperGotoClassContributor"/>
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberModelGotoClassContributor"/>
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberRouteGotoClassContributor"/>
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberSerializerGotoClassContributor"/>
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberServiceGotoClassContributor"/>
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberTransformGotoClassContributor"/>
     </extensions>
 
     <actions>

@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.1.0
+
+- Quick navigation via `Navigate → Class...` for all major app components
+
+
 ## v1.0.2
 
 - Adjust plugin description
