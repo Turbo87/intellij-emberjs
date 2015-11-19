@@ -17,6 +17,31 @@ Features
 - Marks app, public and tests folders as special folders
 
 
+Installation
+-------------------------------------------------------------------------------
+
+This plugin is published on the
+[JetBrains Plugin Repository](https://plugins.jetbrains.com/plugin/8049): 
+
+    Preferences... → Plugins → Browse Repositories ... → Search for "Ember.js"
+
+
+### From Source
+
+Clone this repository:
+
+    git clone https://github.com/Turbo87/intellij-emberjs.git
+    cd intellij-emberjs
+
+Build a plugin zip file:
+
+    ./gradlew buildPlugin
+
+Install the plugin from `/build/distributions/Ember.js.zip`:
+
+    Preferences... → Plugins → Install plugin from disk ...
+
+
 License
 -------------------------------------------------------------------------------
 
