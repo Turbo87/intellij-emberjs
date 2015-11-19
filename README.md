@@ -11,15 +11,14 @@ This plugin provides basic [Ember.js](http://emberjs.com/) support to all
 Features
 -------------------------------------------------------------------------------
 
-- Ember.js project discovery (via <code>app/app.js</code>) when imported from
-  existing sources
+- Ember.js project discovery when imported from existing sources
 - Automatically sets the language level to ES6
-- Marks app, public and tests folders as special folders
+- Marks app, public and tests folders as source, resource and test folders
 - Marks node_modules and bower_components as library folders
-- Enable JSHint using .jshintrc
+- Enable JSHint using `.jshintrc`
 - Quick navigation via `Navigate → Class...` for all major app components
 
-  ![Navigate → Class...](doc/goto-class.png)
+[more...](doc/features.md)
 
 
 Installation
