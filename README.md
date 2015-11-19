@@ -16,6 +16,9 @@ Features
   existing sources
 - Automatically sets the language level to ES6
 - Marks app, public and tests folders as special folders
+- Quick navigation via `Navigate → Class...` for all major app components
+
+  ![Navigate → Class...](doc/goto-class.png)
 
 
 Installation
