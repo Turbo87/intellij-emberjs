@@ -1,5 +1,13 @@
 package com.emberjs.navigation
 
-import com.emberjs.index.EmberRouteIndex
+import com.emberjs.index.*
 
+class EmberAdapterGotoClassContributor : EmberGotoClassContributorBase(EmberAdapterIndex.NAME)
+class EmberComponentGotoClassContributor : EmberGotoClassContributorBase(EmberComponentIndex.NAME)
+class EmberControllerGotoClassContributor : EmberGotoClassContributorBase(EmberControllerIndex.NAME)
+class EmberHelperGotoClassContributor : EmberGotoClassContributorBase(EmberHelperIndex.NAME)
+class EmberModelGotoClassContributor : EmberGotoClassContributorBase(EmberModelIndex.NAME)
 class EmberRouteGotoClassContributor : EmberGotoClassContributorBase(EmberRouteIndex.NAME)
+class EmberSerializerGotoClassContributor : EmberGotoClassContributorBase(EmberSerializerIndex.NAME)
+class EmberServiceGotoClassContributor : EmberGotoClassContributorBase(EmberServiceIndex.NAME)
+class EmberTransformGotoClassContributor : EmberGotoClassContributorBase(EmberTransformIndex.NAME)
