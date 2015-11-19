@@ -1,10 +1,10 @@
 package com.emberjs.navigation
 
+import com.emberjs.EmberIcons
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.ItemPresentation
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.IconLoader
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.ProjectScope
@@ -63,6 +63,6 @@ abstract class EmberGotoClassContributorBase(
     }
 
     companion object {
-        val DEFAULT_ICON = IconLoader.getIcon("/com/emberjs/icons/empty16.png")
+        val DEFAULT_ICON = EmberIcons.EMPTY_16
     }
 }
