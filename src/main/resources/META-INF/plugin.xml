@@ -37,6 +37,8 @@
         <projectStructureDetector implementation="com.emberjs.EmberProjectStructureDetector"/>
 
         <fileBasedIndex implementation="com.emberjs.index.EmberRouteIndex"/>
+
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
     </extensions>
 
     <actions>
