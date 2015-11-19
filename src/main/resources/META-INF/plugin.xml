@@ -46,7 +46,7 @@
         <fileBasedIndex implementation="com.emberjs.index.EmberServiceIndex"/>
         <fileBasedIndex implementation="com.emberjs.index.EmberTransformIndex"/>
 
-        <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
+        <gotoClassContributor implementation="com.emberjs.navigation.EmberRouteGotoClassContributor"/>
     </extensions>
 
     <actions>

@@ -1,6 +1,5 @@
 package com.emberjs.navigation
 
-import com.emberjs.index.EmberRouteIndex
 import com.intellij.icons.AllIcons
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.ItemPresentation
@@ -10,18 +9,19 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.ProjectScope
 import com.intellij.util.indexing.FileBasedIndex
+import com.intellij.util.indexing.ID
 
-class EmberGotoClassContributor : ChooseByNameContributor {
+abstract class EmberGotoClassContributorBase(private val index: ID<String, Void>) : ChooseByNameContributor {
 
     override fun getNames(project: Project, includeNonProjectItems: Boolean) =
-            FileBasedIndex.getInstance().getAllKeys(EmberRouteIndex.NAME, project).toTypedArray()
+            FileBasedIndex.getInstance().getAllKeys(index, project).toTypedArray()
 
     override fun getItemsByName(name: String, pattern: String, project: Project, includeNonProjectItems: Boolean) =
             getItemsByName(name, project, project.getScope(includeNonProjectItems))
 
     fun getItemsByName(name: String, project: Project, scope: GlobalSearchScope): Array<NavigationItem> {
         // Query file index for the VirtualFile containing the indexed item
-        return FileBasedIndex.getInstance().getContainingFiles(EmberRouteIndex.NAME, name, scope)
+        return FileBasedIndex.getInstance().getContainingFiles(index, name, scope)
                 // Convert VirtualFile to PsiFile
                 .map { PsiManager.getInstance(project).findFile(it) }
                 .filterNotNull()
