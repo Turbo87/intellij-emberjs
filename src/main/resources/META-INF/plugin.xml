@@ -35,6 +35,8 @@
         <moduleType id="EMBER_MODULE" implementationClass="com.emberjs.EmberModuleType"/>
         <moduleBuilder builderClass="com.emberjs.EmberModuleBuilder"/>
         <projectStructureDetector implementation="com.emberjs.EmberProjectStructureDetector"/>
+
+        <fileBasedIndex implementation="com.emberjs.index.EmberRouteIndex"/>
     </extensions>
 
     <actions>
