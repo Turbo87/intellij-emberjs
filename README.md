@@ -14,3 +14,8 @@ Features
 - Automatically sets the language level to ES6
 - Marks app, public and tests folders as special folders
 
+
+License
+-------------------------------------------------------------------------------
+
+This project is licensed under the [Apache 2.0 License](LICENSE).
