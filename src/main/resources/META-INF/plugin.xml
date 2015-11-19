@@ -11,6 +11,7 @@
         <li>Ember.js project discovery (via <code>app/app.js</code>) when imported from existing sources</li>
         <li>Automatically sets the language level to ES6</li>
         <li>Marks app, public and tests folders as special folders</li>
+        <li>Quick navigation via <code>Navigate → Class...</code> for all major app components</li>
       </ul>
     ]]></description>
 
