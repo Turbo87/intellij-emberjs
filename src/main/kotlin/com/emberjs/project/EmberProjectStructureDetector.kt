@@ -7,6 +7,8 @@ import com.intellij.ide.util.projectWizard.importSources.DetectedProjectRoot
 import com.intellij.ide.util.projectWizard.importSources.ProjectFromSourcesBuilder
 import com.intellij.ide.util.projectWizard.importSources.ProjectStructureDetector
 import com.intellij.lang.javascript.dialects.JSLanguageLevel
+import com.intellij.lang.javascript.linter.jshint.JSHintConfiguration
+import com.intellij.lang.javascript.linter.jshint.JSHintState
 import com.intellij.lang.javascript.settings.JSRootConfiguration
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -64,6 +66,11 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
         val configuration = JSRootConfiguration.getInstance(project)
         configuration?.storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
         configuration?.storePreferStrict(true)
+
+        // Enable JSHint
+        val jsHint = JSHintConfiguration.getInstance(project)
+        val jsHintState = JSHintState.Builder(jsHint.extendedState.state).setConfigFileUsed(true).build()
+        jsHint.setExtendedState(true, jsHintState)
     }
 
     private fun setupModule(rootModel: ModifiableRootModel) {

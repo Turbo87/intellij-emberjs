@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.2.0
+
+- Enable JSHint using .jshintrc
+
+
 ## v1.1.1
 
 - Fix missing icon file
