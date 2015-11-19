@@ -11,7 +11,7 @@ class EmberModuleType : ModuleType<EmberModuleBuilder>(EmberModuleType.ID) {
     override fun getDescription() = DESCRIPTION
 
     override fun getNodeIcon(isOpened: Boolean) = AllIcons.Nodes.Module
-    override fun getBigIcon() = IconLoader.getIcon("/com/emberjs/module.png")
+    override fun getBigIcon() = IconLoader.getIcon("/com/emberjs/icon24.png")
 
     override fun createModuleBuilder() = EmberModuleBuilder()
 
