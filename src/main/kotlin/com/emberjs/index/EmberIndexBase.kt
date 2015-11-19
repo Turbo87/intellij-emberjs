@@ -7,10 +7,13 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 
-abstract class EmberIndexBase(private val name: ID<String, Void>, val appFolder: String, val suffix: String) :
+abstract class EmberIndexBase(private val name: ID<String, Void>) :
         ScalarIndexExtension<String>(),
         FileBasedIndex.InputFilter,
         DataIndexer<String, Void, FileContent> {
+
+    val appFolder: String = name.toString().removePrefix("ember.").append("s")
+    val suffix: String = name.toString().removePrefix("ember.").capitalize()
 
     override fun getName() = name
     override fun getVersion() = 1
