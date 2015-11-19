@@ -3,7 +3,6 @@ intellij-emberjs
 ===============================================================================
 
 [![TravisCI](https://img.shields.io/travis/Turbo87/intellij-emberjs/master.svg?label=TravisCI)](https://travis-ci.org/Turbo87/intellij-emberjs/)
-[![JetBrains Plugin Repository](https://img.shields.io/github/tag/turbo87/intellij-emberjs.svg?label=JetBrains)](https://plugins.jetbrains.com/plugin/8049)
 
 This plugin provides basic [Ember.js](http://emberjs.com/) support to all
 [JetBrains](https://www.jetbrains.com/) IDEs that support JavaScript.
