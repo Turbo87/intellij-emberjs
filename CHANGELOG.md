@@ -6,6 +6,7 @@ Changelog
 ## v1.2.0
 
 - Enable JSHint using .jshintrc
+- Marks node_modules and bower_components as library folders
 
 
 ## v1.1.1

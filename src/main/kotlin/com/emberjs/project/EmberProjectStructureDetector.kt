@@ -7,12 +7,16 @@ import com.intellij.ide.util.projectWizard.importSources.DetectedProjectRoot
 import com.intellij.ide.util.projectWizard.importSources.ProjectFromSourcesBuilder
 import com.intellij.ide.util.projectWizard.importSources.ProjectStructureDetector
 import com.intellij.lang.javascript.dialects.JSLanguageLevel
+import com.intellij.lang.javascript.library.JSLibraryManager
 import com.intellij.lang.javascript.linter.jshint.JSHintConfiguration
 import com.intellij.lang.javascript.linter.jshint.JSHintState
 import com.intellij.lang.javascript.settings.JSRootConfiguration
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModifiableRootModel
+import com.intellij.webcore.ScriptingFrameworkDescriptor
+import com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.PROJECT
 import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
@@ -71,6 +75,14 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
         val jsHint = JSHintConfiguration.getInstance(project)
         val jsHintState = JSHintState.Builder(jsHint.extendedState.state).setConfigFileUsed(true).build()
         jsHint.setExtendedState(true, jsHintState)
+
+        // Add node_modules and bower_components as library folders
+        ApplicationManager.getApplication().invokeLater {
+            ApplicationManager.getApplication().runWriteAction {
+                createLibrary(project, "node_modules", "node_modules")
+                createLibrary(project, "bower_components")
+            }
+        }
     }
 
     private fun setupModule(rootModel: ModifiableRootModel) {
@@ -83,6 +95,21 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
             entry.addSourceFolder("${entry.url}/tests/integration", TEST_SOURCE)
             entry.addExcludeFolder("${entry.url}/dist")
             entry.addExcludeFolder("${entry.url}/tmp")
+        }
+    }
+
+    private fun createLibrary(project: Project, name: String, framework: String? = null) {
+        val folder = project.baseDir.findChild(name) ?: return
+
+        JSLibraryManager.getInstance(project).apply {
+            createLibrary(name, arrayOf(folder), arrayOf(), arrayOf(), PROJECT, true).apply {
+                if (framework != null) {
+                    frameworkDescriptor = ScriptingFrameworkDescriptor(framework, null)
+                }
+            }
+
+            libraryMappings.associateWithProject(name)
+            commitChanges()
         }
     }
 }

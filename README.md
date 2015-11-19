@@ -15,6 +15,7 @@ Features
   existing sources
 - Automatically sets the language level to ES6
 - Marks app, public and tests folders as special folders
+- Marks node_modules and bower_components as library folders
 - Enable JSHint using .jshintrc
 - Quick navigation via `Navigate → Class...` for all major app components
 
