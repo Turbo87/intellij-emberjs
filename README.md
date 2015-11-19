@@ -47,3 +47,6 @@ License
 -------------------------------------------------------------------------------
 
 This project is licensed under the [Apache 2.0 License](LICENSE).
+
+- [Font-Awesome-SVG-PNG](https://github.com/encharm/Font-Awesome-SVG-PNG) is licensed under the MIT license
+- [Font-Awesome](http://fontawesome.io/) is licensed under the [SIL OFL 1.1](http://scripts.sil.org/OFL)
