@@ -30,9 +30,9 @@
     <depends optional="true">com.dmarcotte.handlebars</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <moduleType id="EMBER_MODULE" implementationClass="com.emberjs.EmberModuleType"/>
-        <moduleBuilder builderClass="com.emberjs.EmberModuleBuilder"/>
-        <projectStructureDetector implementation="com.emberjs.EmberProjectStructureDetector"/>
+        <moduleType id="EMBER_MODULE" implementationClass="com.emberjs.project.EmberModuleType"/>
+        <moduleBuilder builderClass="com.emberjs.project.EmberModuleBuilder"/>
+        <projectStructureDetector implementation="com.emberjs.project.EmberProjectStructureDetector"/>
 
         <fileBasedIndex implementation="com.emberjs.index.EmberAdapterIndex"/>
         <fileBasedIndex implementation="com.emberjs.index.EmberComponentIndex"/>

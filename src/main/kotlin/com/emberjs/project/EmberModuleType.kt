@@ -1,5 +1,6 @@
-package com.emberjs
+package com.emberjs.project
 
+import com.emberjs.EmberIcons
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.module.ModuleTypeManager

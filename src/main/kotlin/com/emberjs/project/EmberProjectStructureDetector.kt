@@ -1,4 +1,4 @@
-package com.emberjs
+package com.emberjs.project
 
 import com.intellij.ide.util.importProject.ProjectDescriptor
 import com.intellij.ide.util.projectWizard.ModuleBuilder
@@ -22,7 +22,7 @@ import java.io.File
 class EmberProjectStructureDetector : ProjectStructureDetector() {
 
     override fun detectRoots(dir: File, children: Array<File>, base: File, result: MutableList<DetectedProjectRoot>):
-            ProjectStructureDetector.DirectoryProcessingResult {
+            DirectoryProcessingResult {
 
         if (!hasAppJs(children))
             return DirectoryProcessingResult.PROCESS_CHILDREN
