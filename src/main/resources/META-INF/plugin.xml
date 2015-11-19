@@ -36,7 +36,15 @@
         <moduleBuilder builderClass="com.emberjs.EmberModuleBuilder"/>
         <projectStructureDetector implementation="com.emberjs.EmberProjectStructureDetector"/>
 
+        <fileBasedIndex implementation="com.emberjs.index.EmberAdapterIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberComponentIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberControllerIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberHelperIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberModelIndex"/>
         <fileBasedIndex implementation="com.emberjs.index.EmberRouteIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberSerializerIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberServiceIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberTransformIndex"/>
 
         <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
     </extensions>
