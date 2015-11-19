@@ -12,7 +12,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'org.jetbrains.intellij'
 
-version = '1.0.2'
+version = getVersionName()
 
 repositories {
     jcenter()
@@ -34,4 +34,16 @@ intellij {
         username "$JETBRAINS_USERNAME"
         password "$JETBRAINS_PASSWORD"
     }
+}
+
+/*
+ * Gets the version name from the latest Git tag
+ */
+def getVersionName() {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--tags'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
 }
