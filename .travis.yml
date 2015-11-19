@@ -1,7 +1,8 @@
 language: java
 
-after_success:
-  - if [ -n "TRAVIS_TAG" ]; then ./gradlew publishPlugin; fi
+before_deploy:
+  - ./gradlew buildPlugin
+  - ./gradlew publishPlugin
 
 deploy:
   provider: releases
