@@ -7,11 +7,12 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 
-abstract class EmberIndexBase(val appFolder: String, val suffix: String) :
+abstract class EmberIndexBase(private val name: ID<String, Void>, val appFolder: String, val suffix: String) :
         ScalarIndexExtension<String>(),
         FileBasedIndex.InputFilter,
         DataIndexer<String, Void, FileContent> {
 
+    override fun getName() = name
     override fun getVersion() = 1
     override fun getKeyDescriptor() = KEY_DESCRIPTIOR
     override fun dependsOnFileContent() = false
