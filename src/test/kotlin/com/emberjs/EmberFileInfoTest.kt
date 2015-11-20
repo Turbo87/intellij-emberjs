@@ -31,6 +31,18 @@ public class EmberFileInfoTest {
     @Test public fun testHelper() =
             checkType("crates.io/app/helpers/from-now.js", EmberFileType.HELPER, false)
 
+    @Test public fun testComponent() =
+            checkType("crates.io/app/components/x-select.js", EmberFileType.COMPONENT, false)
+
+    @Test public fun testPodComponent() =
+            checkType("crates.io/app/components/x-select/component.js", EmberFileType.COMPONENT, true)
+
+    @Test public fun testComponentTemplate() =
+            checkType("crates.io/app/templates/components/x-select.hbs", EmberFileType.COMPONENT_TEMPLATE, false)
+
+    @Test public fun testPodComponentTemplate() =
+            checkType("crates.io/app/components/x-select/template.hbs", EmberFileType.COMPONENT_TEMPLATE, true)
+
     private fun checkType(path: String, type: EmberFileType, isPod: Boolean) {
         getFileInfo(path).apply {
             assertNotNull(this)

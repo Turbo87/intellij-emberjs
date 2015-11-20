@@ -3,6 +3,7 @@ package com.emberjs
 enum class EmberFileType(val fileExtension: String = "js") {
     ADAPTER(),
     COMPONENT(),
+    COMPONENT_TEMPLATE("hbs"),
     CONTROLLER(),
     HELPER(),
     MODEL(),
