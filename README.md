@@ -48,6 +48,18 @@ Install the plugin from `/build/distributions/Ember.js.zip`:
     Preferences... → Plugins → Install plugin from disk ...
 
 
+Development
+-------------------------------------------------------------------------------
+
+Run IntelliJ IDEA Ultimate with the current plugin pre-installed:
+
+    ./gradlew runIdea
+
+Run the test suite:
+
+    ./gradlew test
+
+
 License
 -------------------------------------------------------------------------------
 
