@@ -1,6 +1,6 @@
 package com.emberjs.project
 
-import com.emberjs.EmberIcons
+import com.emberjs.icons.EmberIcons
 import com.intellij.ide.util.projectWizard.ModuleBuilder
 import com.intellij.openapi.roots.ModifiableRootModel
 

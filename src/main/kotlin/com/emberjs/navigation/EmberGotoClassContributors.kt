@@ -1,6 +1,6 @@
 package com.emberjs.navigation
 
-import com.emberjs.EmberIcons
+import com.emberjs.icons.EmberIcons
 import com.emberjs.index.EmberIndices
 
 class EmberAdapterGotoClassContributor : EmberGotoClassContributorBase(EmberIndices.ADAPTER, EmberIcons.ADAPTER_16)

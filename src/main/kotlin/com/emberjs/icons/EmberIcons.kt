@@ -1,10 +1,10 @@
-package com.emberjs
+package com.emberjs.icons
 
 import com.intellij.openapi.util.IconLoader
 
 object EmberIcons {
-    val ICON_16 = IconLoader.getIcon("/com/emberjs/icon16.png")
-    val ICON_24 = IconLoader.getIcon("/com/emberjs/icon24.png")
+    val ICON_16 = IconLoader.getIcon("/com/emberjs/icons/icon16.png")
+    val ICON_24 = IconLoader.getIcon("/com/emberjs/icons/icon24.png")
 
     val EMPTY_16 = IconLoader.getIcon("/com/emberjs/icons/empty16.png")
     val ADAPTER_16 = IconLoader.getIcon("/com/emberjs/icons/adapter16.png")

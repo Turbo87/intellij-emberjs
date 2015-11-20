@@ -1,6 +1,6 @@
 package com.emberjs.navigation
 
-import com.emberjs.EmberIcons
+import com.emberjs.icons.EmberIcons
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.ItemPresentation
 import com.intellij.navigation.NavigationItem
