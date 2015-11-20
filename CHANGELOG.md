@@ -5,8 +5,8 @@ Changelog
 
 ## v1.2.0
 
-- Enable JSHint using .jshintrc
-- Marks node_modules and bower_components as library folders
+- Enable JSHint using `.jshintrc`
+- Marks `node_modules` and `bower_components` as library folders
 
 
 ## v1.1.1
@@ -33,6 +33,6 @@ Changelog
 
 ## v1.0.0
 
-- Ember.js project discovery (via app/app.js) when imported from existing sources
+- Ember.js project discovery (via `app/app.js`) when imported from existing sources
 - Automatically sets the language level to ES6
-- Marks app, public and tests folders as special folders
+- Marks `app`, `public` and `tests` folders as special folders

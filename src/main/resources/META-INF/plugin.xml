@@ -10,8 +10,8 @@
       <ul>
         <li>Ember.js project discovery when imported from existing sources</li>
         <li>Automatically sets the language level to ES6</li>
-        <li>Marks app, public and tests folders as source, resource and test folders</li>
-        <li>Marks node_modules and bower_components as library folders</li>
+        <li>Marks <code>app</code>, <code>public</code> and <code>tests</code> folders as source, resource and test folders</li>
+        <li>Marks <code>node_modules</code> and <code>bower_components</code> as library folders</li>
         <li>Enable JSHint using <code>.jshintrc</code></li>
         <li>Quick navigation via <code>Navigate → Class...</code> for all major app components</li>
       </ul>
