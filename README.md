@@ -11,6 +11,8 @@ This plugin provides basic [Ember.js](http://emberjs.com/) support to all
 Features
 -------------------------------------------------------------------------------
 
+![Navigate → Class...](doc/goto-class.png)
+
 - Ember.js project discovery when imported from existing sources
 - Automatically sets the language level to ES6
 - Marks app, public and tests folders as source, resource and test folders
