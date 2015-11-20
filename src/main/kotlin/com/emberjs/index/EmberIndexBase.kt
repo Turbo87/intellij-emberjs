@@ -3,6 +3,7 @@ package com.emberjs.index
 import com.emberjs.utils.VoidHelper
 import com.emberjs.utils.append
 import com.emberjs.utils.classify
+import com.emberjs.utils.parents
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
@@ -42,21 +43,6 @@ abstract class EmberIndexBase(private val name: ID<String, Void>) :
 
     companion object {
         val KEY_DESCRIPTIOR = EnumeratorStringDescriptor()
-
-        private val VirtualFile.parents: Iterable<VirtualFile>
-            get() = object : Iterable<VirtualFile> {
-                override fun iterator(): Iterator<VirtualFile> {
-                    var file = this@parents
-
-                    return object : Iterator<VirtualFile> {
-                        override fun hasNext() = file.parent != null
-                        override fun next(): VirtualFile {
-                            file = file.parent
-                            return file
-                        }
-                    }
-                }
-            }
 
         private fun VirtualFile.getParentDirectory(dirName: String) =
                 parents.firstOrNull { it.name == dirName }
