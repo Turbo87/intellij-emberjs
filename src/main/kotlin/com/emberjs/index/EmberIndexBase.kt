@@ -29,20 +29,25 @@ abstract class EmberIndexBase(private val name: ID<String, Void>) :
     override fun map(inputData: FileContent): Map<String, Void> {
 
         // Convert path to class name
-        val name = sequence(inputData.file, { it.parent })
-                .map { it.nameWithoutExtension }
-                .takeWhile { it != appFolder }
-                .toList()
-                .asReversed()
-                .map { it.classify() }
-                .joinToString("")
-                .append(suffix)
+        val name = inputData.file.toClassName(appFolder).append(suffix)
 
         return mapOf(Pair(name, VoidHelper.get()))
     }
 
     companion object {
         val KEY_DESCRIPTIOR = EnumeratorStringDescriptor()
+
+        /**
+         * Converts path to class name
+         */
+        fun VirtualFile.toClassName(appFolder: String): String =
+                sequence(this, { it.parent })
+                        .map { it.nameWithoutExtension }
+                        .takeWhile { it != appFolder }
+                        .toList()
+                        .asReversed()
+                        .map { it.classify() }
+                        .joinToString("")
 
         private fun VirtualFile.getParentDirectory(dirName: String) =
                 parents.firstOrNull { it.name == dirName }
