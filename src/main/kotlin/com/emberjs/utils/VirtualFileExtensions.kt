@@ -16,3 +16,6 @@ val VirtualFile.parents: Iterable<VirtualFile>
             }
         }
     }
+
+fun Iterable<VirtualFile>.findAppFolder() =
+        find { it.name == "app" && it.isDirectory }
