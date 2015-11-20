@@ -55,6 +55,8 @@
         <gotoClassContributor implementation="com.emberjs.navigation.EmberSerializerGotoClassContributor"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberServiceGotoClassContributor"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberTransformGotoClassContributor"/>
+
+        <gotoRelatedProvider implementation="com.emberjs.navigation.EmberGotoRelatedProvider"/>
     </extensions>
 
     <actions>

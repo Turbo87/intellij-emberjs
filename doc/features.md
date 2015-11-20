@@ -35,6 +35,8 @@ This will cause the "Packages" view to look like this:
 Quick Navigation
 -------------------------------------------------------------------------------
 
+### `Navigate → Class...`
+
 The plugin is indexing all typical components in the `app` folder and is
 providing them for quick access via the `Navigate → Class...` action. Currently
 supported are:
@@ -55,6 +57,22 @@ path parts and appending a type suffix
 Example: `app/routes/pets/index.js` will be indexed as `PetsIndexRoute`
 
   ![Navigate → Class...](goto-class.png)
+
+
+### `Navigate → Related Symbol...`
+
+The plugin provides an implementation for the `Navigate → Related Symbol...`
+quick navigation.
+
+Example: Invoking the action inside of `/app/routes/crate/index.js` will
+switch to the `/app/controllers/crate/index.js` file if it exists.
+ 
+The following groups of files can be cycled like this:
+ 
+- `controllers`, `routes`, `templates`
+- `components`, `templates`
+- `adapters`, `models`, `serializers`
+
 
 -------------------------------------------------------------------------------
 

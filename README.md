@@ -18,7 +18,8 @@ Features
 - Marks `app`, `public` and `tests` folders as source, resource and test folders
 - Marks `node_modules` and `bower_components` as library folders
 - Enable JSHint using `.jshintrc`
-- Quick navigation via `Navigate → Class...` for all major app components
+- Quick navigation via `Navigate → Class...` and `Navigate → Related Symbol...`
+  for all major app components
 
 [more...](doc/features.md)
 

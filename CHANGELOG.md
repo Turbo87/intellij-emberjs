@@ -7,6 +7,7 @@ Changelog
 
 - Enable JSHint using `.jshintrc`
 - Marks `node_modules` and `bower_components` as library folders
+- Quick navigation via `Navigate → Related Symbol...` for all major app components
 
 
 ## v1.1.1
