@@ -6,7 +6,7 @@ import com.intellij.openapi.util.IconLoader
 
 class EmberModuleBuilder : ModuleBuilder() {
 
-    override fun getNodeIcon() = IconLoader.getIcon("/com/emberjs/module.png")
+    override fun getNodeIcon() = IconLoader.getIcon("/com/emberjs/icon16.png")
 
     override fun setupRootModel(modifiableRootModel: ModifiableRootModel) {
     }
