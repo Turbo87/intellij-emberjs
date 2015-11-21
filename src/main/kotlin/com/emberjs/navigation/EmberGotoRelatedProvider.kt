@@ -8,6 +8,7 @@ import com.intellij.navigation.GotoRelatedItem
 import com.intellij.navigation.GotoRelatedProvider
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 
@@ -15,9 +16,17 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
 
     override fun getItems(context: DataContext): List<GotoRelatedItem> {
         val project = PlatformDataKeys.PROJECT.getData(context) ?: return listOf()
+        val file = PlatformDataKeys.VIRTUAL_FILE.getData(context) ?: return listOf()
+
         val psiManager = PsiManager.getInstance(project)
 
-        val file = PlatformDataKeys.VIRTUAL_FILE.getData(context) ?: return listOf()
+        return getFiles(file)
+                .map { psiManager.findFile(it) }
+                .filterNotNull()
+                .map { GotoRelatedItem(it) }
+    }
+
+    fun getFiles(file: VirtualFile): List<VirtualFile> {
         val fileInfo = EmberFileInfo.from(file) ?: return listOf()
         if (fileInfo.isPod)
             return listOf()
@@ -27,12 +36,7 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
                 findRelatedComponentFiles(file, fileInfo),
                 findRelatedComponentTemplateFiles(file, fileInfo))
 
-        return relatedFiles
-                .flatten()
-                .filterNotNull()
-                .map { psiManager.findFile(it) }
-                .filterNotNull()
-                .map { GotoRelatedItem(it) }
+        return relatedFiles.flatten().filterNotNull()
     }
 
     /**
