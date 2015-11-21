@@ -20,6 +20,12 @@ public class EmberFileInfoTest {
     @Test public fun testPodRoute() =
             checkType("crates.io/app/application/route.js", EmberFileType.ROUTE, true)
 
+    @Test public fun testTemplate() =
+            checkType("crates.io/app/templates/application.hbs", EmberFileType.TEMPLATE, false)
+
+    @Test public fun testPodTemplate() =
+            checkType("crates.io/app/application/template.hbs", EmberFileType.TEMPLATE, true)
+
     @Test public fun testNestedController() =
             checkType("crates.io/app/controllers/crate/version.js", EmberFileType.CONTROLLER, false)
 
