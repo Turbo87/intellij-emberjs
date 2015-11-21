@@ -2,10 +2,8 @@ package com.emberjs
 
 import com.intellij.mock.MockVirtualFile
 import com.intellij.openapi.vfs.VirtualFile
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 
 public class EmberFileInfoTest {
@@ -45,15 +43,15 @@ public class EmberFileInfoTest {
 
     private fun checkType(path: String, type: EmberFileType, isPod: Boolean) {
         getFileInfo(path).apply {
-            assertNotNull(this)
-            assertEquals(type, this?.type)
-            assertEquals(isPod, this?.isPod)
+            assertThat(this).isNotNull()
+            assertThat(this?.type).isEqualTo(type)
+            assertThat(this?.isPod).isEqualTo(isPod)
         }
     }
 
     private fun checkNoType(path: String) {
         getFileInfo(path).apply {
-            assertNull(this)
+            assertThat(this).isNull()
         }
     }
 

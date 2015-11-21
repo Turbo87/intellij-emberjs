@@ -1,7 +1,7 @@
 package com.emberjs.utils
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import kotlin.test.assertEquals
 
 public class EmberStringUtilsTest {
 
@@ -22,6 +22,6 @@ public class EmberStringUtilsTest {
     @Test public fun `does nothing with classified prefixed string`() = doTest("_FooBar", "_FooBar")
 
     private fun doTest(input: String, expected: String) {
-        assertEquals(expected, input.classify())
+        assertThat(input.classify()).isEqualTo(expected)
     }
 }
