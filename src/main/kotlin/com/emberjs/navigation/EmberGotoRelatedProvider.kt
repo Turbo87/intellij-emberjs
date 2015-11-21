@@ -8,7 +8,6 @@ import com.intellij.navigation.GotoRelatedItem
 import com.intellij.navigation.GotoRelatedProvider
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 
@@ -28,11 +27,12 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
 
     fun getFiles(file: VirtualFile): List<VirtualFile> {
         val fileInfo = EmberFileInfo.from(file) ?: return listOf()
-        if (fileInfo.isPod)
-            return listOf()
 
         val relatedFiles = listOf(EMBER_MAIN_TYPES.findRelatedFiles(file, fileInfo),
+                EMBER_MAIN_TYPES.findRelatedPodFiles(file, fileInfo),
                 EMBER_DATA_TYPES.findRelatedFiles(file, fileInfo),
+                EMBER_DATA_TYPES.findRelatedPodFiles(file, fileInfo),
+                EMBER_COMPONENT_TYPES.findRelatedPodFiles(file, fileInfo),
                 findRelatedComponentFiles(file, fileInfo),
                 findRelatedComponentTemplateFiles(file, fileInfo))
 
@@ -45,7 +45,7 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
     private fun Iterable<EmberFileType>.findRelatedFiles(file: VirtualFile, fileInfo: EmberFileInfo):
             Iterable<VirtualFile?> {
 
-        if (fileInfo.type !in this)
+        if (fileInfo.isPod || fileInfo.type !in this)
             return listOf()
 
         val appFolder = file.parents.findAppFolder() ?: return listOf()
@@ -63,10 +63,24 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
     }
 
     /**
+     * Find e.g. /app/crate/index/route.js when called from /app/crate/index/controller.js
+     */
+    private fun Iterable<EmberFileType>.findRelatedPodFiles(file: VirtualFile, fileInfo: EmberFileInfo):
+            Iterable<VirtualFile?> {
+
+        if (!fileInfo.isPod || fileInfo.type !in this)
+            return listOf()
+
+        val parent = file.parent
+
+        return this.filter { it != fileInfo.type }.map { parent.findChild(it.fileName.replace("component_", "")) }
+    }
+
+    /**
      * Find e.g. /app/components/x-select.js when called from /app/templates/components/x-select.hbs
      */
     private fun findRelatedComponentFiles(file: VirtualFile, fileInfo: EmberFileInfo): Iterable<VirtualFile?> {
-        if (fileInfo.type != EmberFileType.COMPONENT_TEMPLATE)
+        if (fileInfo.isPod || fileInfo.type != EmberFileType.COMPONENT_TEMPLATE)
             return listOf()
 
         val appFolder = file.parents.findAppFolder() ?: return listOf()
@@ -86,7 +100,7 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
      * Find e.g. /app/templates/components/x-select.hbs when called from /app/components/x-select.js
      */
     private fun findRelatedComponentTemplateFiles(file: VirtualFile, fileInfo: EmberFileInfo): Iterable<VirtualFile?> {
-        if (fileInfo.type != EmberFileType.COMPONENT)
+        if (fileInfo.isPod || fileInfo.type != EmberFileType.COMPONENT)
             return listOf()
 
         val appFolder = file.parents.findAppFolder() ?: return listOf()
@@ -113,5 +127,9 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
                 EmberFileType.ADAPTER,
                 EmberFileType.MODEL,
                 EmberFileType.SERIALIZER)
+
+        val EMBER_COMPONENT_TYPES = setOf(
+                EmberFileType.COMPONENT,
+                EmberFileType.COMPONENT_TEMPLATE)
     }
 }
