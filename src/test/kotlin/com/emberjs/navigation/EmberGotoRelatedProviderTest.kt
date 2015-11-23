@@ -160,7 +160,7 @@ class EmberGotoRelatedProviderTest {
 
     private fun VirtualFile.find(path: String): VirtualFile {
         val file = findFileByRelativePath(path)
-        assertThat(file).describedAs(path).withFailMessage("File not found").isNotNull()
+        assertThat(file).describedAs(path).withFailMessage("File not found in '$name'").isNotNull()
         return file!!
     }
 }
