@@ -3,6 +3,7 @@ package com.emberjs.navigation
 import com.emberjs.EmberTestFixtures.APTIBLE
 import com.emberjs.EmberTestFixtures.CRATES_IO
 import com.emberjs.EmberTestFixtures.EXAMPLE
+import com.emberjs.utils.find
 import com.intellij.openapi.vfs.VirtualFile
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
@@ -156,11 +157,5 @@ class EmberGotoRelatedProviderTest {
     private fun doTest(root: VirtualFile, path: String, vararg related: String) {
         assertThat(provider.getFiles(root.find(path)))
                 .containsExactlyElementsOf(listOf(*related).map { root.find(it) })
-    }
-
-    private fun VirtualFile.find(path: String): VirtualFile {
-        val file = findFileByRelativePath(path)
-        assertThat(file).describedAs(path).withFailMessage("File not found in '$name'").isNotNull()
-        return file!!
     }
 }
