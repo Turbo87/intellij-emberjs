@@ -1,6 +1,10 @@
 package com.emberjs.resolver
 
 data class EmberName private constructor(val type: String, val name: String) {
+
+    val fullName: String
+        get() = "$type:$name"
+
     companion object {
         fun from(fullName: String): EmberName? {
             val parts = fullName.split(":")

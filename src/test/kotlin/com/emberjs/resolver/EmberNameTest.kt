@@ -9,6 +9,7 @@ class EmberNameTest {
         val name = EmberName.from("route:crate/index")!!
         assertThat(name.type).isEqualTo("route")
         assertThat(name.name).isEqualTo("crate/index")
+        assertThat(name.fullName).isEqualTo("route:crate/index")
     }
 
     @Test fun testInvalidName() {
