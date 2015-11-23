@@ -1,9 +1,7 @@
 package com.emberjs.navigation
 
-import com.emberjs.EmberFileInfo
-import com.emberjs.EmberFileType
-import com.emberjs.utils.findAppFolder
-import com.emberjs.utils.parents
+import com.emberjs.resolver.EmberName
+import com.emberjs.resolver.EmberResolver
 import com.intellij.navigation.GotoRelatedItem
 import com.intellij.navigation.GotoRelatedProvider
 import com.intellij.openapi.actionSystem.DataContext
@@ -19,117 +17,37 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
 
         val psiManager = PsiManager.getInstance(project)
 
-        return getFiles(file)
+        return getFiles(project.baseDir, file)
                 .map { psiManager.findFile(it) }
                 .filterNotNull()
                 .map { GotoRelatedItem(it) }
     }
 
-    fun getFiles(file: VirtualFile): List<VirtualFile> {
-        val fileInfo = EmberFileInfo.from(file) ?: return listOf()
+    fun getFiles(root: VirtualFile, file: VirtualFile): List<VirtualFile> {
+        val name = EmberName.from(root, file) ?: return listOf()
 
-        val relatedFiles = listOf(EMBER_MAIN_TYPES.findRelatedFiles(file, fileInfo),
-                EMBER_MAIN_TYPES.findRelatedPodFiles(file, fileInfo),
-                EMBER_DATA_TYPES.findRelatedFiles(file, fileInfo),
-                EMBER_DATA_TYPES.findRelatedPodFiles(file, fileInfo),
-                EMBER_COMPONENT_TYPES.findRelatedPodFiles(file, fileInfo),
-                findRelatedComponentFiles(file, fileInfo),
-                findRelatedComponentTemplateFiles(file, fileInfo))
+        val resolver = EmberResolver(root)
 
-        return relatedFiles.flatten().filterNotNull()
-    }
+        when (name.type) {
+            "template" -> if (name.name.startsWith("components/")) {
+                return listOf(resolver.resolve("component", name.name.removePrefix("components/"))).filterNotNull()
+            }
+            "component" -> {
+                return listOf(resolver.resolve("template", "components/${name.name}")).filterNotNull()
+            }
+        }
 
-    /**
-     * Find e.g. /app/routes/crate/index.js when called from /app/controllers/crate/index.js
-     */
-    private fun Iterable<EmberFileType>.findRelatedFiles(file: VirtualFile, fileInfo: EmberFileInfo):
-            Iterable<VirtualFile?> {
-
-        if (fileInfo.isPod || fileInfo.type !in this)
-            return listOf()
-
-        val appFolder = file.parents.findAppFolder() ?: return listOf()
-        val pathParts = file.parents.map { it.name }.takeWhile { it != fileInfo.type.folderName }
-
-        return this.filter { it != fileInfo.type }
-                .map { type ->
-                    // find e.g. "routes" child in "app" folder
-                    var child = appFolder.findChild(type.folderName)
-                    // find identical children folders
-                    pathParts.forEach { child = child?.findChild(it) }
-                    // find identical file with matching file extension
-                    child?.findChild("${file.nameWithoutExtension}.${type.fileExtension}")
-                }
-    }
-
-    /**
-     * Find e.g. /app/crate/index/route.js when called from /app/crate/index/controller.js
-     */
-    private fun Iterable<EmberFileType>.findRelatedPodFiles(file: VirtualFile, fileInfo: EmberFileInfo):
-            Iterable<VirtualFile?> {
-
-        if (!fileInfo.isPod || fileInfo.type !in this)
-            return listOf()
-
-        val parent = file.parent
-
-        return this.filter { it != fileInfo.type }.map { parent.findChild(it.fileName.replace("component_", "")) }
-    }
-
-    /**
-     * Find e.g. /app/components/x-select.js when called from /app/templates/components/x-select.hbs
-     */
-    private fun findRelatedComponentFiles(file: VirtualFile, fileInfo: EmberFileInfo): Iterable<VirtualFile?> {
-        if (fileInfo.isPod || fileInfo.type != EmberFileType.COMPONENT_TEMPLATE)
-            return listOf()
-
-        val appFolder = file.parents.findAppFolder() ?: return listOf()
-        val pathParts = file.parents.map { it.name }.takeWhile { it != EmberFileType.COMPONENT.folderName }
-
-        // find e.g. "routes" child in "app" folder
-        var child = appFolder.findChild(EmberFileType.COMPONENT.folderName)
-        // find identical children folders
-        pathParts.forEach { child = child?.findChild(it) }
-        // find identical file with matching file extension
-        child = child?.findChild("${file.nameWithoutExtension}.${EmberFileType.COMPONENT.fileExtension}")
-
-        return listOf(child)
-    }
-
-    /**
-     * Find e.g. /app/templates/components/x-select.hbs when called from /app/components/x-select.js
-     */
-    private fun findRelatedComponentTemplateFiles(file: VirtualFile, fileInfo: EmberFileInfo): Iterable<VirtualFile?> {
-        if (fileInfo.isPod || fileInfo.type != EmberFileType.COMPONENT)
-            return listOf()
-
-        val appFolder = file.parents.findAppFolder() ?: return listOf()
-        val pathParts = file.parents.map { it.name }.takeWhile { it != fileInfo.type.folderName }
-
-        // find e.g. "routes" child in "app" folder
-        var child = appFolder.findChild(EmberFileType.TEMPLATE.folderName)
-        child = child?.findChild(EmberFileType.COMPONENT.folderName)
-        // find identical children folders
-        pathParts.forEach { child = child?.findChild(it) }
-        // find identical file with matching file extension
-        child = child?.findChild("${file.nameWithoutExtension}.${EmberFileType.TEMPLATE.fileExtension}")
-
-        return listOf(child)
+        return RELATED_TYPES[name.type].orEmpty().map { resolver.resolve(it, name.name) }.filterNotNull()
     }
 
     companion object {
-        val EMBER_MAIN_TYPES = setOf(
-                EmberFileType.CONTROLLER,
-                EmberFileType.ROUTE,
-                EmberFileType.TEMPLATE)
-
-        val EMBER_DATA_TYPES = setOf(
-                EmberFileType.ADAPTER,
-                EmberFileType.MODEL,
-                EmberFileType.SERIALIZER)
-
-        val EMBER_COMPONENT_TYPES = setOf(
-                EmberFileType.COMPONENT,
-                EmberFileType.COMPONENT_TEMPLATE)
+        val RELATED_TYPES = mapOf(
+                Pair("controller", listOf("route", "template")),
+                Pair("route", listOf("controller", "template")),
+                Pair("template", listOf("controller", "route")),
+                Pair("model", listOf("adapter", "serializer")),
+                Pair("adapter", listOf("model", "serializer")),
+                Pair("serializer", listOf("adapter", "model"))
+        )
     }
 }

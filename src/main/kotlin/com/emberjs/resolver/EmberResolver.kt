@@ -4,6 +4,8 @@ import com.intellij.openapi.vfs.VirtualFile
 
 class EmberResolver(val root: VirtualFile) {
 
+    fun resolve(type: String, name: String) = resolve(EmberName(type, name))
+
     fun resolve(fullName: String) = resolve(EmberName.from(fullName))
 
     fun resolve(name: EmberName?): VirtualFile? {

@@ -102,7 +102,8 @@ class EmberGotoRelatedProviderTest {
     private fun doTest(root: VirtualFile, tests: Map<String, List<String>>) {
         SoftAssertions().use {
             for ((path, related) in tests) {
-                assertThat(provider.getFiles(root.find(path)))
+                assertThat(provider.getFiles(root, root.find(path)))
+                        .describedAs(path)
                         .containsExactlyElementsOf(related.map { root.find(it) })
             }
         }

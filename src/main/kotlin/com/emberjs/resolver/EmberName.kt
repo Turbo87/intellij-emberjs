@@ -4,7 +4,7 @@ import com.emberjs.EmberFileType
 import com.emberjs.utils.parents
 import com.intellij.openapi.vfs.VirtualFile
 
-data class EmberName private constructor(val type: String, val name: String) {
+data class EmberName(val type: String, val name: String) {
 
     val fullName: String
         get() = "$type:$name"
