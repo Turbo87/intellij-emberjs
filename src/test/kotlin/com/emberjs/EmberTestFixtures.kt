@@ -7,11 +7,12 @@ import java.nio.file.Paths
 
 object EmberTestFixtures {
 
-    val RESOURCE_PATH = Paths.get("src/test/resources/com/emberjs").toAbsolutePath()
+    val FIXTURES_RESOURCE = ClassLoader.getSystemResource("com/emberjs/fixtures")
+    val FIXTURES_PATH = Paths.get(FIXTURES_RESOURCE.toURI()).toAbsolutePath()
 
-    val EXAMPLE = from(RESOURCE_PATH.resolve("fixtures/example"))
-    val CRATES_IO = from(RESOURCE_PATH.resolve("fixtures/crates.io"))
-    val APTIBLE = from(RESOURCE_PATH.resolve("fixtures/dashboard.aptible.com"))
+    val EXAMPLE = from(FIXTURES_PATH.resolve("example"))
+    val CRATES_IO = from(FIXTURES_PATH.resolve("crates.io"))
+    val APTIBLE = from(FIXTURES_PATH.resolve("dashboard.aptible.com"))
 
     private class MockVirtualDir(name: String) : MockVirtualFile(true, name)
 
