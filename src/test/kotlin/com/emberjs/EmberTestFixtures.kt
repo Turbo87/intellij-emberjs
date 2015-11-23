@@ -9,6 +9,7 @@ object EmberTestFixtures {
 
     val RESOURCE_PATH = Paths.get("src/test/resources/com/emberjs").toAbsolutePath()
 
+    val EXAMPLE = from(RESOURCE_PATH.resolve("fixtures/example"))
     val CRATES_IO = from(RESOURCE_PATH.resolve("fixtures/crates.io"))
     val APTIBLE = from(RESOURCE_PATH.resolve("fixtures/dashboard.aptible.com"))
 

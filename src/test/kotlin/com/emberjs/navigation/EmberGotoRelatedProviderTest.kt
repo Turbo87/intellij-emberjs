@@ -2,6 +2,7 @@ package com.emberjs.navigation
 
 import com.emberjs.EmberTestFixtures.APTIBLE
 import com.emberjs.EmberTestFixtures.CRATES_IO
+import com.emberjs.EmberTestFixtures.EXAMPLE
 import com.intellij.openapi.vfs.VirtualFile
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
@@ -84,12 +85,12 @@ class EmberGotoRelatedProviderTest {
 
     // PODs
 
-    @Ignore @Test public fun testPodAdapter() =
-            doTest(APTIBLE, "app/dependency/adapter.js",
-                    "app/dependency/model.js")
+    @Test public fun testPodAdapter() =
+            doTest(EXAMPLE, "app/user/adapter.js",
+                    "app/user/model.js")
 
-    @Ignore @Test public fun testPodApplicationAdapter() =
-            doTest(APTIBLE, "app/application/adapter.js")
+    @Test public fun testPodApplicationAdapter() =
+            doTest(EXAMPLE, "app/application/adapter.js")
 
     @Test public fun testPodComponent() =
             doTest(APTIBLE, "app/components/billing-header/component.js",
@@ -105,13 +106,13 @@ class EmberGotoRelatedProviderTest {
                     "app/password/reset/route.js",
                     "app/password/reset/template.hbs")
 
-    @Ignore @Test public fun testPodModel() =
-            doTest(APTIBLE, "app/crate/model.js",
-                    "app/crate/serializer.js")
+    @Test public fun testPodModel() =
+            doTest(EXAMPLE, "app/pet/model.js",
+                    "app/pet/serializer.js")
 
-    @Ignore @Test public fun testPodModel2() =
-            doTest(APTIBLE, "app/dependency/model.js",
-                    "app/dependency/adapter.js")
+    @Test public fun testPodModel2() =
+            doTest(EXAMPLE, "app/user/model.js",
+                    "app/user/adapter.js")
 
     @Test public fun testPodRoute() =
             doTest(APTIBLE, "app/claim/route.js",
@@ -127,12 +128,12 @@ class EmberGotoRelatedProviderTest {
             doTest(APTIBLE, "app/application/route.js",
                     "app/application/template.hbs")
 
-    @Ignore @Test public fun testPodSerializer() =
-            doTest(APTIBLE, "app/crate/serializer.js",
-                    "app/crate/model.js")
+    @Test public fun testPodSerializer() =
+            doTest(EXAMPLE, "app/pet/serializer.js",
+                    "app/pet/model.js")
 
-    @Ignore @Test public fun testPodService() =
-            doTest(APTIBLE, "app/session/service.js")
+    @Test public fun testPodService() =
+            doTest(EXAMPLE, "app/session/service.js")
 
     @Test public fun testPodTemplate() =
             doTest(APTIBLE, "app/claim/template.hbs",
