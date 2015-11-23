@@ -4,158 +4,107 @@ import com.emberjs.EmberTestFixtures.APTIBLE
 import com.emberjs.EmberTestFixtures.CRATES_IO
 import com.emberjs.EmberTestFixtures.EXAMPLE
 import com.emberjs.utils.find
+import com.emberjs.utils.use
 import com.intellij.openapi.vfs.VirtualFile
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
+import org.assertj.core.api.SoftAssertions
 import org.junit.Test
 
 class EmberGotoRelatedProviderTest {
 
     val provider = EmberGotoRelatedProvider()
 
-    // Non-POD tests
+    @Test fun testCratesIo() = doTest(CRATES_IO, mapOf(
+            Pair("app/adapters/dependency.js", listOf("app/models/dependency.js")),
+            Pair("app/adapters/application.js", listOf()),
+            Pair("app/components/crate-row.js", listOf("app/templates/components/crate-row.hbs")),
 
-    @Test public fun testAdapter() =
-            doTest(CRATES_IO, "app/adapters/dependency.js",
-                    "app/models/dependency.js")
-
-    @Test public fun testApplicationAdapter() =
-            doTest(CRATES_IO, "app/adapters/application.js")
-
-    @Test public fun testComponent() =
-            doTest(CRATES_IO, "app/components/crate-row.js",
-                    "app/templates/components/crate-row.hbs")
-
-    @Test public fun testController() =
-            doTest(CRATES_IO, "app/controllers/crates.js",
+            Pair("app/controllers/crates.js", listOf(
                     "app/routes/crates.js",
-                    "app/templates/crates.hbs")
+                    "app/templates/crates.hbs")),
 
-    @Test public fun testNestedController() =
-            doTest(CRATES_IO, "app/controllers/crate/versions.js",
+            Pair("app/controllers/crate/versions.js", listOf(
                     "app/routes/crate/versions.js",
-                    "app/templates/crate/versions.hbs")
+                    "app/templates/crate/versions.hbs")),
 
-    @Test public fun testModel() =
-            doTest(CRATES_IO, "app/models/crate.js",
-                    "app/serializers/crate.js")
+            Pair("app/models/crate.js", listOf("app/serializers/crate.js")),
+            Pair("app/models/dependency.js", listOf("app/adapters/dependency.js")),
+            Pair("app/routes/login.js", listOf("app/templates/login.hbs")),
 
-    @Test public fun testModel2() =
-            doTest(CRATES_IO, "app/models/dependency.js",
-                    "app/adapters/dependency.js")
-
-    @Test public fun testRoute() =
-            doTest(CRATES_IO, "app/routes/login.js",
-                    "app/templates/login.hbs")
-
-    @Test public fun testNestedRoute() =
-            doTest(CRATES_IO, "app/routes/crate/index.js",
+            Pair("app/routes/crate/index.js", listOf(
                     "app/controllers/crate/index.js",
-                    "app/templates/crate/index.hbs")
+                    "app/templates/crate/index.hbs")),
 
-    @Test public fun testApplicationRoute() =
-            doTest(CRATES_IO, "app/routes/application.js",
+            Pair("app/routes/application.js", listOf(
                     "app/controllers/application.js",
-                    "app/templates/application.hbs")
+                    "app/templates/application.hbs")),
 
-    @Test public fun testSerializer() =
-            doTest(CRATES_IO, "app/serializers/crate.js",
-                    "app/models/crate.js")
+            Pair("app/serializers/crate.js", listOf("app/models/crate.js")),
+            Pair("app/services/session.js", listOf()),
 
-    @Test public fun testService() =
-            doTest(CRATES_IO, "app/services/session.js")
-
-    @Test public fun testTemplate() =
-            doTest(CRATES_IO, "app/templates/crates.hbs",
+            Pair("app/templates/crates.hbs", listOf(
                     "app/controllers/crates.js",
-                    "app/routes/crates.js")
+                    "app/routes/crates.js")),
 
-    @Test public fun testApplicationTemplate() =
-            doTest(CRATES_IO, "app/templates/application.hbs",
+            Pair("app/templates/application.hbs", listOf(
                     "app/controllers/application.js",
-                    "app/routes/application.js")
+                    "app/routes/application.js")),
 
-    @Test public fun testNestedTemplate() =
-            doTest(CRATES_IO, "app/templates/crate/versions.hbs",
+            Pair("app/templates/crate/versions.hbs", listOf(
                     "app/controllers/crate/versions.js",
-                    "app/routes/crate/versions.js")
+                    "app/routes/crate/versions.js")),
 
-    @Test public fun testComponentTemplate() =
-            doTest(CRATES_IO, "app/templates/components/crate-row.hbs",
-                    "app/components/crate-row.js")
+            Pair("app/templates/components/crate-row.hbs", listOf("app/components/crate-row.js"))
+    ));
 
-    // PODs
+    @Test fun testExample() = doTest(EXAMPLE, mapOf(
+            Pair("app/user/adapter.js", listOf("app/user/model.js")),
+            Pair("app/application/adapter.js", listOf()),
+            Pair("app/pet/model.js", listOf("app/pet/serializer.js")),
+            Pair("app/user/model.js", listOf("app/user/adapter.js")),
+            Pair("app/pet/serializer.js", listOf("app/pet/model.js")),
+            Pair("app/session/service.js", listOf())
+    ));
 
-    @Test public fun testPodAdapter() =
-            doTest(EXAMPLE, "app/user/adapter.js",
-                    "app/user/model.js")
+    @Test fun testAptible() = doTest(APTIBLE, mapOf(
+            Pair("app/components/billing-header/component.js", listOf("app/components/billing-header/template.hbs")),
 
-    @Test public fun testPodApplicationAdapter() =
-            doTest(EXAMPLE, "app/application/adapter.js")
-
-    @Test public fun testPodComponent() =
-            doTest(APTIBLE, "app/components/billing-header/component.js",
-                    "app/components/billing-header/template.hbs")
-
-    @Test public fun testPodController() =
-            doTest(APTIBLE, "app/claim/controller.js",
+            Pair("app/claim/controller.js", listOf(
                     "app/claim/route.js",
-                    "app/claim/template.hbs")
+                    "app/claim/template.hbs")),
 
-    @Test public fun testPodNestedController() =
-            doTest(APTIBLE, "app/password/reset/controller.js",
+            Pair("app/password/reset/controller.js", listOf(
                     "app/password/reset/route.js",
-                    "app/password/reset/template.hbs")
+                    "app/password/reset/template.hbs")),
 
-    @Test public fun testPodModel() =
-            doTest(EXAMPLE, "app/pet/model.js",
-                    "app/pet/serializer.js")
-
-    @Test public fun testPodModel2() =
-            doTest(EXAMPLE, "app/user/model.js",
-                    "app/user/adapter.js")
-
-    @Test public fun testPodRoute() =
-            doTest(APTIBLE, "app/claim/route.js",
+            Pair("app/claim/route.js", listOf(
                     "app/claim/controller.js",
-                    "app/claim/template.hbs")
+                    "app/claim/template.hbs")),
 
-    @Test public fun testPodNestedRoute() =
-            doTest(APTIBLE, "app/password/reset/route.js",
+            Pair("app/password/reset/route.js", listOf(
                     "app/password/reset/controller.js",
-                    "app/password/reset/template.hbs")
+                    "app/password/reset/template.hbs")),
 
-    @Test public fun testPodApplicationRoute() =
-            doTest(APTIBLE, "app/application/route.js",
-                    "app/application/template.hbs")
+            Pair("app/application/route.js", listOf("app/application/template.hbs")),
 
-    @Test public fun testPodSerializer() =
-            doTest(EXAMPLE, "app/pet/serializer.js",
-                    "app/pet/model.js")
-
-    @Test public fun testPodService() =
-            doTest(EXAMPLE, "app/session/service.js")
-
-    @Test public fun testPodTemplate() =
-            doTest(APTIBLE, "app/claim/template.hbs",
+            Pair("app/claim/template.hbs", listOf(
                     "app/claim/controller.js",
-                    "app/claim/route.js")
+                    "app/claim/route.js")),
 
-    @Test public fun testPodApplicationTemplate() =
-            doTest(APTIBLE, "app/application/template.hbs",
-                    "app/application/route.js")
+            Pair("app/application/template.hbs", listOf("app/application/route.js")),
 
-    @Test public fun testPodNestedTemplate() =
-            doTest(APTIBLE, "app/password/reset/template.hbs",
+            Pair("app/password/reset/template.hbs", listOf(
                     "app/password/reset/controller.js",
-                    "app/password/reset/route.js")
+                    "app/password/reset/route.js")),
 
-    @Test public fun testPodComponentTemplate() =
-            doTest(APTIBLE, "app/components/billing-header/template.hbs",
-                    "app/components/billing-header/component.js")
+            Pair("app/components/billing-header/template.hbs", listOf("app/components/billing-header/component.js"))
+    ))
 
-    private fun doTest(root: VirtualFile, path: String, vararg related: String) {
-        assertThat(provider.getFiles(root.find(path)))
-                .containsExactlyElementsOf(listOf(*related).map { root.find(it) })
+    private fun doTest(root: VirtualFile, tests: Map<String, List<String>>) {
+        SoftAssertions().use {
+            for ((path, related) in tests) {
+                assertThat(provider.getFiles(root.find(path)))
+                        .containsExactlyElementsOf(related.map { root.find(it) })
+            }
+        }
     }
 }
