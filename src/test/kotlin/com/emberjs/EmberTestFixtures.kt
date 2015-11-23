@@ -1,49 +1,15 @@
 package com.emberjs
 
 import com.intellij.mock.MockVirtualFile
+import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
 
 object EmberTestFixtures {
 
-    val CRATES_IO = dir("crates.io").with(
-            dir("app").with(
-                    dir("adapters").with(
-                            file("application.js"),
-                            file("dependency.js")),
-                    dir("components").with(
-                            file("crate-row.js")),
-                    dir("controllers").with(
-                            dir("crate").with(
-                                    file("index.js"),
-                                    file("versions.js")),
-                            file("crates.js"),
-                            file("index.js")),
-                    dir("models").with(
-                            file("crate.js"),
-                            file("dependency.js")),
-                    dir("routes").with(
-                            dir("crate").with(
-                                    file("index.js"),
-                                    file("versions.js")),
-                            file("application.js"),
-                            file("crates.js"),
-                            file("github-login.js"),
-                            file("index.js")),
-                    dir("serializers").with(
-                            file("crate.js")),
-                    dir("services").with(
-                            file("session.js")),
-                    dir("templates").with(
-                            dir("components").with(
-                                    file("crate-row.hbs")),
-                            dir("crate").with(
-                                    file("index.hbs"),
-                                    file("versions.hbs")),
-                            file("application.hbs"),
-                            file("crates.hbs"),
-                            file("github-login.hbs"),
-                            file("index.hbs")),
-                    file("app.js"),
-                    file("router.js")))
+    val RESOURCE_PATH = Paths.get("src/test/resources/com/emberjs").toAbsolutePath()
+
+    val CRATES_IO = from(RESOURCE_PATH.resolve("fixtures/crates.io"))
 
     val CRATES_IO_POD = dir("crates.io").with(
             dir("app").with(
@@ -97,6 +63,20 @@ object EmberTestFixtures {
             }
 
             return this
+        }
+    }
+
+    fun from(path: Path) = from(path.toFile())
+
+    fun from(file: File): MockVirtualFile {
+        return when {
+            file.isDirectory -> MockVirtualDir(file.name).apply {
+                file.listFiles().forEach { child ->
+                    addChild(from(child))
+                }
+            }
+
+            else -> MockVirtualFile(file.name)
         }
     }
 }

@@ -42,8 +42,8 @@ class EmberGotoRelatedProviderTest {
                     "app/adapters/dependency.js")
 
     @Test public fun testRoute() =
-            doTest("app/routes/github-login.js",
-                    "app/templates/github-login.hbs")
+            doTest("app/routes/login.js",
+                    "app/templates/login.hbs")
 
     @Test public fun testNestedRoute() =
             doTest("app/routes/crate/index.js",
@@ -52,6 +52,7 @@ class EmberGotoRelatedProviderTest {
 
     @Test public fun testApplicationRoute() =
             doTest("app/routes/application.js",
+                    "app/controllers/application.js",
                     "app/templates/application.hbs")
 
     @Test public fun testSerializer() =
@@ -68,6 +69,7 @@ class EmberGotoRelatedProviderTest {
 
     @Test public fun testApplicationTemplate() =
             doTest("app/templates/application.hbs",
+                    "app/controllers/application.js",
                     "app/routes/application.js")
 
     @Test public fun testNestedTemplate() =
