@@ -9,6 +9,9 @@ data class EmberName(val type: String, val name: String) {
     val fullName: String
         get() = "$type:$name"
 
+    val displayName: String
+        get() = "${name.replace('/', '.')} $type"
+
     companion object {
         private val KNOWN_TYPES = EmberFileType.values.filter { it != EmberFileType.COMPONENT_TEMPLATE }
 

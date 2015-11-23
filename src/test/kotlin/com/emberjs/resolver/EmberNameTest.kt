@@ -17,6 +17,7 @@ class EmberNameTest {
         assertThat(name.type).isEqualTo("route")
         assertThat(name.name).isEqualTo("crate/index")
         assertThat(name.fullName).isEqualTo("route:crate/index")
+        assertThat(name.displayName).isEqualTo("crate.index route")
     }
 
     @Test fun testInvalidName() {
