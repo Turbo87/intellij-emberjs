@@ -37,6 +37,12 @@ intellij {
     }
 }
 
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
 /*
  * Gets the version name from the latest Git tag
  */
