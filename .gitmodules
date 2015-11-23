@@ -1,3 +1,6 @@
 [submodule "src/test/resources/com/emberjs/fixtures/crates.io"]
 	path = src/test/resources/com/emberjs/fixtures/crates.io
 	url = https://github.com/rust-lang/crates.io.git
+[submodule "src/test/resources/com/emberjs/fixtures/dashboard.aptible.com"]
+	path = src/test/resources/com/emberjs/fixtures/dashboard.aptible.com
+	url = https://github.com/aptible/dashboard.aptible.com.git

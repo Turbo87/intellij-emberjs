@@ -1,9 +1,10 @@
 package com.emberjs.navigation
 
+import com.emberjs.EmberTestFixtures.APTIBLE
 import com.emberjs.EmberTestFixtures.CRATES_IO
-import com.emberjs.EmberTestFixtures.CRATES_IO_POD
 import com.intellij.openapi.vfs.VirtualFile
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 
 class EmberGotoRelatedProviderTest {
@@ -83,72 +84,73 @@ class EmberGotoRelatedProviderTest {
 
     // PODs
 
-    @Test public fun testPodAdapter() =
+    @Ignore @Test public fun testPodAdapter() =
             doPodTest("app/dependency/adapter.js",
                     "app/dependency/model.js")
 
-    @Test public fun testPodApplicationAdapter() =
+    @Ignore @Test public fun testPodApplicationAdapter() =
             doPodTest("app/application/adapter.js")
 
     @Test public fun testPodComponent() =
-            doPodTest("app/components/crate-row/component.js",
-                    "app/components/crate-row/template.hbs")
+            doPodTest("app/components/billing-header/component.js",
+                    "app/components/billing-header/template.hbs")
 
     @Test public fun testPodController() =
-            doPodTest("app/crates/controller.js",
-                    "app/crates/route.js",
-                    "app/crates/template.hbs")
+            doPodTest("app/claim/controller.js",
+                    "app/claim/route.js",
+                    "app/claim/template.hbs")
 
     @Test public fun testPodNestedController() =
-            doPodTest("app/crate/versions/controller.js",
-                    "app/crate/versions/route.js",
-                    "app/crate/versions/template.hbs")
+            doPodTest("app/password/reset/controller.js",
+                    "app/password/reset/route.js",
+                    "app/password/reset/template.hbs")
 
-    @Test public fun testPodModel() =
+    @Ignore @Test public fun testPodModel() =
             doPodTest("app/crate/model.js",
                     "app/crate/serializer.js")
 
-    @Test public fun testPodModel2() =
+    @Ignore @Test public fun testPodModel2() =
             doPodTest("app/dependency/model.js",
                     "app/dependency/adapter.js")
 
     @Test public fun testPodRoute() =
-            doPodTest("app/github-login/route.js",
-                    "app/github-login/template.hbs")
+            doPodTest("app/claim/route.js",
+                    "app/claim/controller.js",
+                    "app/claim/template.hbs")
 
     @Test public fun testPodNestedRoute() =
-            doPodTest("app/crate/index/route.js",
-                    "app/crate/index/controller.js",
-                    "app/crate/index/template.hbs")
+            doPodTest("app/password/reset/route.js",
+                    "app/password/reset/controller.js",
+                    "app/password/reset/template.hbs")
 
     @Test public fun testPodApplicationRoute() =
             doPodTest("app/application/route.js",
                     "app/application/template.hbs")
 
-    @Test public fun testPodSerializer() =
+    @Ignore @Test public fun testPodSerializer() =
             doPodTest("app/crate/serializer.js",
                     "app/crate/model.js")
 
-    @Test public fun testPodService() =
+    @Ignore @Test public fun testPodService() =
             doPodTest("app/session/service.js")
 
     @Test public fun testPodTemplate() =
-            doPodTest("app/crates/template.hbs",
-                    "app/crates/controller.js",
-                    "app/crates/route.js")
+            doPodTest("app/claim/template.hbs",
+                    "app/claim/controller.js",
+                    "app/claim/route.js")
 
     @Test public fun testPodApplicationTemplate() =
             doPodTest("app/application/template.hbs",
                     "app/application/route.js")
 
     @Test public fun testPodNestedTemplate() =
-            doPodTest("app/crate/versions/template.hbs",
-                    "app/crate/versions/controller.js",
-                    "app/crate/versions/route.js")
+            doPodTest("app/password/reset/template.hbs",
+                    "app/password/reset/controller.js",
+                    "app/password/reset/route.js")
 
     @Test public fun testPodComponentTemplate() =
-            doPodTest("app/components/crate-row/template.hbs",
-                    "app/components/crate-row/component.js")
+            doPodTest("app/components/billing-header/template.hbs",
+                    "app/components/billing-header/component.js")
 
     private fun doTest(path: String, vararg related: String) {
         assertThat(relatedTo(path)).containsExactlyElementsOf(listOf(*related).map { file(it) })
@@ -165,7 +167,7 @@ class EmberGotoRelatedProviderTest {
         return file!!
     }
     private fun podFile(path: String): VirtualFile {
-        val file = CRATES_IO_POD.findFileByRelativePath(path)
+        val file = APTIBLE.findFileByRelativePath(path)
         assertThat(file).describedAs(path).withFailMessage("File not found").isNotNull()
         return file!!
     }
