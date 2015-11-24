@@ -13,4 +13,13 @@ object EmberIcons {
     val MODEL_16 = IconLoader.getIcon("/com/emberjs/icons/model16.png")
     val ROUTE_16 = IconLoader.getIcon("/com/emberjs/icons/route16.png")
     val SERVICE_16 = IconLoader.getIcon("/com/emberjs/icons/service16.png")
+
+    val FILE_TYPE_ICONS = mapOf(
+            Pair("adapter", ADAPTER_16),
+            Pair("component", COMPONENT_16),
+            Pair("controller", CONTROLLER_16),
+            Pair("model", MODEL_16),
+            Pair("route", ROUTE_16),
+            Pair("service", SERVICE_16)
+    )
 }
