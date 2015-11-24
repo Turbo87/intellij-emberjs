@@ -8,6 +8,9 @@ Changelog
 - Enable JSHint using `.jshintrc`
 - Marks `node_modules` and `bower_components` as library folders
 - Quick navigation via `Navigate → Related Symbol...` for all major app components
+- Live templates
+
+  ![Live Templates](live-templates.png)
 
 
 ## v1.1.1

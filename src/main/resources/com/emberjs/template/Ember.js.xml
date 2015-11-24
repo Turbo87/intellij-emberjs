@@ -1,0 +1,31 @@
+<templateSet group="Ember.js">
+    <template name="alias" value="$NAME$: Ember.computed.alias('$OTHER$'),$END$" description="Insert computed property alias" toReformat="true">
+        <variable name="NAME" defaultValue="&quot;name&quot;" alwaysStopAt="true" />
+        <variable name="OTHER" defaultValue="&quot;other&quot;" alwaysStopAt="true" />
+        <context>
+            <option name="JAVA_SCRIPT" value="true" />
+        </context>
+    </template>
+    <template name="comp" value="$NAME$: Ember.computed('$OTHER$', function() {&#10;  return this.get('$OTHER$');&#10;}),$END$" description="Insert computed property" toReformat="true">
+        <variable name="NAME" defaultValue="&quot;name&quot;" alwaysStopAt="true" />
+        <variable name="OTHER" defaultValue="&quot;other&quot;" alwaysStopAt="true" />
+        <context>
+            <option name="JAVA_SCRIPT" value="true" />
+        </context>
+    </template>
+    <template name="compset" value="$NAME$: Ember.computed('$OTHER$', {&#10;  get(/* key */) {&#10;    return this.get('$OTHER$');&#10;  },&#10;  set(key, value) {&#10;    this.set('$OTHER$', value);&#10;    return value;&#10;  }&#10;}),$END$" description="Insert computed property with setter" toReformat="true">
+        <variable name="NAME" defaultValue="&quot;name&quot;" alwaysStopAt="true" />
+        <variable name="OTHER" defaultValue="&quot;other&quot;" alwaysStopAt="true" />
+        <context>
+            <option name="JAVA_SCRIPT" value="true" />
+        </context>
+    </template>
+    <template name="compx" value="$NAME$: Ember.computed.$FUNCTION$('$OTHER$'),$END$" description="Insert computed property method" toReformat="true">
+        <variable name="NAME" defaultValue="&quot;name&quot;" alwaysStopAt="true" />
+        <variable name="FUNCTION" defaultValue="&quot;equal&quot;" alwaysStopAt="true" />
+        <variable name="OTHER" defaultValue="&quot;other&quot;" alwaysStopAt="true" />
+        <context>
+            <option name="JAVA_SCRIPT" value="true" />
+        </context>
+    </template>
+</templateSet>

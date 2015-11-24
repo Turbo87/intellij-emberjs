@@ -20,6 +20,7 @@ Features
 - Enable JSHint using `.jshintrc`
 - Quick navigation via `Navigate → Class...` and `Navigate → Related Symbol...`
   for all major app components
+- Live templates
 
 [more...](doc/features.md)
 

@@ -56,7 +56,7 @@ path parts and appending a type suffix
 
 Example: `app/routes/pets/index.js` will be indexed as `PetsIndexRoute`
 
-  ![Navigate → Class...](goto-class.png)
+![Navigate → Class...](goto-class.png)
 
 
 ### `Navigate → Related Symbol...`
@@ -73,6 +73,22 @@ The following groups of files can be cycled like this:
 - `components`, `templates`
 - `adapters`, `models`, `serializers`
 
+
+Live Templates
+-------------------------------------------------------------------------------
+
+Live templates are snippets with variables that are automatically expanded by
+the editor. For example: if you enter `comp` and press the <kbd>Tab</kbd> key
+it will be expanded into a computed property:
+
+![Live Templates](live-templates.png)
+
+The following live templates are available:
+
+- `alias` – computed property alias
+- `comp` – computed property
+- `compset` – computed property with setter
+- `compx` – computed property method
 
 -------------------------------------------------------------------------------
 
