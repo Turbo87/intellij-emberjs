@@ -20,6 +20,14 @@ class EmberNameTest {
         assertThat(name.displayName).isEqualTo("crate.index route")
     }
 
+    @Test fun testComponentTemplate() {
+        val name = EmberName.from("template:components/table-row")!!
+        assertThat(name.type).isEqualTo("template")
+        assertThat(name.name).isEqualTo("components/table-row")
+        assertThat(name.fullName).isEqualTo("template:components/table-row")
+        assertThat(name.displayName).isEqualTo("table-row component-template")
+    }
+
     @Test fun testInvalidName() {
         val name = EmberName.from("foobar")
         assertThat(name).isNull()

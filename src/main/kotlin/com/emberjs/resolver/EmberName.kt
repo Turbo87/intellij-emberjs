@@ -10,7 +10,12 @@ data class EmberName(val type: String, val name: String) {
         get() = "$type:$name"
 
     val displayName: String
-        get() = "${name.replace('/', '.')} $type"
+        get() {
+            if (type == "template" && name.startsWith("components/")) {
+                return "${name.removePrefix("components/").replace('/', '.')} component-template"
+            }
+            return "${name.replace('/', '.')} $type"
+        }
 
     companion object {
         private val KNOWN_TYPES = EmberFileType.values.filter { it != EmberFileType.COMPONENT_TEMPLATE }
