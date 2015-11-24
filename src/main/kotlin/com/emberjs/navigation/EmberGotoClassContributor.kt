@@ -28,7 +28,7 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
                 // Convert VirtualFile to PsiFile
                 .map {
                     val psiFile = PsiManager.getInstance(project).findFile(it)
-                    Pair(EmberName.from(project.baseDir, it), psiFile)
+                    Pair(EmberName.from(project, it), psiFile)
                 }
                 .filter { it.first != null && it.second != null }
                 // Create delegating NavigationItem with custom Presentation

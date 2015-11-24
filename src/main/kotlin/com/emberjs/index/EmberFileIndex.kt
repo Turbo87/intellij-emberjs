@@ -30,7 +30,7 @@ class EmberFileIndex() :
     override fun map(inputData: FileContent): Map<String, Void> {
         val file = inputData.file
         val project = ProjectLocator.getInstance().guessProjectForFile(file) ?: return mapOf()
-        val name = EmberName.from(project.baseDir, file) ?: return mapOf()
+        val name = EmberName.from(project, file) ?: return mapOf()
 
         return mapOf(Pair(name.displayName, VoidHelper.get()))
     }

@@ -2,6 +2,7 @@ package com.emberjs.resolver
 
 import com.emberjs.EmberFileType
 import com.emberjs.utils.parents
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
 data class EmberName(val type: String, val name: String) {
@@ -27,6 +28,8 @@ data class EmberName(val type: String, val name: String) {
                 else -> null
             }
         }
+
+        fun from(project: Project, file: VirtualFile) = from(project.baseDir, file)
 
         fun from(root: VirtualFile, file: VirtualFile): EmberName? {
             val appFolder = root.findChild("app") ?: return null

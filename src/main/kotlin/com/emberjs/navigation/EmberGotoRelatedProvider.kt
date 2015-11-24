@@ -18,7 +18,7 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
         val psiManager = PsiManager.getInstance(project)
 
         return getFiles(project.baseDir, file)
-                .map { EmberGotoRelatedItem.from(EmberName.from(project.baseDir, it), psiManager.findFile(it)) }
+                .map { EmberGotoRelatedItem.from(EmberName.from(project, it), psiManager.findFile(it)) }
                 .filterNotNull()
     }
 
