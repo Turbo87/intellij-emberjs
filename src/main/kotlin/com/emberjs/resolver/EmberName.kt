@@ -19,8 +19,6 @@ data class EmberName(val type: String, val name: String) {
         }
 
     companion object {
-        private val KNOWN_TYPES = EmberFileType.values
-
         fun from(fullName: String): EmberName? {
             val parts = fullName.split(":")
             return when {
@@ -41,7 +39,7 @@ data class EmberName(val type: String, val name: String) {
         fun fromClassic(appFolder: VirtualFile, file: VirtualFile): EmberName? {
             val typeFolder = file.parents.find { it.parent == appFolder } ?: return null
 
-            return KNOWN_TYPES.find { it.folderName == typeFolder.name }?.let { type ->
+            return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
 
                 var path = file.parents
                         .takeWhile { it != typeFolder }
@@ -56,7 +54,7 @@ data class EmberName(val type: String, val name: String) {
         }
 
         fun fromPod(root: VirtualFile, appFolder: VirtualFile, file: VirtualFile): EmberName? {
-            return KNOWN_TYPES.find { it.fileName == file.name }?.let { type ->
+            return EmberFileType.FILE_NAMES[file.name]?.let { type ->
 
                 var name = file.parents
                         .takeWhile { it != appFolder && it != root }
