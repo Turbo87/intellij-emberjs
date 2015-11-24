@@ -16,8 +16,10 @@ class EmberResolver(val root: VirtualFile) {
             else -> "js"
         }
 
-        return findIf(name.type == "component", "app/components/${name.name}/${name.type}.$fileExtension") ?:
-                findIf(name.type != "component", "app/${name.name}/${name.type}.$fileExtension") ?:
+        val isComponent = (name.type == "component")
+
+        return findIf(isComponent, "app/components/${name.name}/${name.type}.$fileExtension") ?:
+                findIf(!isComponent, "app/${name.name}/${name.type}.$fileExtension") ?:
                 find("app/${name.type}s/${name.name}.$fileExtension")
     }
 
