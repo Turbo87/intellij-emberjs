@@ -18,7 +18,7 @@ data class EmberName(val type: String, val name: String) {
         }
 
     companion object {
-        private val KNOWN_TYPES = EmberFileType.values.filter { it != EmberFileType.COMPONENT_TEMPLATE }
+        private val KNOWN_TYPES = EmberFileType.values
 
         fun from(fullName: String): EmberName? {
             val parts = fullName.split(":")
