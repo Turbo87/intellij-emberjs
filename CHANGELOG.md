@@ -10,7 +10,7 @@ Changelog
 - Quick navigation via `Navigate → Related Symbol...` for all major app components
 - Live templates
 
-  ![Live Templates](live-templates.png)
+  ![Live Templates](doc/live-templates.png)
 
 
 ## v1.1.1
