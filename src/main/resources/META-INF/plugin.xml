@@ -13,7 +13,8 @@
         <li>Marks <code>app</code>, <code>public</code> and <code>tests</code> folders as source, resource and test folders</li>
         <li>Marks <code>node_modules</code> and <code>bower_components</code> as library folders</li>
         <li>Enable JSHint using <code>.jshintrc</code></li>
-        <li>Quick navigation via <code>Navigate → Class...</code> for all major app components</li>
+        <li>Quick navigation via <code>Navigate → Class...</code> and <code>Navigate → Related Symbol...</code>for all major app components</li>
+        <li>Live Templates</li>
       </ul>
     ]]></description>
 
