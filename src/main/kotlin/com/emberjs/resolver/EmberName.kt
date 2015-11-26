@@ -18,6 +18,8 @@ data class EmberName(val type: String, val name: String) {
             return "${name.replace('/', '.')} $type"
         }
 
+    val isTest: Boolean = type.endsWith("-test")
+
     companion object {
         fun from(fullName: String): EmberName? {
             val parts = fullName.split(":")
