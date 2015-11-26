@@ -2,7 +2,6 @@ package com.emberjs.index
 
 import com.emberjs.resolver.EmberName
 import com.emberjs.utils.VoidHelper
-import com.emberjs.utils.parents
 import com.intellij.openapi.project.ProjectLocator
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.*
@@ -19,12 +18,8 @@ class EmberFileIndex() :
     override fun dependsOnFileContent() = false
 
     override fun getInputFilter() = this
-    override fun acceptInput(file: VirtualFile): Boolean {
-        val project = ProjectLocator.getInstance().guessProjectForFile(file) ?: return false
-        val appFolder = project.baseDir.findChild("app") ?: return false
-
-        return (file.extension == "js" || file.extension == "hbs") && file.parents.any { it == appFolder }
-    }
+    override fun acceptInput(file: VirtualFile) =
+            file.extension == "js" || file.extension == "hbs"
 
     override fun getIndexer() = this
     override fun map(inputData: FileContent): Map<String, Void> {
