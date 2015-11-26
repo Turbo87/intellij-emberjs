@@ -45,7 +45,9 @@ class EmberNameTest {
             Pair("app/serializers/crate.js", "serializer:crate"),
             Pair("app/services/session.js", "service:session"),
             Pair("app/templates/application.hbs", "template:application"),
-            Pair("app/templates/components/crate-row.hbs", "template:components/crate-row")
+            Pair("app/templates/components/crate-row.hbs", "template:components/crate-row"),
+            Pair("tests/unit/helpers/format-num-test.js", "helper-test:format-num"),
+            Pair("tests/unit/mixins/pagination-test.js", "mixin-test:pagination")
     ))
 
     @Test fun testExample() = doTest(EXAMPLE, mapOf(
@@ -55,7 +57,12 @@ class EmberNameTest {
             Pair("app/session/service.js", "service:session"),
             Pair("app/application/template.hbs", "template:application"),
             Pair("app/user/adapter.js", "adapter:user"),
-            Pair("app/user/model.js", "model:user")
+            Pair("app/user/model.js", "model:user"),
+            Pair("tests/unit/pet/model-test.js", "model-test:pet"),
+            Pair("tests/unit/pet/serializer-test.js", "serializer-test:pet"),
+            Pair("tests/unit/session/service-test.js", "service-test:session"),
+            Pair("tests/unit/user/adapter-test.js", "adapter-test:user"),
+            Pair("tests/unit/user/model-test.js", "model-test:user")
     ))
 
     @Test fun testAptible() = doTest(APTIBLE, mapOf(
@@ -66,7 +73,15 @@ class EmberNameTest {
             Pair("app/app/vhosts/route.js", "route:app/vhosts"),
             Pair("app/app/vhosts/template.hbs", "template:app/vhosts"),
             Pair("app/components/change-plan/component.js", "component:change-plan"),
-            Pair("app/components/change-plan/template.hbs", "template:components/change-plan")
+            Pair("app/components/change-plan/template.hbs", "template:components/change-plan"),
+            Pair("tests/integration/components/object-select-test.js", "component-integration-test:object-select"),
+            Pair("tests/integration/helpers/eq-test.js", "helper-integration-test:eq"),
+            Pair("tests/unit/claim/route-test.js", "route-test:claim"),
+            Pair("tests/unit/components/login-box-test.js", "component-test:login-box"),
+            Pair("tests/unit/initializers/with-active-class-test.js", "initializer-test:with-active-class"),
+            Pair("tests/unit/routes/index-test.js", "route-test:index"),
+            Pair("tests/unit/routes/databases/index-test.js", "route-test:databases/index")
+
     ))
 
     private fun doTest(root: VirtualFile, tests: Map<String, String?>) {

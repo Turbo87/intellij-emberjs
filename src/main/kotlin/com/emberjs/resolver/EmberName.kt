@@ -30,13 +30,22 @@ data class EmberName(val type: String, val name: String) {
         fun from(project: Project, file: VirtualFile) = from(project.baseDir, file)
 
         fun from(root: VirtualFile, file: VirtualFile): EmberName? {
-            val appFolder = root.findChild("app") ?: return null
+            val appFolder = root.findChild("app")
+            val testsFolder = root.findChild("tests")
+            val unitTestsFolder = testsFolder?.findChild("unit")
+            val integrationTestsFolder = testsFolder?.findChild("integration")
 
             return fromPod(root, appFolder, file) ?:
-                    fromClassic(appFolder, file)
+                    fromPodTest(root, unitTestsFolder, file) ?:
+                    fromPodTest(root, integrationTestsFolder, file) ?:
+                    fromClassic(appFolder, file) ?:
+                    fromClassicTest(unitTestsFolder, file) ?:
+                    fromClassicTest(integrationTestsFolder, file)
         }
 
-        fun fromClassic(appFolder: VirtualFile, file: VirtualFile): EmberName? {
+        fun fromClassic(appFolder: VirtualFile?, file: VirtualFile): EmberName? {
+            appFolder ?: return null;
+
             val typeFolder = file.parents.find { it.parent == appFolder } ?: return null
 
             return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
@@ -53,7 +62,33 @@ data class EmberName(val type: String, val name: String) {
             }
         }
 
-        fun fromPod(root: VirtualFile, appFolder: VirtualFile, file: VirtualFile): EmberName? {
+        fun fromClassicTest(testsFolder: VirtualFile?, file: VirtualFile): EmberName? {
+            testsFolder ?: return null
+
+            val typeFolder = file.parents.find { it.parent == testsFolder } ?: return null
+
+            val testSuffix = when (testsFolder.name) {
+                "unit" -> "-test"
+                else -> "-${testsFolder.name}-test"
+            }
+
+            return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
+
+                var path = file.parents
+                        .takeWhile { it != typeFolder }
+                        .map { it.name }
+                        .reversed()
+                        .joinToString("/")
+
+                val name = "$path/${file.nameWithoutExtension.removeSuffix("-test")}".removePrefix("/")
+
+                EmberName("${type.name.toLowerCase()}${testSuffix}", name)
+            }
+        }
+
+        fun fromPod(root: VirtualFile, appFolder: VirtualFile?, file: VirtualFile): EmberName? {
+            appFolder ?: return null;
+
             return EmberFileType.FILE_NAMES[file.name]?.let { type ->
 
                 var name = file.parents
@@ -69,6 +104,34 @@ data class EmberName(val type: String, val name: String) {
                         }
 
                 EmberName(type.name.toLowerCase(), name)
+            }
+        }
+
+        fun fromPodTest(root: VirtualFile, testsFolder: VirtualFile?, file: VirtualFile): EmberName? {
+            testsFolder ?: return null;
+
+            val fileName = "${file.nameWithoutExtension.removeSuffix("-test")}.${file.extension}"
+
+            val testSuffix = when (testsFolder.name) {
+                "unit" -> "-test"
+                else -> "-${testsFolder.name}-test"
+            }
+
+            return EmberFileType.FILE_NAMES[fileName]?.let { type ->
+
+                var name = file.parents
+                        .takeWhile { it != testsFolder && it != root }
+                        .map { it.name }
+                        .reversed()
+                        .joinToString("/")
+                        .let {
+                            when (type) {
+                                EmberFileType.COMPONENT -> it.removePrefix("components/")
+                                else -> it
+                            }
+                        }
+
+                EmberName("${type.name.toLowerCase()}${testSuffix}", name)
             }
         }
     }
