@@ -12,8 +12,8 @@ import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.ProjectScope
 import com.intellij.util.indexing.FileBasedIndex
+import com.intellij.util.indexing.FindSymbolParameters.searchScopeFor
 
 class EmberGotoClassContributor() : ChooseByNameContributor {
 
@@ -21,7 +21,7 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
             FileBasedIndex.getInstance().getAllKeys(EmberFileIndex.NAME, project).toTypedArray()
 
     override fun getItemsByName(name: String, pattern: String, project: Project, includeNonProjectItems: Boolean) =
-            getItemsByName(name, project, project.getScope(includeNonProjectItems))
+            getItemsByName(name, project, searchScopeFor(project, includeNonProjectItems))
 
     fun getItemsByName(name: String, project: Project, scope: GlobalSearchScope): Array<NavigationItem> {
         // Query file index for the VirtualFile containing the indexed item
@@ -45,13 +45,6 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
 
                     DelegatingNavigationItem(psiFile).withPresentation(presentation)
                 }
-    }
-
-    private fun Project.getScope(includeNonProjectItems: Boolean): GlobalSearchScope {
-        return when {
-            includeNonProjectItems -> ProjectScope.getAllScope(this)
-            else -> ProjectScope.getProjectScope(this)
-        }
     }
 
     companion object {
