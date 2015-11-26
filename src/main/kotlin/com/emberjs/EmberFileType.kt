@@ -5,12 +5,15 @@ enum class EmberFileType(val fileExtension: String = "js") {
     COMPONENT(),
     CONTROLLER(),
     HELPER(),
+    INITIALIZER(),
+    MIXIN(),
     MODEL(),
     ROUTE(),
     SERIALIZER(),
     SERVICE(),
     TEMPLATE("hbs"),
-    TRANSFORM();
+    TRANSFORM(),
+    VIEW();
 
     val fileName = "${name.toLowerCase()}.$fileExtension"
     val folderName = "${name.toLowerCase()}s"
