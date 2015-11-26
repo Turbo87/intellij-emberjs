@@ -7,8 +7,6 @@ import com.intellij.navigation.GotoRelatedItem
 import com.intellij.navigation.GotoRelatedProvider
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.module.ModuleType
-import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
@@ -19,10 +17,7 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
         val project = PlatformDataKeys.PROJECT.getData(context) ?: return listOf()
         val file = PlatformDataKeys.VIRTUAL_FILE.getData(context) ?: return listOf()
 
-        val module = ModuleUtilCore.findModuleForFile(file, project) ?: return listOf()
-
-        if (ModuleType.get(module) !is EmberModuleType)
-            return listOf()
+        val module = EmberModuleType.findModuleForFile(file, project) ?: return listOf()
 
         val psiManager = PsiManager.getInstance(project)
 

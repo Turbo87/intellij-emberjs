@@ -7,8 +7,6 @@ import com.emberjs.resolver.EmberName
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.DelegatingItemPresentation
 import com.intellij.navigation.NavigationItem
-import com.intellij.openapi.module.ModuleType
-import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
@@ -33,11 +31,7 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
     }
 
     private fun convert(file: VirtualFile, project: Project): Collection<NavigationItem> {
-        val module = ModuleUtilCore.findModuleForFile(file, project) ?: return listOf()
-
-        if (ModuleType.get(module) !is EmberModuleType)
-            return listOf()
-
+        val module = EmberModuleType.findModuleForFile(file, project) ?: return listOf()
         val psiFile = PsiManager.getInstance(project).findFile(file) ?: return listOf()
 
         return ModuleRootManager.getInstance(module).contentRoots
