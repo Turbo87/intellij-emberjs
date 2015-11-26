@@ -92,7 +92,6 @@ class EmberNameTest {
             Pair("tests/unit/initializers/with-active-class-test.js", "initializer-test:with-active-class"),
             Pair("tests/unit/routes/index-test.js", "route-test:index"),
             Pair("tests/unit/routes/databases/index-test.js", "route-test:databases/index")
-
     ))
 
     private fun doTest(root: VirtualFile, tests: Map<String, String?>) {

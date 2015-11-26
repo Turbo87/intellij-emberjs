@@ -26,7 +26,9 @@ class EmberResolverTest {
             Pair("service:session", "app/services/session.js"),
             Pair("template:application", "app/templates/application.hbs"),
             Pair("template:crate-row", null),
-            Pair("template:components/crate-row", "app/templates/components/crate-row.hbs")
+            Pair("template:components/crate-row", "app/templates/components/crate-row.hbs"),
+            Pair("helper-test:format-num", "tests/unit/helpers/format-num-test.js"),
+            Pair("mixin-test:pagination", "tests/unit/mixins/pagination-test.js")
     ))
 
     @Test fun testExample() = doTest(EXAMPLE, mapOf(
@@ -37,7 +39,12 @@ class EmberResolverTest {
             Pair("service:session", "app/session/service.js"),
             Pair("template:application", "app/application/template.hbs"),
             Pair("adapter:user", "app/user/adapter.js"),
-            Pair("model:user", "app/user/model.js")
+            Pair("model:user", "app/user/model.js"),
+            Pair("model-test:pet", "tests/unit/pet/model-test.js"),
+            Pair("serializer-test:pet", "tests/unit/pet/serializer-test.js"),
+            Pair("service-test:session", "tests/unit/session/service-test.js"),
+            Pair("adapter-test:user", "tests/unit/user/adapter-test.js"),
+            Pair("model-test:user", "tests/unit/user/model-test.js")
     ))
 
     @Test fun testAptible() = doTest(APTIBLE, mapOf(
@@ -50,7 +57,14 @@ class EmberResolverTest {
             Pair("component:change-plan", "app/components/change-plan/component.js"),
             Pair("component:components/change-plan", null),
             Pair("template:change-plan", null),
-            Pair("template:components/change-plan", "app/components/change-plan/template.hbs")
+            Pair("template:components/change-plan", "app/components/change-plan/template.hbs"),
+            Pair("component-integration-test:object-select", "tests/integration/components/object-select-test.js"),
+            Pair("helper-integration-test:eq", "tests/integration/helpers/eq-test.js"),
+            Pair("route-test:claim", "tests/unit/claim/route-test.js"),
+            Pair("component-test:login-box", "tests/unit/components/login-box-test.js"),
+            Pair("initializer-test:with-active-class", "tests/unit/initializers/with-active-class-test.js"),
+            Pair("route-test:index", "tests/unit/routes/index-test.js"),
+            Pair("route-test:databases/index", "tests/unit/routes/databases/index-test.js")
     ))
 
     private fun doTest(root: VirtualFile, tests: Map<String, String?>) {
