@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.3.0
+
+- `Navigate → Related Symbol...` for tests
+
+
 ## v1.2.0
 
 - Enable JSHint using `.jshintrc`

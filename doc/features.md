@@ -73,6 +73,10 @@ The following groups of files can be cycled like this:
 - `components`, `templates`
 - `adapters`, `models`, `serializers`
 
+The same functionality can also be used to cycle between tests and the tested
+components (i.e. `/app/routes/crate/index.js` and 
+`/tests/unit/routes/crate/index.js`)
+
 
 Live Templates
 -------------------------------------------------------------------------------
