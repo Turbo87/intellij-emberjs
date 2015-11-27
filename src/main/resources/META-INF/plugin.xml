@@ -43,6 +43,8 @@
 
         <testFinder implementation="com.emberjs.navigation.EmberTestFinder"/>
 
+        <iconProvider implementation="com.emberjs.icons.EmberIconProvider" order="first"/>
+
         <defaultLiveTemplatesProvider implementation="com.emberjs.template.EmberLiveTemplatesProvider"/>
     </extensions>
 

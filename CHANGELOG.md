@@ -6,6 +6,7 @@ Changelog
 ## v1.3.0
 
 - `Navigate → Related Symbol...` for tests
+- Show file type icons in project tree view
 - more Live Templates for HTMLBars
 
 

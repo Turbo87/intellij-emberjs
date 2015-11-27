@@ -1,5 +1,6 @@
 package com.emberjs.navigation
 
+import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
 import com.emberjs.index.EmberFileIndex
 import com.emberjs.project.EmberModuleType
@@ -34,6 +35,8 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
         val module = EmberModuleType.findModuleForFile(file, project) ?: return listOf()
         val psiFile = PsiManager.getInstance(project).findFile(file) ?: return listOf()
 
+        val iconProvider = EmberIconProvider()
+
         return ModuleRootManager.getInstance(module).contentRoots
                 .map { EmberName.from(it, file) }
                 .filterNotNull()
@@ -41,7 +44,7 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
                     val presentation = DelegatingItemPresentation(psiFile.presentation)
                             .withPresentableText(it.displayName)
                             .withLocationString(null)
-                            .withIcon(EmberIcons.FILE_TYPE_ICONS[it.type] ?: DEFAULT_ICON)
+                            .withIcon(iconProvider.getIcon(it) ?: DEFAULT_ICON)
 
                     DelegatingNavigationItem(psiFile).withPresentation(presentation)
                 }

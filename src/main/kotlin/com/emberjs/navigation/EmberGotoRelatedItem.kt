@@ -1,5 +1,6 @@
 package com.emberjs.navigation
 
+import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
 import com.emberjs.resolver.EmberName
 import com.intellij.navigation.GotoRelatedItem
@@ -10,7 +11,7 @@ class EmberGotoRelatedItem(val name: EmberName, element: PsiElement) : GotoRelat
 
     override fun getCustomName() = name.displayName
     override fun getCustomContainerName() = ""
-    override fun getCustomIcon() = EmberIcons.FILE_TYPE_ICONS[name.type] ?: EmberIcons.EMPTY_16
+    override fun getCustomIcon() = EmberIconProvider().getIcon(name) ?: EmberIcons.EMPTY_16
 
     companion object {
         fun from(name: EmberName?, psiFile: PsiFile?): EmberGotoRelatedItem? {
