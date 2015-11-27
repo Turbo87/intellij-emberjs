@@ -6,6 +6,7 @@ Changelog
 ## v1.3.0
 
 - `Navigate → Related Symbol...` for tests
+- more Live Templates for HTMLBars
 
 
 ## v1.2.0
