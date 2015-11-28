@@ -69,7 +69,6 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
         // Adjust JavaScript settings for the project
         val configuration = JSRootConfiguration.getInstance(project)
         configuration?.storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
-        configuration?.storePreferStrict(true)
 
         // Enable JSHint
         val jsHint = JSHintConfiguration.getInstance(project)
