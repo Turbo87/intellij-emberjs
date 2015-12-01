@@ -8,6 +8,10 @@ Changelog
 - `Navigate → Related Symbol...` for tests
 - Show file type icons in project tree view
 - more Live Templates for HTMLBars
+- Generate Ember.js files via `ember generate`
+
+![Blueprints Dialog](doc/blueprints-dialog.png)
+
 
 
 ## v1.2.0
@@ -17,7 +21,7 @@ Changelog
 - Quick navigation via `Navigate → Related Symbol...` for all major app components
 - Live templates
 
-  ![Live Templates](doc/live-templates.png)
+![Live Templates](doc/live-templates.png)
 
 
 ## v1.1.1
@@ -29,7 +33,7 @@ Changelog
 
 - Quick navigation via `Navigate → Class...` for all major app components
 
-  ![Navigate → Class...](doc/goto-class.png)
+![Navigate → Class...](doc/goto-class.png)
 
 
 ## v1.0.2

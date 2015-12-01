@@ -78,6 +78,20 @@ components (i.e. `/app/routes/crate/index.js` and
 `/tests/unit/routes/crate/index.js`)
 
 
+Using `ember-cli` from the IDE
+-------------------------------------------------------------------------------
+
+Some of the `ember-cli` commands are exposed right in the IDE for quick access.
+
+### Generating files
+
+The Ember.js plugin can be used to quickly generate files using the `generate`
+command of `ember-cli`. This functionality is available as 
+`File → New → Ember.js Code`.
+
+![Blueprints Dialog](blueprints-dialog.png)
+
+
 Live Templates
 -------------------------------------------------------------------------------
 

@@ -14,6 +14,7 @@
         <li>Marks <code>node_modules</code> and <code>bower_components</code> as library folders</li>
         <li>Enable JSHint using <code>.jshintrc</code></li>
         <li>Quick navigation via <code>Navigate → Class...</code> and <code>Navigate → Related Symbol...</code>for all major app components</li>
+        <li>Generate Ember.js files via <code>ember generate</code></li>
         <li>Live Templates</li>
       </ul>
     ]]></description>
@@ -49,7 +50,9 @@
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <action id="GenerateEmberCode" class="com.emberjs.actions.EmberGenerateCodeAction">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
+        </action>
     </actions>
 
 </idea-plugin>
