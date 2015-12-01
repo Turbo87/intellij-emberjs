@@ -33,14 +33,18 @@ class EmberIconProvider : IconProvider() {
                 .firstOrNull()
     }
 
-    fun getIcon(name: EmberName): Icon? {
-        val typeWithoutSuffix = name.type.removeSuffix("-test").removeSuffix("-integration")
-        val baseIcon = EmberIcons.FILE_TYPE_ICONS[typeWithoutSuffix]
+    fun getIcon(name: EmberName) = getIcon(name.type)
 
-        return when {
-            baseIcon == null -> null
-            name.isTest -> LayeredIcon(baseIcon, AllIcons.Nodes.JunitTestMark)
-            else -> baseIcon
+    companion object {
+        fun getIcon(type: String): Icon? {
+            val typeWithoutSuffix = type.removeSuffix("-test").removeSuffix("-integration")
+            val baseIcon = EmberIcons.FILE_TYPE_ICONS[typeWithoutSuffix]
+
+            return when {
+                baseIcon == null -> null
+                type.endsWith("-test") -> LayeredIcon(baseIcon, AllIcons.Nodes.JunitTestMark)
+                else -> baseIcon
+            }
         }
     }
 }
