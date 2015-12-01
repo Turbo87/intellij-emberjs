@@ -1,9 +1,13 @@
 package com.emberjs.cli
 
+import com.intellij.history.LocalHistory
+import com.intellij.history.LocalHistoryAction
 import com.intellij.ide.IdeView
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationGroup
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.Result
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
@@ -35,29 +39,35 @@ class EmberCliGenerateTask(val module: Module, val template: String, val name: S
         val cli = EmberCli("generate", template, name)
                 .apply { workDirectory = workDir.path }
 
-        indicator.log("Running ember generate $template $name ...")
-        val output = try {
-            cli.run()
-        } catch (e: Exception) {
-            return setNotification(e.message?.trim() ?: "Unknown exception occurred", NotificationType.ERROR)
-        }
+        object : WriteCommandAction<Nothing>(project, title) {
+            override fun run(result: Result<Nothing>) {
+                LocalHistory.getInstance().startAction(commandName).use {
+                    indicator.log("Running ember generate $template $name ...")
+                    val output = try {
+                        cli.run()
+                    } catch (e: Exception) {
+                        return setNotification(e.message?.trim() ?: "Unknown exception occurred", NotificationType.ERROR)
+                    }
 
-        indicator.log("Processing ember-cli output ...")
-        // match "  creates some/file.js" lines
-        val paths = output.lineSequence()
-                .map { (CREATED_REGEX.find(it) ?: ROUTER_REGEX.matchEntire(it))?.groups?.get(1)?.value }
-                .map { if (it == "router") "app/router.js" else it }
-                .filterNotNull()
-                .toList()
+                    indicator.log("Processing ember-cli output ...")
+                    // match "  creates some/file.js" lines
+                    val paths = output.lineSequence()
+                            .map { (CREATED_REGEX.find(it) ?: ROUTER_REGEX.matchEntire(it))?.groups?.get(1)?.value }
+                            .map { if (it == "router") "app/router.js" else it }
+                            .filterNotNull()
+                            .toList()
 
-        indicator.log("ember-cli modified ${paths.size} files")
-        // find file in virtual file system
-        files.addAll(paths
-                .map { LocalFileSystem.getInstance().refreshAndFindFileByPath("${workDir.path}/$it") }
-                .filterNotNull())
+                    indicator.log("ember-cli modified ${paths.size} files")
+                    // find file in virtual file system
+                    files.addAll(paths
+                            .map { LocalFileSystem.getInstance().refreshAndFindFileByPath("${workDir.path}/$it") }
+                            .filterNotNull())
 
-        indicator.log("Refreshing ${files.size} modified files ...")
-        RefreshQueue.getInstance().refresh(true, true, null, *files.toTypedArray())
+                    indicator.log("Refreshing ${files.size} modified files ...")
+                    RefreshQueue.getInstance().refresh(false, true, null, *files.toTypedArray())
+                }
+            }
+        }.execute()
     }
 
     override fun onSuccess() {
@@ -73,6 +83,14 @@ class EmberCliGenerateTask(val module: Module, val template: String, val name: S
 
     private fun ProgressIndicator.log(string: String) {
         text = string
+    }
+
+    private inline fun LocalHistoryAction.use(function: LocalHistoryAction.() -> Unit) {
+        try {
+            function()
+        } finally {
+            finish()
+        }
     }
 
     companion object {
