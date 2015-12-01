@@ -13,7 +13,7 @@ import javax.swing.Icon
 class EmberGenerateCodeDialog(project: Project) : CreateFileFromTemplateDialog(project) {
 
     init {
-        title = "Generate Ember.js Code"
+        title = "Generate Ember.js Files"
         setTemplateKindComponentsVisible(true)
     }
 

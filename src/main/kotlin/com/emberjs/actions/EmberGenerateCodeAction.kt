@@ -6,12 +6,12 @@ import com.emberjs.icons.EmberIcons
 import com.emberjs.utils.getEmberModule
 import com.emberjs.utils.getIdeView
 import com.emberjs.utils.hasEmberModule
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.project.DumbAwareAction
 
 class EmberGenerateCodeAction() :
-        AnAction("Ember.js Code", "Generates new code from blueprints", EmberIcons.ICON_16) {
+        DumbAwareAction("Ember.js Files", "Generates new Ember.js files via ember-cli", EmberIcons.ICON_16) {
 
     override fun actionPerformed(e: AnActionEvent) {
         val module = e.getEmberModule() ?: return
