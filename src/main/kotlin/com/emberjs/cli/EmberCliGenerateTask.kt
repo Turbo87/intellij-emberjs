@@ -45,7 +45,8 @@ class EmberCliGenerateTask(val module: Module, val template: String, val name: S
         indicator.log("Processing ember-cli output ...")
         // match "  creates some/file.js" lines
         val paths = output.lineSequence()
-                .map { CREATED_REGEX.find(it)?.groups?.get(1)?.value }
+                .map { (CREATED_REGEX.find(it) ?: ROUTER_REGEX.matchEntire(it))?.groups?.get(1)?.value }
+                .map { if (it == "router") "app/router.js" else it }
                 .filterNotNull()
                 .toList()
 
@@ -76,6 +77,7 @@ class EmberCliGenerateTask(val module: Module, val template: String, val name: S
 
     companion object {
         private val CREATED_REGEX = Regex("  (?:create|overwrite)\\s+(.+)")
+        private val ROUTER_REGEX = Regex("updating (router)")
 
         val NOTIFICATION_GROUP = NotificationGroup.balloonGroup("ember-cli")
     }
