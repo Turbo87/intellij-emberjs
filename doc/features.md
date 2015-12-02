@@ -85,11 +85,16 @@ statically. The Ember.js plugin implements a best effort reference resolver
 for cases like `DS.belongsTo('user')`, where <kbd>ctrl</kbd>-clicking the
 `'user'` literal will navigate directly to the `user` model if it exists.
 
+![Reference Resolving](references.png)
+
+The same functionality also provides basic code completion via 
+<kbd>ctrl</kbd> + <kbd>space</kbd>:
+
+![Completion](doc/completion.png)
+
 Have a look at the 
 [`EmberReferenceContributor`](../src/main/kotlin/com/emberjs/psi/EmberReferenceContributor.kt) 
 class to check for which methods this functionality is available.
-
-![Reference Resolving](references.png)
 
 
 Using `ember-cli` from the IDE

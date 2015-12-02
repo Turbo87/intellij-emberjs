@@ -8,9 +8,11 @@ Changelog
 - `Navigate → Related Symbol...` for tests
 - Show file type icons in project tree view
 - more Live Templates for HTMLBars
-- Basic reference resolving for e.g. `DS.belongsTo('user')`
+- Basic reference resolving and completion for e.g. `DS.belongsTo('user')`
 
 ![Reference Resolving](doc/references.png)
+
+![Completion](doc/completion.png)
 
 - Generate Ember.js files via `ember generate`
 

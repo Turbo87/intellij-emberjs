@@ -1,7 +1,13 @@
 package com.emberjs.psi
 
+import com.emberjs.icons.EmberIconProvider
+import com.emberjs.icons.EmberIcons
+import com.emberjs.index.EmberNameIndex
+import com.emberjs.resolver.EmberName
 import com.emberjs.resolver.EmberResolver
 import com.emberjs.utils.emberModule
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.javascript.psi.JSLiteralExpression
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.psi.PsiElement
@@ -9,6 +15,9 @@ import com.intellij.psi.PsiElementResolveResult.createResults
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.CommonProcessors
+import com.intellij.util.indexing.FileBasedIndex
 
 class EmberReference(element: JSLiteralExpression, val types: Iterable<String>) :
         PsiPolyVariantReferenceBase<JSLiteralExpression>(element, true) {
@@ -51,6 +60,23 @@ class EmberReference(element: JSLiteralExpression, val types: Iterable<String>) 
                 .toList()
     }
 
-    override fun getVariants(): Array<out Any> = arrayOf()
+    override fun getVariants(): Array<out Any> {
+        val scope = GlobalSearchScope.projectScope(project)
 
+        val keys = arrayListOf<EmberName>()
+        val processor = CommonProcessors.CollectProcessor(keys)
+
+        FileBasedIndex.getInstance().processAllKeys(EmberNameIndex.NAME, processor, scope, null)
+
+        return keys.filter { it.type == types.firstOrNull() }
+                .map { it.toLookupElement() }
+                .toTypedArray()
+    }
+
+    private fun EmberName.toLookupElement(): LookupElement {
+        return LookupElementBuilder.create(name.replace("/", "."))
+                .withTypeText(type)
+                .withIcon(EmberIconProvider.getIcon(type) ?: EmberIcons.EMPTY_16)
+                .withCaseSensitivity(true)
+    }
 }
