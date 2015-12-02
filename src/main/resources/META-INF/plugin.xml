@@ -40,6 +40,7 @@
         <projectStructureDetector implementation="com.emberjs.project.EmberProjectStructureDetector"/>
 
         <fileBasedIndex implementation="com.emberjs.index.EmberClassIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberNameIndex"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
         <gotoRelatedProvider implementation="com.emberjs.navigation.EmberGotoRelatedProvider"/>
 
