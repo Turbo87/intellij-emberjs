@@ -1,8 +1,8 @@
 package com.emberjs.navigation
 
-import com.emberjs.project.EmberModuleType
 import com.emberjs.resolver.EmberName
 import com.emberjs.resolver.EmberResolver
+import com.emberjs.utils.getEmberModule
 import com.intellij.navigation.GotoRelatedItem
 import com.intellij.navigation.GotoRelatedProvider
 import com.intellij.openapi.actionSystem.DataContext
@@ -17,7 +17,7 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
         val project = PlatformDataKeys.PROJECT.getData(context) ?: return listOf()
         val file = PlatformDataKeys.VIRTUAL_FILE.getData(context) ?: return listOf()
 
-        val module = EmberModuleType.findModuleForFile(file, project) ?: return listOf()
+        val module = file.getEmberModule(project) ?: return listOf()
 
         val psiManager = PsiManager.getInstance(project)
 

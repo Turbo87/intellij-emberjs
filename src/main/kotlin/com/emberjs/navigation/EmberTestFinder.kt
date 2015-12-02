@@ -1,9 +1,9 @@
 package com.emberjs.navigation
 
-import com.emberjs.project.EmberModuleType
 import com.emberjs.resolver.EmberName
 import com.emberjs.resolver.EmberResolver
-import com.intellij.openapi.project.ProjectLocator
+import com.emberjs.utils.getEmberModule
+import com.emberjs.utils.guessProject
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -19,8 +19,8 @@ class EmberTestFinder : TestFinder {
     override fun findTestsForClass(element: PsiElement): Collection<PsiElement> {
         val file = element.containingFile.virtualFile
 
-        val project = ProjectLocator.getInstance().guessProjectForFile(file) ?: return emptyList()
-        val module = EmberModuleType.findModuleForFile(file, project) ?: return emptyList()
+        val project = file.guessProject() ?: return emptyList()
+        val module = file.getEmberModule(project) ?: return emptyList()
 
         val psiManager = PsiManager.getInstance(project)
 
@@ -42,8 +42,8 @@ class EmberTestFinder : TestFinder {
     override fun findClassesForTest(element: PsiElement): Collection<PsiElement> {
         val file = element.containingFile.virtualFile
 
-        val project = ProjectLocator.getInstance().guessProjectForFile(file) ?: return emptyList()
-        val module = EmberModuleType.findModuleForFile(file, project) ?: return emptyList()
+        val project = file.guessProject() ?: return emptyList()
+        val module = file.getEmberModule(project) ?: return emptyList()
 
         val psiManager = PsiManager.getInstance(project)
 
@@ -64,8 +64,8 @@ class EmberTestFinder : TestFinder {
     override fun isTest(element: PsiElement): Boolean {
         val file = element.containingFile.virtualFile
 
-        val project = ProjectLocator.getInstance().guessProjectForFile(file) ?: return false
-        val module = EmberModuleType.findModuleForFile(file, project) ?: return false
+        val project = file.guessProject() ?: return false
+        val module = file.getEmberModule(project) ?: return false
 
         return ModuleRootManager.getInstance(module).contentRoots
                 .map { EmberName.from(it, file) }

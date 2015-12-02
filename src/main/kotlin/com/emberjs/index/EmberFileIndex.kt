@@ -1,8 +1,8 @@
 package com.emberjs.index
 
-import com.emberjs.project.EmberModuleType
 import com.emberjs.resolver.EmberName
-import com.intellij.openapi.project.ProjectLocator
+import com.emberjs.utils.getEmberModule
+import com.emberjs.utils.guessProject
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.*
@@ -25,8 +25,8 @@ class EmberFileIndex() :
     override fun getIndexer() = this
     override fun map(inputData: FileContent): Map<String, Void?> {
         val file = inputData.file
-        val project = ProjectLocator.getInstance().guessProjectForFile(file) ?: return mapOf()
-        val module = EmberModuleType.findModuleForFile(file, project) ?: return mapOf()
+        val project = file.guessProject() ?: return mapOf()
+        val module = file.getEmberModule(project) ?: return mapOf()
 
         return ModuleRootManager.getInstance(module).contentRoots
                 .map { EmberName.from(it, file) }

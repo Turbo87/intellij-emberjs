@@ -1,18 +1,17 @@
 package com.emberjs.icons
 
-import com.emberjs.project.EmberModuleType
 import com.emberjs.resolver.EmberName
+import com.emberjs.utils.getEmberModule
+import com.emberjs.utils.guessProject
 import com.intellij.icons.AllIcons
 import com.intellij.ide.IconProvider
-import com.intellij.openapi.project.ProjectLocator
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Iconable
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.LayeredIcon
-
-import javax.swing.*
+import javax.swing.Icon
 
 class EmberIconProvider : IconProvider() {
 
@@ -24,8 +23,8 @@ class EmberIconProvider : IconProvider() {
         if (file.extension != "js" && file.extension != "hbs")
             return null
 
-        val project = ProjectLocator.getInstance().guessProjectForFile(file) ?: return null
-        val module = EmberModuleType.findModuleForFile(file, project) ?: return null
+        val project = file.guessProject() ?: return null
+        val module = file.getEmberModule(project) ?: return null
 
         return ModuleRootManager.getInstance(module).contentRoots
                 .map { root -> EmberName.from(root, file)?.let { getIcon(it) } }

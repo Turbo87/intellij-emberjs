@@ -3,8 +3,8 @@ package com.emberjs.navigation
 import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
 import com.emberjs.index.EmberFileIndex
-import com.emberjs.project.EmberModuleType
 import com.emberjs.resolver.EmberName
+import com.emberjs.utils.getEmberModule
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.DelegatingItemPresentation
 import com.intellij.navigation.NavigationItem
@@ -32,7 +32,7 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
     }
 
     private fun convert(file: VirtualFile, project: Project): Collection<NavigationItem> {
-        val module = EmberModuleType.findModuleForFile(file, project) ?: return listOf()
+        val module = file.getEmberModule(project) ?: return listOf()
         val psiFile = PsiManager.getInstance(project).findFile(file) ?: return listOf()
 
         val iconProvider = EmberIconProvider()
