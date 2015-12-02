@@ -39,7 +39,7 @@
         <moduleBuilder builderClass="com.emberjs.project.EmberModuleBuilder"/>
         <projectStructureDetector implementation="com.emberjs.project.EmberProjectStructureDetector"/>
 
-        <fileBasedIndex implementation="com.emberjs.index.EmberFileIndex"/>
+        <fileBasedIndex implementation="com.emberjs.index.EmberClassIndex"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
         <gotoRelatedProvider implementation="com.emberjs.navigation.EmberGotoRelatedProvider"/>
 

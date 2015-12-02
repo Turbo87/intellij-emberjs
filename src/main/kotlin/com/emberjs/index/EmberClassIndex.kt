@@ -8,13 +8,13 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 
-class EmberFileIndex() :
+class EmberClassIndex() :
         ScalarIndexExtension<String>(),
         FileBasedIndex.InputFilter,
         DataIndexer<String, Void?, FileContent> {
 
     override fun getName() = NAME
-    override fun getVersion() = 2
+    override fun getVersion() = 1
     override fun getKeyDescriptor() = KEY_DESCRIPTIOR
     override fun dependsOnFileContent() = false
 
@@ -35,7 +35,7 @@ class EmberFileIndex() :
     }
 
     companion object {
-        val NAME: ID<String, Void> = ID.create("ember.files")
+        val NAME: ID<String, Void> = ID.create("ember.classes")
         val KEY_DESCRIPTIOR = EnumeratorStringDescriptor()
     }
 }

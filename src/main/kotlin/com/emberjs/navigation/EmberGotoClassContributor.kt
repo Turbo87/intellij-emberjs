@@ -2,7 +2,7 @@ package com.emberjs.navigation
 
 import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
-import com.emberjs.index.EmberFileIndex
+import com.emberjs.index.EmberClassIndex
 import com.emberjs.resolver.EmberName
 import com.emberjs.utils.getEmberModule
 import com.intellij.navigation.ChooseByNameContributor
@@ -19,14 +19,14 @@ import com.intellij.util.indexing.FindSymbolParameters.searchScopeFor
 class EmberGotoClassContributor() : ChooseByNameContributor {
 
     override fun getNames(project: Project, includeNonProjectItems: Boolean) =
-            FileBasedIndex.getInstance().getAllKeys(EmberFileIndex.NAME, project).toTypedArray()
+            FileBasedIndex.getInstance().getAllKeys(EmberClassIndex.NAME, project).toTypedArray()
 
     override fun getItemsByName(name: String, pattern: String, project: Project, includeNonProjectItems: Boolean) =
             getItemsByName(name, project, searchScopeFor(project, includeNonProjectItems))
 
     fun getItemsByName(name: String, project: Project, scope: GlobalSearchScope): Array<NavigationItem> {
         // Query file index for the VirtualFile containing the indexed item
-        return FileBasedIndex.getInstance().getContainingFiles(EmberFileIndex.NAME, name, scope)
+        return FileBasedIndex.getInstance().getContainingFiles(EmberClassIndex.NAME, name, scope)
                 .flatMap { convert(it, project) }
                 .toTypedArray()
     }
