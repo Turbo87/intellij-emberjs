@@ -11,7 +11,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 
 class EmberReference(element: JSLiteralExpression, val types: Iterable<String>) :
-        PsiPolyVariantReferenceBase<JSLiteralExpression>(element) {
+        PsiPolyVariantReferenceBase<JSLiteralExpression>(element, true) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         val value = element.value
@@ -53,5 +53,4 @@ class EmberReference(element: JSLiteralExpression, val types: Iterable<String>) 
 
     override fun getVariants(): Array<out Any> = arrayOf()
 
-    override fun isSoft() = true
 }
