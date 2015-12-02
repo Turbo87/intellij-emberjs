@@ -4,6 +4,7 @@ import com.emberjs.resolver.EmberName
 import com.emberjs.resolver.EmberResolver
 import com.emberjs.utils.getEmberModule
 import com.emberjs.utils.guessProject
+import com.emberjs.utils.originalVirtualFile
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -17,7 +18,7 @@ class EmberTestFinder : TestFinder {
     }
 
     override fun findTestsForClass(element: PsiElement): Collection<PsiElement> {
-        val file = element.containingFile.virtualFile
+        val file = element.originalVirtualFile
 
         val project = file.guessProject() ?: return emptyList()
         val module = file.getEmberModule(project) ?: return emptyList()
@@ -40,7 +41,7 @@ class EmberTestFinder : TestFinder {
     }
 
     override fun findClassesForTest(element: PsiElement): Collection<PsiElement> {
-        val file = element.containingFile.virtualFile
+        val file = element.originalVirtualFile
 
         val project = file.guessProject() ?: return emptyList()
         val module = file.getEmberModule(project) ?: return emptyList()
@@ -62,7 +63,7 @@ class EmberTestFinder : TestFinder {
     }
 
     override fun isTest(element: PsiElement): Boolean {
-        val file = element.containingFile.virtualFile
+        val file = element.originalVirtualFile
 
         val project = file.guessProject() ?: return false
         val module = file.getEmberModule(project) ?: return false

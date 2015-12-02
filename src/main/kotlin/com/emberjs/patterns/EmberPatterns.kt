@@ -2,6 +2,7 @@ package com.emberjs.patterns
 
 import com.emberjs.resolver.EmberName
 import com.emberjs.utils.emberModule
+import com.emberjs.utils.originalVirtualFile
 import com.intellij.lang.javascript.patterns.JSElementPattern
 import com.intellij.lang.javascript.patterns.JSPatterns.jsArgument
 import com.intellij.lang.javascript.psi.JSLiteralExpression
@@ -31,7 +32,7 @@ object EmberPatterns {
                 if (o !is PsiElement)
                     return false
 
-                val file = o.containingFile?.virtualFile ?: return false
+                val file = o.originalVirtualFile
                 val module = o.emberModule ?: return false
 
                 return ModuleRootManager.getInstance(module).contentRoots
