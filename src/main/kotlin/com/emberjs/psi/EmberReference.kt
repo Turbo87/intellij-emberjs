@@ -13,6 +13,8 @@ import com.intellij.psi.ResolveResult
 class EmberReference(element: JSLiteralExpression, val types: Iterable<String>) :
         PsiPolyVariantReferenceBase<JSLiteralExpression>(element, true) {
 
+    val project = element.project
+
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         val value = element.value
         if (value !is String)
@@ -24,7 +26,7 @@ class EmberReference(element: JSLiteralExpression, val types: Iterable<String>) 
     private fun resolve(value: String): Collection<PsiElement> {
         val module = element.emberModule ?: return listOf()
 
-        val psiProject = PsiManager.getInstance(element.project)
+        val psiProject = PsiManager.getInstance(project)
         val contentRoots = ModuleRootManager.getInstance(module).contentRoots.asSequence()
 
         // Iterate over types that we are looking for (e.g. "model" and "adapter")
