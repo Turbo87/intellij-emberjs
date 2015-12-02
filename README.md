@@ -21,6 +21,7 @@ Features
 - Quick navigation via `Navigate → Class...` and `Navigate → Related Symbol...`
   for all major app components
 - Generate Ember.js files via `ember generate`
+- Basic reference resolving for e.g. `DS.belongsTo('user')`
 - Live templates
 
 [more...](doc/features.md)
