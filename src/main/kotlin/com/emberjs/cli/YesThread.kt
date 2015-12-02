@@ -1,11 +1,13 @@
 package com.emberjs.cli
 
-class YesThread(private val process: Process) : Thread("yes") {
+import com.intellij.execution.process.ProcessHandler
+
+class YesThread(private val handler: ProcessHandler) : Thread("yes") {
 
     override fun run() {
-        val writer = process.outputStream.writer()
+        val writer = handler.processInput!!.writer()
 
-        while (process.isAlive && !Thread.interrupted()) {
+        while (!handler.isProcessTerminated && !Thread.interrupted()) {
             writer.apply {
                 write("y\n")
                 flush()
