@@ -26,7 +26,7 @@ class EmberReference(element: JSLiteralExpression, val types: Iterable<String>) 
     private fun resolve(value: String): Collection<PsiElement> {
         val module = element.emberModule ?: return listOf()
 
-        val psiProject = PsiManager.getInstance(project)
+        val psiManager = PsiManager.getInstance(project)
         val contentRoots = ModuleRootManager.getInstance(module).contentRoots.asSequence()
 
         // Iterate over types that we are looking for (e.g. "model" and "adapter")
@@ -40,15 +40,13 @@ class EmberReference(element: JSLiteralExpression, val types: Iterable<String>) 
                         // Look for type with matching name in module content root
                         sequenceOf(value, value.removeSuffix("s"))
                                 .map { resolver.resolve("$type:$it") }
+                                .distinct()
                     }
                 }
-
-                // Remove duplicates
-                .distinct()
                 .filterNotNull()
 
                 // Convert VirtualFile to PsiFile
-                .map { psiProject.findFile(it) }
+                .map { psiManager.findFile(it) }
                 .filterNotNull()
                 .toList()
     }
