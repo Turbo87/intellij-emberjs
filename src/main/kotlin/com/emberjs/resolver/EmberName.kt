@@ -29,8 +29,6 @@ data class EmberName(val type: String, val name: String) {
             }
         }
 
-        fun from(project: Project, file: VirtualFile) = from(project.baseDir, file)
-
         fun from(root: VirtualFile, file: VirtualFile): EmberName? {
             val appFolder = root.findChild("app")
             val testsFolder = root.findChild("tests")
