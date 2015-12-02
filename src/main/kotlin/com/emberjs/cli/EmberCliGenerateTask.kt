@@ -39,9 +39,7 @@ class EmberCliGenerateTask(val module: Module, val template: String, val name: S
         val cli = EmberCli("generate", template, name)
                 .apply { workDirectory = workDir.path }
 
-        object : WriteCommandAction<Nothing>(project, title) {
-            override fun run(result: Result<Nothing>) {
-                LocalHistory.getInstance().startAction(commandName).use {
+                LocalHistory.getInstance().startAction(title).use {
                     indicator.log("Running ember generate $template $name ...")
                     val output = try {
                         cli.run()
@@ -66,8 +64,6 @@ class EmberCliGenerateTask(val module: Module, val template: String, val name: S
                     indicator.log("Refreshing ${files.size} modified files ...")
                     RefreshQueue.getInstance().refresh(false, true, null, *files.toTypedArray())
                 }
-            }
-        }.execute()
     }
 
     override fun onSuccess() {
