@@ -2,7 +2,7 @@ package com.emberjs.resolver
 
 import com.emberjs.EmberFileType
 import com.emberjs.utils.parents
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VfsUtilCore.isAncestor
 import com.intellij.openapi.vfs.VirtualFile
 
 data class EmberName(val type: String, val name: String) {
@@ -35,9 +35,9 @@ data class EmberName(val type: String, val name: String) {
             val unitTestsFolder = testsFolder?.findChild("unit")
             val integrationTestsFolder = testsFolder?.findChild("integration")
 
-            return fromPod(root, appFolder, file) ?:
-                    fromPodTest(root, unitTestsFolder, file) ?:
-                    fromPodTest(root, integrationTestsFolder, file) ?:
+            return fromPod(appFolder, file) ?:
+                    fromPodTest(unitTestsFolder, file) ?:
+                    fromPodTest(integrationTestsFolder, file) ?:
                     fromClassic(appFolder, file) ?:
                     fromClassicTest(unitTestsFolder, file) ?:
                     fromClassicTest(integrationTestsFolder, file)
@@ -86,13 +86,15 @@ data class EmberName(val type: String, val name: String) {
             }
         }
 
-        fun fromPod(root: VirtualFile, appFolder: VirtualFile?, file: VirtualFile): EmberName? {
+        fun fromPod(appFolder: VirtualFile?, file: VirtualFile): EmberName? {
             appFolder ?: return null;
+
+            if (!isAncestor(appFolder, file, true))
+                return null
 
             return EmberFileType.FILE_NAMES[file.name]?.let { type ->
 
-                var name = file.parents
-                        .takeWhile { it != appFolder && it != root }
+                file.parents.takeWhile { it != appFolder }
                         .map { it.name }
                         .reversed()
                         .joinToString("/")
@@ -102,13 +104,15 @@ data class EmberName(val type: String, val name: String) {
                                 else -> it
                             }
                         }
-
-                EmberName(type.name.toLowerCase(), name)
+                        .let { EmberName(type.name.toLowerCase(), it) }
             }
         }
 
-        fun fromPodTest(root: VirtualFile, testsFolder: VirtualFile?, file: VirtualFile): EmberName? {
+        fun fromPodTest(testsFolder: VirtualFile?, file: VirtualFile): EmberName? {
             testsFolder ?: return null;
+
+            if (!isAncestor(testsFolder, file, true))
+                return null
 
             val fileName = "${file.nameWithoutExtension.removeSuffix("-test")}.${file.extension}"
 
@@ -120,7 +124,7 @@ data class EmberName(val type: String, val name: String) {
             return EmberFileType.FILE_NAMES[fileName]?.let { type ->
 
                 var name = file.parents
-                        .takeWhile { it != testsFolder && it != root }
+                        .takeWhile { it != testsFolder }
                         .map { it.name }
                         .reversed()
                         .joinToString("/")

@@ -62,6 +62,7 @@ class EmberNameTest {
     ))
 
     @Test fun testExample() = doTest(EXAMPLE, mapOf(
+            Pair("app/app.js", null),
             Pair("app/application/adapter.js", "adapter:application"),
             Pair("app/pet/model.js", "model:pet"),
             Pair("app/pet/serializer.js", "serializer:pet"),
@@ -69,6 +70,7 @@ class EmberNameTest {
             Pair("app/application/template.hbs", "template:application"),
             Pair("app/user/adapter.js", "adapter:user"),
             Pair("app/user/model.js", "model:user"),
+            Pair("foo/controller.js", null),
             Pair("tests/unit/pet/model-test.js", "model-test:pet"),
             Pair("tests/unit/pet/serializer-test.js", "serializer-test:pet"),
             Pair("tests/unit/session/service-test.js", "service-test:session"),
