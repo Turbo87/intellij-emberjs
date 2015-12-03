@@ -1,0 +1,10 @@
+version: "{branch} {build}"
+
+install:
+  - git submodule update --init --recursive
+
+build_script:
+  - gradlew.bat assemble
+
+test_script:
+  - gradlew.bat check
