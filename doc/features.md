@@ -90,7 +90,7 @@ for cases like `DS.belongsTo('user')`, where <kbd>ctrl</kbd>-clicking the
 The same functionality also provides basic code completion via 
 <kbd>ctrl</kbd> + <kbd>space</kbd>:
 
-![Completion](doc/completion.png)
+![Completion](completion.png)
 
 Have a look at the 
 [`EmberReferenceContributor`](../src/main/kotlin/com/emberjs/psi/EmberReferenceContributor.kt) 
