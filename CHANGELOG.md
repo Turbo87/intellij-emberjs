@@ -9,6 +9,9 @@ Changelog
 - Show file type icons in project tree view
 - more Live Templates for HTMLBars
 - Basic reference resolving for e.g. `DS.belongsTo('user')`
+
+![Reference Resolving](doc/references.png)
+
 - Generate Ember.js files via `ember generate`
 
 ![Blueprints Dialog](doc/blueprints-dialog.png)

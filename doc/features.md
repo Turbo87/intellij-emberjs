@@ -89,6 +89,8 @@ Have a look at the
 [`EmberReferenceContributor`](../src/main/kotlin/com/emberjs/psi/EmberReferenceContributor.kt) 
 class to check for which methods this functionality is available.
 
+![Reference Resolving](references.png)
+
 
 Using `ember-cli` from the IDE
 -------------------------------------------------------------------------------
