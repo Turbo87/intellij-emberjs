@@ -46,7 +46,7 @@
 
         <testFinder implementation="com.emberjs.navigation.EmberTestFinder"/>
 
-        <psi.referenceContributor language="JavaScript" implementation="com.emberjs.psi.EmberReferenceContributor"/>
+        <psi.referenceContributor language="JavaScript" implementation="com.emberjs.psi.EmberJSReferenceContributor"/>
 
         <iconProvider implementation="com.emberjs.icons.EmberIconProvider" order="first"/>
 

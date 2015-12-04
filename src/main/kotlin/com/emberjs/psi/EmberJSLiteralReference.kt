@@ -19,7 +19,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.CommonProcessors
 import com.intellij.util.indexing.FileBasedIndex
 
-class EmberReference(element: JSLiteralExpression, val types: Iterable<String>) :
+class EmberJSLiteralReference(element: JSLiteralExpression, val types: Iterable<String>) :
         PsiPolyVariantReferenceBase<JSLiteralExpression>(element, true) {
 
     val project = element.project
