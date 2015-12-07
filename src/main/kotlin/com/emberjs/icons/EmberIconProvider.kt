@@ -1,12 +1,12 @@
 package com.emberjs.icons
 
+import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
-import com.emberjs.utils.getEmberModule
 import com.emberjs.utils.guessProject
 import com.intellij.icons.AllIcons
 import com.intellij.ide.IconProvider
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Iconable
+import com.intellij.openapi.vfs.VfsUtil.isAncestor
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -24,9 +24,9 @@ class EmberIconProvider : IconProvider() {
             return null
 
         val project = file.guessProject() ?: return null
-        val module = file.getEmberModule(project) ?: return null
+        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return null
 
-        return ModuleRootManager.getInstance(module).contentRoots
+        return roots.filter { isAncestor(it, file, true) }
                 .map { root -> EmberName.from(root, file)?.let { getIcon(it) } }
                 .filterNotNull()
                 .firstOrNull()
