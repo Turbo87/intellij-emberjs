@@ -34,6 +34,13 @@
     <depends>JavaScript</depends>
     <depends optional="true">com.dmarcotte.handlebars</depends>
 
+    <project-components>
+        <component>
+            <implementation-class>com.emberjs.project.EmberProjectComponent</implementation-class>
+            <skipForDefaultProject/>
+        </component>
+    </project-components>
+
     <extensions defaultExtensionNs="com.intellij">
         <moduleType id="EMBER_MODULE" implementationClass="com.emberjs.project.EmberModuleType"/>
         <moduleBuilder builderClass="com.emberjs.project.EmberModuleBuilder"/>

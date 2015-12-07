@@ -5,7 +5,9 @@ import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.module.ModuleUtilCore.findModuleForFile
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectLocator
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileVisitor
 
 val VirtualFile.parents: Iterable<VirtualFile>
     get() = object : Iterable<VirtualFile> {
@@ -28,3 +30,6 @@ fun VirtualFile.getModule(project: Project) = findModuleForFile(this, project)
 
 fun VirtualFile.getEmberModule(project: Project) =
         getModule(project)?.let { if (ModuleType.get(it) is EmberModuleType) it else null }
+
+fun VirtualFile.visitChildrenRecursively(visitor: VirtualFileVisitor<Any>) =
+        VfsUtil.visitChildrenRecursively(this, visitor)
