@@ -7,11 +7,7 @@ import com.intellij.ide.util.projectWizard.importSources.DetectedProjectRoot
 import com.intellij.ide.util.projectWizard.importSources.DetectedSourceRoot
 import com.intellij.ide.util.projectWizard.importSources.ProjectFromSourcesBuilder
 import com.intellij.ide.util.projectWizard.importSources.ProjectStructureDetector
-import com.intellij.lang.javascript.dialects.JSLanguageLevel
 import com.intellij.lang.javascript.library.JSLibraryManager
-import com.intellij.lang.javascript.linter.jshint.JSHintConfiguration
-import com.intellij.lang.javascript.linter.jshint.JSHintState
-import com.intellij.lang.javascript.settings.JSRootConfiguration
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -74,15 +70,6 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
     }
 
     private fun setupProject(project: Project) {
-        // Adjust JavaScript settings for the project
-        val configuration = JSRootConfiguration.getInstance(project)
-        configuration?.storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
-
-        // Enable JSHint
-        val jsHint = JSHintConfiguration.getInstance(project)
-        val jsHintState = JSHintState.Builder(jsHint.extendedState.state).setConfigFileUsed(true).build()
-        jsHint.setExtendedState(true, jsHintState)
-
         // Add node_modules and bower_components as library folders
         ApplicationManager.getApplication().invokeLater {
             ApplicationManager.getApplication().runWriteAction {

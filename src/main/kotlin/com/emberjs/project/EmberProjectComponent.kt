@@ -1,6 +1,10 @@
 package com.emberjs.project
 
 import com.emberjs.utils.visitChildrenRecursively
+import com.intellij.lang.javascript.dialects.JSLanguageLevel
+import com.intellij.lang.javascript.linter.jshint.JSHintConfiguration
+import com.intellij.lang.javascript.linter.jshint.JSHintState
+import com.intellij.lang.javascript.settings.JSRootConfiguration
 import com.intellij.openapi.components.AbstractProjectComponent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -34,6 +38,21 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
                 }
             }
         })
+
+        if (roots.isNotEmpty()) {
+            setupProject(project)
+        }
+    }
+
+    private fun setupProject(project: Project) {
+        // Adjust JavaScript settings for the project
+        val configuration = JSRootConfiguration.getInstance(project)
+        configuration?.storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
+
+        // Enable JSHint
+        val jsHint = JSHintConfiguration.getInstance(project)
+        val jsHintState = JSHintState.Builder(jsHint.extendedState.state).setConfigFileUsed(true).build()
+        jsHint.setExtendedState(true, jsHintState)
     }
 
     companion object {
