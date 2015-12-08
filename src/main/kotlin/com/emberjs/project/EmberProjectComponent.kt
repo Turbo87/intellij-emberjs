@@ -46,13 +46,16 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
 
     private fun setupProject(project: Project) {
         // Adjust JavaScript settings for the project
-        val configuration = JSRootConfiguration.getInstance(project)
-        configuration?.storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
+        JSRootConfiguration.getInstance(project)?.apply {
+            storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
+        }
 
         // Enable JSHint
-        val jsHint = JSHintConfiguration.getInstance(project)
-        val jsHintState = JSHintState.Builder(jsHint.extendedState.state).setConfigFileUsed(true).build()
-        jsHint.setExtendedState(true, jsHintState)
+        JSHintConfiguration.getInstance(project).apply {
+            setExtendedState(true, JSHintState.Builder(extendedState.state)
+                    .setConfigFileUsed(true)
+                    .build())
+        }
     }
 
     companion object {
