@@ -1,5 +1,6 @@
 package com.emberjs.cli
 
+import com.emberjs.utils.waitFor
 import com.intellij.execution.configurations.GeneralCommandLine
 import java.io.BufferedReader
 import java.util.concurrent.TimeUnit
@@ -18,7 +19,7 @@ class EmberCli(vararg val parameters: String) {
         YesThread(process).start()
 
         if (!process.waitFor(10, TimeUnit.SECONDS)) {
-            process.destroyForcibly()
+            process.destroy()
             throw Exception("Process timed out. Please try again on the command line.")
         }
 
