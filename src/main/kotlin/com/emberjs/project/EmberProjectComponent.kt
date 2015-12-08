@@ -2,13 +2,17 @@ package com.emberjs.project
 
 import com.emberjs.utils.visitChildrenRecursively
 import com.intellij.lang.javascript.dialects.JSLanguageLevel
+import com.intellij.lang.javascript.library.JSLibraryManager
 import com.intellij.lang.javascript.linter.jshint.JSHintConfiguration
 import com.intellij.lang.javascript.linter.jshint.JSHintState
 import com.intellij.lang.javascript.settings.JSRootConfiguration
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.AbstractProjectComponent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
+import com.intellij.webcore.ScriptingFrameworkDescriptor
+import com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.PROJECT
 
 /**
  * This class is responsible for looking for folders with an `app/app.js` file on project load
@@ -41,6 +45,16 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
 
         if (roots.isNotEmpty()) {
             setupProject(project)
+
+            // Add node_modules and bower_components as library folders
+            ApplicationManager.getApplication().invokeLater {
+                ApplicationManager.getApplication().runWriteAction {
+                    roots.forEach {
+                        createLibrary("node_modules", project, it)
+                        createLibrary("bower_components", project, it)
+                    }
+                }
+            }
         }
     }
 
@@ -55,6 +69,25 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
             setExtendedState(true, JSHintState.Builder(extendedState.state)
                     .setConfigFileUsed(true)
                     .build())
+        }
+    }
+
+    private fun createLibrary(name: String, project: Project, root: VirtualFile) {
+        val folder = root.findChild(name) ?: return
+
+        JSLibraryManager.getInstance(project).apply {
+            val libName = "$name ${root.name}"
+
+            if (getLibraryByName(libName) == null) {
+                createLibrary(libName, arrayOf(folder), arrayOf(), arrayOf(), PROJECT, true).apply {
+                    if (name == "node_modules") {
+                        frameworkDescriptor = ScriptingFrameworkDescriptor(name, null)
+                    }
+                }
+            }
+
+            libraryMappings.associateWithProject(libName)
+            commitChanges()
         }
     }
 
