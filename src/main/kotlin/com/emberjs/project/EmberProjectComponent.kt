@@ -8,11 +8,19 @@ import com.intellij.lang.javascript.linter.jshint.JSHintState
 import com.intellij.lang.javascript.settings.JSRootConfiguration
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.AbstractProjectComponent
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ContentEntry
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.vfs.VfsUtil.isAncestor
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.webcore.ScriptingFrameworkDescriptor
 import com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.PROJECT
+import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE
+import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
+import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 
 /**
  * This class is responsible for looking for folders with an `app/app.js` file on project load
@@ -53,6 +61,8 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
                         createLibrary("node_modules", project, it)
                         createLibrary("bower_components", project, it)
                     }
+
+                    setupModules(project)
                 }
             }
         }
@@ -89,6 +99,37 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
             libraryMappings.associateWithProject(libName)
             commitChanges()
         }
+    }
+
+    private fun setupModules(project: Project) {
+        ModuleManager.getInstance(project).modules.forEach { module ->
+            setupModule(module)
+        }
+    }
+
+    private fun setupModule(module: Module) {
+        ModuleRootManager.getInstance(module).modifiableModel.apply {
+            contentEntries.forEach { contentEntry ->
+                contentEntry.file?.let { moduleRoot ->
+                    roots.filter { isAncestor(moduleRoot, it, false) }
+                            .filterNotNull()
+                            .forEach { setupModule(contentEntry, it.url) }
+                }
+            }
+
+            commit()
+        }
+    }
+
+    private fun setupModule(entry: ContentEntry, rootUrl: String) {
+        // Mark special folders for each module
+        entry.addSourceFolder("$rootUrl/app", SOURCE)
+        entry.addSourceFolder("$rootUrl/public", RESOURCE)
+        entry.addSourceFolder("$rootUrl/tests", TEST_SOURCE)
+        entry.addSourceFolder("$rootUrl/tests/unit", TEST_SOURCE)
+        entry.addSourceFolder("$rootUrl/tests/integration", TEST_SOURCE)
+        entry.addExcludeFolder("$rootUrl/dist")
+        entry.addExcludeFolder("$rootUrl/tmp")
     }
 
     companion object {
