@@ -1,9 +1,10 @@
 package com.emberjs.project
 
+import com.intellij.ide.util.importProject.ModuleDescriptor
 import com.intellij.ide.util.importProject.ProjectDescriptor
 import com.intellij.ide.util.projectWizard.ModuleBuilder
-import com.intellij.ide.util.projectWizard.importSources.DetectedContentRoot
 import com.intellij.ide.util.projectWizard.importSources.DetectedProjectRoot
+import com.intellij.ide.util.projectWizard.importSources.DetectedSourceRoot
 import com.intellij.ide.util.projectWizard.importSources.ProjectFromSourcesBuilder
 import com.intellij.ide.util.projectWizard.importSources.ProjectStructureDetector
 import com.intellij.lang.javascript.dialects.JSLanguageLevel
@@ -33,7 +34,10 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
         if (!hasAppJs(children))
             return DirectoryProcessingResult.PROCESS_CHILDREN
 
-        result.add(DetectedContentRoot(dir, "Ember.js", EmberModuleType.instance))
+        result.add(object : DetectedSourceRoot(dir, null) {
+            override fun getRootTypeName() = "Ember.js"
+        })
+
         return DirectoryProcessingResult.SKIP_CHILDREN
     }
 
@@ -52,7 +56,11 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
                                        projectDescriptor: ProjectDescriptor,
                                        builder: ProjectFromSourcesBuilder) {
         // Add detected folders as Ember.js modules
-        builder.setupModulesByContentRoots(projectDescriptor, roots)
+        if (projectDescriptor.modules.isEmpty()) {
+            projectDescriptor.modules = roots.map {
+                ModuleDescriptor(it.directory, EmberModuleType.instance, emptyList())
+            }
+        }
 
         // Iterate through modules
         projectDescriptor.modules.forEach { module ->
