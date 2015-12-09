@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.3.1
+
+- Fix Ember.js project detection if subfolders contain Java files
+
+
 ## v1.3.0
 
 - `Navigate → Related Symbol...` for tests
