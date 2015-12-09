@@ -1,34 +1,34 @@
 package com.emberjs.cli
 
+import com.emberjs.utils.waitFor
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.execution.process.OSProcessHandler
 import java.io.BufferedReader
+import java.util.concurrent.TimeUnit
 
 class EmberCli(vararg val parameters: String) {
 
     var workDirectory: String? = null
 
     fun run(): BufferedReader {
-        val commandLine = GeneralCommandLine("ember")
+        val process = GeneralCommandLine("ember")
                 .withParameters(*parameters)
                 .withWorkDirectory(workDirectory)
                 .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+                .createProcess()
 
-        val handler = OSProcessHandler(commandLine)
+        YesThread(process).start()
 
-        YesThread(handler).start()
-
-        if (!handler.waitFor(10000)) {
-            handler.destroyProcess()
+        if (!process.waitFor(10, TimeUnit.SECONDS)) {
+            process.destroy()
             throw Exception("Process timed out. Please try again on the command line.")
         }
 
-        val exitValue = handler.process.exitValue()
+        val exitValue = process.exitValue()
         if (exitValue != 0) {
             throw Exception("Process did not exit properly (code = $exitValue). Please try again on the command line.")
         }
 
-        return handler.process.inputStream.bufferedReader()
+        return process.inputStream.bufferedReader()
     }
 
     companion object {
