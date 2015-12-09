@@ -25,6 +25,8 @@ dependencies {
 
 intellij {
     version = 'IU-15.0.1'
+    downloadSources Boolean.valueOf(INTELLIJ_DOWNLOAD_SOURCES)
+
     pluginName = 'Ember.js'
     plugins = ['JavaScriptLanguage']
 

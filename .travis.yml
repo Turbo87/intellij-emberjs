@@ -1,5 +1,7 @@
 language: java
 
+env: ORG_GRADLE_PROJECT_INTELLIJ_DOWNLOAD_SOURCES=false
+
 before_deploy:
   - ./gradlew buildPlugin
   - ./gradlew publishPlugin
