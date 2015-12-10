@@ -1,10 +1,12 @@
 language: java
 
-env: ORG_GRADLE_PROJECT_INTELLIJ_DOWNLOAD_SOURCES=false
+env:
+  - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=14.1.2 ORG_GRADLE_PROJECT_INTELLIJ_DOWNLOAD_SOURCES=false
+  - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=15.0.1 ORG_GRADLE_PROJECT_INTELLIJ_DOWNLOAD_SOURCES=false
 
 before_deploy:
   - ./gradlew buildPlugin
-  - ./gradlew publishPlugin
+  - if [[ $ORG_GRADLE_PROJECT_INTELLIJ_VERSION = 14.1.2 ]]; then ./gradlew publishPlugin; fi
 
 deploy:
   provider: releases
