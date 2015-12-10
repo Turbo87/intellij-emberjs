@@ -10,11 +10,11 @@ class EmberCli(vararg val parameters: String) {
     var workDirectory: String? = null
 
     fun run(): BufferedReader {
-        val process = GeneralCommandLine("ember")
-                .withParameters(*parameters)
-                .withWorkDirectory(workDirectory)
-                .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-                .createProcess()
+        // complicated invocation due to IntelliJ 14 compat
+        val process = GeneralCommandLine("ember").apply {
+            addParameters(*parameters)
+            withWorkDirectory(workDirectory)
+        }.createProcess()
 
         YesThread(process).start()
 
