@@ -5,7 +5,9 @@ Changelog
 
 ## v1.3.1
 
+- Fix Ember.js project detection in PyCharm, WebStorm, RubyMine, ...
 - Fix Ember.js project detection if subfolders contain Java files
+- Fix ember-cli exception and broken timeout
 
 
 ## v1.3.0
