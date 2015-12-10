@@ -65,6 +65,19 @@ Run the test suite:
     ./gradlew test
 
 
+Links
+-------------------------------------------------------------------------------
+
+- [JetBrains/intellij-community](https://github.com/JetBrains/intellij-community) – 
+  the IntelliJ community edition source code
+- [JetBrains/intellij-plugins](https://github.com/JetBrains/intellij-plugins) – 
+  a collection of officially supported IntelliJ plugins
+- [JetBrains/gradle-intellij-plugin](https://github.com/JetBrains/gradle-intellij-plugin) – 
+  the official [Gradle](http://gradle.org/) plugin for building IntelliJ plugins
+- [kristianmandrup/emberjs-plugin](https://github.com/kristianmandrup/emberjs-plugin) – 
+  the predecessor and inspiration for this plugin
+
+
 License
 -------------------------------------------------------------------------------
 
