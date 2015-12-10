@@ -8,6 +8,7 @@ Changelog
 - Fix Ember.js project detection in PyCharm, WebStorm, RubyMine, ...
 - Fix Ember.js project detection if subfolders contain Java files
 - Fix ember-cli exception and broken timeout
+- Add icons for Darcula UI theme
 
 
 ## v1.3.0
