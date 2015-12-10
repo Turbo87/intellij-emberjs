@@ -24,7 +24,8 @@ dependencies {
 }
 
 intellij {
-    version = 'IU-15.0.1'
+    type = 'IU'
+    version = INTELLIJ_VERSION
     downloadSources Boolean.valueOf(INTELLIJ_DOWNLOAD_SOURCES)
 
     pluginName = 'Ember.js'
