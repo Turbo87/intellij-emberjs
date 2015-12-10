@@ -3,13 +3,13 @@ package com.emberjs.navigation
 import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
 import com.emberjs.index.EmberClassIndex
+import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
-import com.emberjs.utils.getEmberModule
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.DelegatingItemPresentation
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.vfs.VfsUtil.isAncestor
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
@@ -32,12 +32,12 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
     }
 
     private fun convert(file: VirtualFile, project: Project): Collection<NavigationItem> {
-        val module = file.getEmberModule(project) ?: return listOf()
         val psiFile = PsiManager.getInstance(project).findFile(file) ?: return listOf()
+        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return listOf()
 
         val iconProvider = EmberIconProvider()
 
-        return ModuleRootManager.getInstance(module).contentRoots
+        return roots.filter { isAncestor(it, file, true) }
                 .map { EmberName.from(it, file) }
                 .filterNotNull()
                 .map {

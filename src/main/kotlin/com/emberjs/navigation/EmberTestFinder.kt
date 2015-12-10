@@ -1,11 +1,11 @@
 package com.emberjs.navigation
 
+import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
 import com.emberjs.resolver.EmberResolver
-import com.emberjs.utils.getEmberModule
 import com.emberjs.utils.guessProject
 import com.emberjs.utils.originalVirtualFile
-import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -21,11 +21,11 @@ class EmberTestFinder : TestFinder {
         val file = element.originalVirtualFile
 
         val project = file.guessProject() ?: return emptyList()
-        val module = file.getEmberModule(project) ?: return emptyList()
+        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return listOf()
 
         val psiManager = PsiManager.getInstance(project)
 
-        return ModuleRootManager.getInstance(module).contentRoots
+        return roots.filter { VfsUtil.isAncestor(it, file, true) }
                 .flatMap { findTestsForClass(file, it) }
                 .map { psiManager.findFile(it) }
                 .filterNotNull()
@@ -44,11 +44,11 @@ class EmberTestFinder : TestFinder {
         val file = element.originalVirtualFile
 
         val project = file.guessProject() ?: return emptyList()
-        val module = file.getEmberModule(project) ?: return emptyList()
+        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return listOf()
 
         val psiManager = PsiManager.getInstance(project)
 
-        return ModuleRootManager.getInstance(module).contentRoots
+        return roots.filter { VfsUtil.isAncestor(it, file, true) }
                 .map { findClassesForTest(file, it) }
                 .filterNotNull()
                 .map { psiManager.findFile(it) }
@@ -66,9 +66,9 @@ class EmberTestFinder : TestFinder {
         val file = element.originalVirtualFile
 
         val project = file.guessProject() ?: return false
-        val module = file.getEmberModule(project) ?: return false
+        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return false
 
-        return ModuleRootManager.getInstance(module).contentRoots
+        return roots.filter { VfsUtil.isAncestor(it, file, true) }
                 .map { EmberName.from(it, file) }
                 .filterNotNull()
                 .any { it.isTest }

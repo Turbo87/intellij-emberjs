@@ -6,20 +6,19 @@ import com.intellij.ide.IdeView
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationGroup
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.Result
-import com.intellij.openapi.command.WriteCommandAction
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
-import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.RefreshQueue
 import com.intellij.psi.PsiManager
 import kotlin.text.Regex
 
-class EmberCliGenerateTask(val module: Module, val template: String, val name: String, val view: IdeView?) :
-        Task.Modal(module.project, "Generate Ember.js ${EmberCli.BLUEPRINTS[template]} '$name'", true) {
+class EmberCliGenerateTask(project: Project, val workDir: VirtualFile, val template: String,
+                           val name: String, val view: IdeView?) :
+
+        Task.Modal(project, "Generate Ember.js ${EmberCli.BLUEPRINTS[template]} '$name'", true) {
 
     private var notification: Notification? = null
     private val files = arrayListOf<VirtualFile>()
@@ -30,10 +29,6 @@ class EmberCliGenerateTask(val module: Module, val template: String, val name: S
 
     override fun run(indicator: ProgressIndicator) {
         indicator.isIndeterminate = true
-
-        val moduleRoot = ModuleRootManager.getInstance(module)
-        val workDir = moduleRoot.contentRoots.firstOrNull() ?:
-                return setNotification("Could not determine working directory", NotificationType.ERROR)
 
         indicator.log("Preparing ember command ...")
         val cli = EmberCli("generate", template, name)

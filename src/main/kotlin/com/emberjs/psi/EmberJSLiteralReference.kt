@@ -3,13 +3,12 @@ package com.emberjs.psi
 import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
 import com.emberjs.index.EmberNameIndex
+import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
 import com.emberjs.resolver.EmberResolver
-import com.emberjs.utils.emberModule
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.javascript.psi.JSLiteralExpression
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult.createResults
 import com.intellij.psi.PsiManager
@@ -33,20 +32,19 @@ class EmberJSLiteralReference(element: JSLiteralExpression, val types: Iterable<
     }
 
     private fun resolve(value: String): Collection<PsiElement> {
-        val module = element.emberModule ?: return listOf()
+        val rootsSeq = EmberProjectComponent.getInstance(project)?.roots?.asSequence() ?: return listOf()
 
         val psiManager = PsiManager.getInstance(project)
-        val contentRoots = ModuleRootManager.getInstance(module).contentRoots.asSequence()
 
         // Iterate over types that we are looking for (e.g. "model" and "adapter")
         return types.asSequence()
 
-                // Additionally iterate over content roots of the Ember.js module
+                // Additionally iterate over Ember.js roots of the project
                 .flatMap { type ->
-                    contentRoots.flatMap {
+                    rootsSeq.flatMap {
                         val resolver = EmberResolver(it)
 
-                        // Look for type with matching name in module content root
+                        // Look for type with matching name in root folder
                         sequenceOf(value, value.removeSuffix("s"))
                                 .map { resolver.resolve("$type:$it") }
                                 .distinct()
