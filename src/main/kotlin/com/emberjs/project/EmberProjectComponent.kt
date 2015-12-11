@@ -133,7 +133,8 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
     }
 
     private val VirtualFile.isEmberFolder: Boolean
-        get() = findFileByRelativePath("app/app.js") != null
+        get() = findFileByRelativePath("app/app.js") != null ||
+                findFileByRelativePath(".ember-cli") != null
 
     companion object {
         private val IGNORED_FOLDERS = listOf("node_modules", "bower_components", "dist", "tmp")

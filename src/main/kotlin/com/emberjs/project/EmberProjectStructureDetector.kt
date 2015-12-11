@@ -16,7 +16,7 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
     override fun detectRoots(dir: File, children: Array<File>, base: File, result: MutableList<DetectedProjectRoot>):
             DirectoryProcessingResult {
 
-        if (!hasAppJs(children))
+        if (!hasAppJs(children) && !children.any { it.name == ".ember-cli" })
             return DirectoryProcessingResult.PROCESS_CHILDREN
 
         result.add(object : DetectedSourceRoot(dir, null) {
