@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+    compile "org.jetbrains.kotlin:kotlin-runtime:$KOTLIN_VERSION"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testCompile "org.assertj:assertj-core:2.2.0"
 }
