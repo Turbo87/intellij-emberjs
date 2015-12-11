@@ -1,5 +1,5 @@
 
-intellij-emberjs
+![Logo](doc/logo.png) intellij-emberjs
 ===============================================================================
 
 [![TravisCI](https://img.shields.io/travis/Turbo87/intellij-emberjs/master.svg?label=TravisCI)](https://travis-ci.org/Turbo87/intellij-emberjs/)
