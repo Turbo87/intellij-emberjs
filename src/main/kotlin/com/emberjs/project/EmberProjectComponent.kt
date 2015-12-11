@@ -124,6 +124,7 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
     private fun setupModule(entry: ContentEntry, rootUrl: String) {
         // Mark special folders for each module
         entry.addSourceFolder("$rootUrl/app", SOURCE)
+        entry.addSourceFolder("$rootUrl/addon", SOURCE)
         entry.addSourceFolder("$rootUrl/public", RESOURCE)
         entry.addSourceFolder("$rootUrl/tests", TEST_SOURCE)
         entry.addSourceFolder("$rootUrl/tests/unit", TEST_SOURCE)
