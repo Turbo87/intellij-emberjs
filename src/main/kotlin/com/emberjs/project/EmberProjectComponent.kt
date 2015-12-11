@@ -43,7 +43,7 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
                     file.name in IGNORED_FOLDERS -> false
 
                     // skip further processing and add folder to `roots` list if an `app/app.js` file was found
-                    file.findFileByRelativePath("app/app.js") != null -> { roots.add(file); false }
+                    file.isEmberFolder -> { roots.add(file); false }
 
                     // traverse the tree one level deeper
                     else -> true
@@ -131,6 +131,9 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         entry.addExcludeFolder("$rootUrl/dist")
         entry.addExcludeFolder("$rootUrl/tmp")
     }
+
+    private val VirtualFile.isEmberFolder: Boolean
+        get() = findFileByRelativePath("app/app.js") != null
 
     companion object {
         private val IGNORED_FOLDERS = listOf("node_modules", "bower_components", "dist", "tmp")
