@@ -10,7 +10,7 @@ class EmberJSReferenceProvider(val types: Iterable<String>) : PsiReferenceProvid
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
         return when (element) {
             is JSLiteralExpression -> arrayOf(EmberJSLiteralReference(element, types))
-            else -> arrayOf()
+            else -> emptyArray()
         }
     }
 

@@ -32,7 +32,7 @@ class EmberProjectStructureDetector : ProjectStructureDetector() {
     private fun hasAppJs(children: Array<File>): Boolean {
         return children
                 .find { it.isDirectory && it.name == "app" }
-                ?.listFiles { it.isFile && it.name == "app.js" }
+                ?.listFiles { it -> it.isFile && it.name == "app.js" }
                 ?.isNotEmpty()
                 ?: false
     }

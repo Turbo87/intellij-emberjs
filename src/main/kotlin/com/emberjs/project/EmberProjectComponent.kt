@@ -89,7 +89,7 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
             val libName = "$name ${root.name}"
 
             if (getLibraryByName(libName) == null) {
-                createLibrary(libName, arrayOf(folder), arrayOf(), arrayOf(), PROJECT, true).apply {
+                createLibrary(libName, arrayOf(folder), emptyArray(), emptyArray(), PROJECT, true).apply {
                     if (name == "node_modules") {
                         frameworkDescriptor = ScriptingFrameworkDescriptor(name, null)
                     }

@@ -26,7 +26,7 @@ class EmberJSLiteralReference(element: JSLiteralExpression, val types: Iterable<
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         val value = element.value
         if (value !is String)
-            return arrayOf()
+            return emptyArray()
 
         return createResults(resolve(value.replace(".", "/")))
     }
