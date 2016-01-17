@@ -1,5 +1,9 @@
 version: "{branch} {build}"
 
+environment:
+  global:
+    ORG_GRADLE_PROJECT_INTELLIJ_DOWNLOAD_SOURCES: false
+
 install:
   - git submodule update --init --recursive
 
