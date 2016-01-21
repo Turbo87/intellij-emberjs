@@ -30,6 +30,7 @@ intellij {
 
     pluginName = 'Ember.js'
     plugins = ['JavaScriptLanguage']
+    updateSinceUntilBuild = false
 
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
