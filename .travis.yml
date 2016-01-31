@@ -1,4 +1,6 @@
 language: java
+jdk:
+  - oraclejdk8
 
 env:
   - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=14.1.2
