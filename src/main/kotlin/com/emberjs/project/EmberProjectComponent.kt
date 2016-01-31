@@ -56,7 +56,9 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
             setES6LanguageLevel(project)
 
             // Enable JSHint
-            enableJSHint(project)
+            if (roots.any { it.findFileByRelativePath(".jshintrc") != null }) {
+                enableJSHint(project)
+            }
 
             // Add node_modules and bower_components as library folders
             ApplicationManager.getApplication().invokeLater {
