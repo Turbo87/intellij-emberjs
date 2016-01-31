@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.4.0
+
+- Add IntelliJ 14 (all `141.*` builds) compatibility
+
+
 ## v1.3.1
 
 - Fix Ember.js project detection in PyCharm, WebStorm, RubyMine, ...
