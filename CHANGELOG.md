@@ -9,6 +9,7 @@ Changelog
 - Add IntelliJ 16 (all `144.*` builds and above) compatibility
 - Only enable JSHint automatically if `.jshintrc` file was found
 - Add basic support for Ember.js addons
+- Use locally installed `ember` executable
 
 
 ## v1.3.1

@@ -11,7 +11,7 @@ class EmberCli(vararg val parameters: String) {
 
     fun run(): BufferedReader {
         // complicated invocation due to IntelliJ 14 compat
-        val process = GeneralCommandLine("ember").apply {
+        val process = GeneralCommandLine("./node_modules/.bin/ember").apply {
             addParameters(*parameters)
             withWorkDirectory(workDirectory)
         }.createProcess()
