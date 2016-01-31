@@ -22,6 +22,17 @@ class EmberGenerateCodeDialog(project: Project) : CreateFileFromTemplateDialog(p
         kindCombo.addItem(name, icon, id)
     }
 
+    /*
+     * overwritten for IntelliJ 14 compat
+     */
+    override fun doOKAction() {
+        processDoNotAskOnOk(OK_EXIT_CODE)
+
+        if (okAction.isEnabled) {
+            close(OK_EXIT_CODE)
+        }
+    }
+
     var selectedTemplate: String
         get() = kindCombo.selectedName
         set(value) = kindCombo.setSelectedName(value)
