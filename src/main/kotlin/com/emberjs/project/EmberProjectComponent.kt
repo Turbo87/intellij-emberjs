@@ -52,7 +52,11 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         })
 
         if (roots.isNotEmpty()) {
-            setupProject(project)
+            // Adjust JavaScript settings for the project
+            setES6LanguageLevel(project)
+
+            // Enable JSHint
+            enableJSHint(project)
 
             // Add node_modules and bower_components as library folders
             ApplicationManager.getApplication().invokeLater {
@@ -68,17 +72,17 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         }
     }
 
-    private fun setupProject(project: Project) {
-        // Adjust JavaScript settings for the project
-        JSRootConfiguration.getInstance(project)?.apply {
-            storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
-        }
-
-        // Enable JSHint
+    private fun enableJSHint(project: Project) {
         JSHintConfiguration.getInstance(project).apply {
             setExtendedState(true, JSHintState.Builder(extendedState.state)
                     .setConfigFileUsed(true)
                     .build())
+        }
+    }
+
+    private fun setES6LanguageLevel(project: Project) {
+        JSRootConfiguration.getInstance(project)?.apply {
+            storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
         }
     }
 
