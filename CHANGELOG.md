@@ -6,6 +6,9 @@ Changelog
 ## v1.4.0
 
 - Add IntelliJ 14 (all `141.*` builds) compatibility
+- Add IntelliJ 16 (all `144.*` builds and above) compatibility
+- Only enable JSHint automatically if `.jshintrc` file was found
+- Add basic support for Ember.js addons
 
 
 ## v1.3.1
