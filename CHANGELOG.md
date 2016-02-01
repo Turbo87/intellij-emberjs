@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.4.1
+
+- Revert automated build process to use JDK 1.7 again
+
+
 ## v1.4.0
 
 - Add IntelliJ 14 (all `141.*` builds) compatibility
