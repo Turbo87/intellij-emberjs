@@ -17,7 +17,7 @@ class EmberIconProvider : IconProvider() {
 
     override fun getIcon(element: PsiElement, @Iconable.IconFlags flags: Int) = getIcon(element.containingFile)
 
-    fun getIcon(psiFile: PsiFile?) = psiFile?.let { getIcon(it.virtualFile) }
+    fun getIcon(psiFile: PsiFile?) = psiFile?.virtualFile?.let { getIcon(it) }
 
     fun getIcon(file: VirtualFile): Icon? {
         if (file.extension != "js" && file.extension != "hbs")
