@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.4.2
+
+- Fix `java.lang.IllegalStateException: it.virtualFile must not be null` (#37)
+
+
 ## v1.4.1
 
 - Revert automated build process to use JDK 1.7 again
