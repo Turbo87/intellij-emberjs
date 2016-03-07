@@ -18,7 +18,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.webcore.ScriptingFrameworkDescriptor
 import com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.PROJECT
-import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 
@@ -131,7 +130,7 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         // Mark special folders for each module
         entry.addSourceFolder("$rootUrl/app", SOURCE)
         entry.addSourceFolder("$rootUrl/addon", SOURCE)
-        entry.addSourceFolder("$rootUrl/public", RESOURCE)
+        entry.addSourceFolder("$rootUrl/public", SOURCE) // Using RESOURCE will fail on PHPStorm and WebStorm
         entry.addSourceFolder("$rootUrl/tests", TEST_SOURCE)
         entry.addSourceFolder("$rootUrl/tests/unit", TEST_SOURCE)
         entry.addSourceFolder("$rootUrl/tests/integration", TEST_SOURCE)
