@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-    id "org.jetbrains.intellij" version "0.0.39"
+    id "org.jetbrains.intellij" version "0.0.42"
 }
 
 apply plugin: 'java'
