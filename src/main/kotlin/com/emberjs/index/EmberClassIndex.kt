@@ -31,7 +31,7 @@ class EmberClassIndex() :
         return roots.filter { isAncestor(it, file, true) }
                 .map { EmberName.from(it, file) }
                 .filterNotNull()
-                .toMapBy({ it.displayName }, { null })
+                .associateBy({ it.displayName }, { null })
     }
 
     companion object {
