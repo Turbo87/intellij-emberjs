@@ -1,5 +1,6 @@
 package com.emberjs.project
 
+import com.emberjs.settings.EmberApplicationOptions
 import com.emberjs.utils.visitChildrenRecursively
 import com.intellij.lang.javascript.dialects.JSLanguageLevel
 import com.intellij.lang.javascript.library.JSLibraryManager
@@ -67,8 +68,11 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
             ApplicationManager.getApplication().invokeLater {
                 ApplicationManager.getApplication().runWriteAction {
                     roots.forEach {
-                        createLibrary("node_modules", project, it)
-                        createLibrary("bower_components", project, it)
+                        if (!EmberApplicationOptions.excludeNodeModules)
+                            createLibrary("node_modules", project, it)
+
+                        if (!EmberApplicationOptions.excludeBowerComponents)
+                            createLibrary("bower_components", project, it)
                     }
 
                     setupModules(project)
@@ -140,6 +144,12 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         entry.addSourceFolder("$rootUrl/tests/integration", TEST_SOURCE)
         entry.addExcludeFolder("$rootUrl/dist")
         entry.addExcludeFolder("$rootUrl/tmp")
+
+        if (EmberApplicationOptions.excludeNodeModules)
+            entry.addExcludeFolder("$rootUrl/node_modules")
+
+        if (EmberApplicationOptions.excludeBowerComponents)
+            entry.addExcludeFolder("$rootUrl/bower_components")
     }
 
     private val VirtualFile.isEmberFolder: Boolean

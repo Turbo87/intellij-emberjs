@@ -42,6 +42,8 @@
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable instance="com.emberjs.settings.EmberApplicationConfigurable"/>
+
         <moduleType id="EMBER_MODULE" implementationClass="com.emberjs.project.EmberModuleType"/>
         <moduleBuilder builderClass="com.emberjs.project.EmberModuleBuilder"/>
         <projectStructureDetector implementation="com.emberjs.project.EmberProjectStructureDetector"/>

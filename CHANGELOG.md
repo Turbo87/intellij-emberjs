@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.5.0
+
+- Add `Exclude node_modules/bower_components folder` application settings
+
+
 ## v1.4.2
 
 - Fix `java.lang.IllegalStateException: it.virtualFile must not be null` (#37)
