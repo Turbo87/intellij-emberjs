@@ -68,11 +68,7 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
             ApplicationManager.getApplication().invokeLater {
                 ApplicationManager.getApplication().runWriteAction {
                     roots.forEach {
-                        if (!EmberApplicationOptions.excludeNodeModules)
-                            createLibrary("node_modules", project, it)
-
-                        if (!EmberApplicationOptions.excludeBowerComponents)
-                            createLibrary("bower_components", project, it)
+                        setupLibraries(it)
                     }
 
                     setupModules(project)
@@ -93,6 +89,14 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         JSRootConfiguration.getInstance(project)?.apply {
             storeLanguageLevelAndUpdateCaches(JSLanguageLevel.ES6)
         }
+    }
+
+    private fun setupLibraries(root: VirtualFile) {
+        if (!EmberApplicationOptions.excludeNodeModules)
+            createLibrary("node_modules", project, root)
+
+        if (!EmberApplicationOptions.excludeBowerComponents)
+            createLibrary("bower_components", project, root)
     }
 
     private fun createLibrary(name: String, project: Project, root: VirtualFile) {
