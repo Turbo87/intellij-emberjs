@@ -92,28 +92,33 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
     }
 
     private fun setupLibraries(root: VirtualFile) {
-        if (!EmberApplicationOptions.excludeNodeModules)
-            createLibrary("node_modules", project, root)
-
-        if (!EmberApplicationOptions.excludeBowerComponents)
-            createLibrary("bower_components", project, root)
+        setupLibrary("node_modules", project, root, !EmberApplicationOptions.excludeNodeModules)
+        setupLibrary("bower_components", project, root, !EmberApplicationOptions.excludeBowerComponents)
     }
 
-    private fun createLibrary(name: String, project: Project, root: VirtualFile) {
+    private fun setupLibrary(name: String, project: Project, root: VirtualFile, create: Boolean) {
         val folder = root.findChild(name) ?: return
 
         JSLibraryManager.getInstance(project).apply {
             val libName = "$name ${root.name}"
 
-            if (getLibraryByName(libName) == null) {
+            val library = getLibraryByName(libName)
+            if (create && library == null) {
                 createLibrary(libName, arrayOf(folder), emptyArray(), emptyArray(), PROJECT, true).apply {
                     if (name == "node_modules") {
                         frameworkDescriptor = ScriptingFrameworkDescriptor(name, null)
                     }
                 }
             }
+            if (!create && library != null) {
+                removeLibrary(library)
+            }
 
-            libraryMappings.associateWithProject(libName)
+            if (create)
+                libraryMappings.associateWithProject(libName)
+            else
+                libraryMappings.disassociateWithProject(libName)
+
             commitChanges()
         }
     }
