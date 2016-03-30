@@ -3,9 +3,9 @@ package com.emberjs.settings
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.VerticalFlowLayout
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBPanel
 import org.jetbrains.annotations.Nls
 import javax.swing.JComponent
+import javax.swing.JPanel
 
 class EmberApplicationConfigurable private constructor() : SearchableConfigurable {
     private var excludeNodeModulesCheckbox: JBCheckBox? = null
@@ -24,7 +24,7 @@ class EmberApplicationConfigurable private constructor() : SearchableConfigurabl
     override fun getHelpTopic() = this.id
 
     override fun createComponent(): JComponent? {
-        val panel = JBPanel(VerticalFlowLayout())
+        val panel = JPanel(VerticalFlowLayout())
         panel.add(excludeNodeModulesCheckbox!!)
         panel.add(excludeBowerComponentsCheckbox!!)
         return panel
