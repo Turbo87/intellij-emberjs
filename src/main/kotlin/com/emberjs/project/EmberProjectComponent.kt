@@ -18,9 +18,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.webcore.ScriptingFrameworkDescriptor
 import com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.PROJECT
-import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE
+import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
+import com.intellij.openapi.application.ApplicationInfo;
 
 /**
  * This class is responsible for looking for folders with an `app/app.js` file on project load
@@ -127,11 +128,19 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         }
     }
 
+    private fun isIntelliJIDEA(): Boolean {
+        return ApplicationInfo.getInstance().versionName.equals("IntelliJ IDEA");
+    }
+
     private fun setupModule(entry: ContentEntry, rootUrl: String) {
         // Mark special folders for each module
         entry.addSourceFolder("$rootUrl/app", SOURCE)
         entry.addSourceFolder("$rootUrl/addon", SOURCE)
-        entry.addSourceFolder("$rootUrl/public", RESOURCE)
+        if (this.isIntelliJIDEA()) {
+            entry.addSourceFolder("$rootUrl/public", RESOURCE)
+        } else {
+            entry.addSourceFolder("$rootUrl/public", SOURCE) // Using RESOURCE will fail on PHPStorm and WebStorm
+        }
         entry.addSourceFolder("$rootUrl/tests", TEST_SOURCE)
         entry.addSourceFolder("$rootUrl/tests/unit", TEST_SOURCE)
         entry.addSourceFolder("$rootUrl/tests/integration", TEST_SOURCE)
