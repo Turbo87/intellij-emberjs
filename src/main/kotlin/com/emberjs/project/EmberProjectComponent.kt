@@ -21,7 +21,9 @@ import com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.PROJECT
 import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
-import com.intellij.openapi.application.ApplicationInfo;
+import com.intellij.util.PlatformUtils
+import org.jetbrains.jps.model.JpsElement
+import org.jetbrains.jps.model.module.JpsModuleSourceRootType
 
 /**
  * This class is responsible for looking for folders with an `app/app.js` file on project load
@@ -128,19 +130,11 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         }
     }
 
-    private fun isIntelliJIDEA(): Boolean {
-        return ApplicationInfo.getInstance().versionName.equals("IntelliJ IDEA");
-    }
-
     private fun setupModule(entry: ContentEntry, rootUrl: String) {
         // Mark special folders for each module
         entry.addSourceFolder("$rootUrl/app", SOURCE)
         entry.addSourceFolder("$rootUrl/addon", SOURCE)
-        if (this.isIntelliJIDEA()) {
-            entry.addSourceFolder("$rootUrl/public", RESOURCE)
-        } else {
-            entry.addSourceFolder("$rootUrl/public", SOURCE) // Using RESOURCE will fail on PHPStorm and WebStorm
-        }
+        entry.addSourceFolder("$rootUrl/public", RESOURCE_IF_AVAILABLE)
         entry.addSourceFolder("$rootUrl/tests", TEST_SOURCE)
         entry.addSourceFolder("$rootUrl/tests/unit", TEST_SOURCE)
         entry.addSourceFolder("$rootUrl/tests/integration", TEST_SOURCE)
@@ -154,6 +148,11 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
 
     companion object {
         private val IGNORED_FOLDERS = listOf("node_modules", "bower_components", "dist", "tmp")
+
+        private val RESOURCE_IF_AVAILABLE: JpsModuleSourceRootType<out JpsElement> = when {
+            PlatformUtils.isIntelliJ() -> RESOURCE
+            else -> SOURCE // Using RESOURCE will fail on PHPStorm and WebStorm
+        }
 
         fun getInstance(project: Project) = project.getComponent(EmberProjectComponent::class.java)
     }
