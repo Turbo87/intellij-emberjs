@@ -1,24 +1,22 @@
 language: java
+jdk:
+  - oraclejdk8
 
 env:
   global:
     - ORG_GRADLE_PROJECT_INTELLIJ_DOWNLOAD_SOURCES=false
   matrix:
-    - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=14.1.2 JDK=oraclejdk7
-    - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=15.0.1 JDK=oraclejdk7
-    - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=LATEST-EAP-SNAPSHOT JDK=oraclejdk8
+    - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=2016.1
+    - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=LATEST-EAP-SNAPSHOT
 
 matrix:
   fast_finish: true
   allow_failures:
-    - env: ORG_GRADLE_PROJECT_INTELLIJ_VERSION=LATEST-EAP-SNAPSHOT JDK=oraclejdk8
-
-before_install:
-  - jdk_switcher use $JDK
+    - env: ORG_GRADLE_PROJECT_INTELLIJ_VERSION=LATEST-EAP-SNAPSHOT
 
 before_deploy:
   - ./gradlew buildPlugin
-  - if [[ $ORG_GRADLE_PROJECT_INTELLIJ_VERSION = 14.1.2 ]]; then ./gradlew publishPlugin; fi
+  - if [[ $ORG_GRADLE_PROJECT_INTELLIJ_VERSION = 2016.1 ]]; then ./gradlew publishPlugin; fi
 
 deploy:
   provider: releases
