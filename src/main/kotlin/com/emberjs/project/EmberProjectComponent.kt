@@ -1,5 +1,6 @@
 package com.emberjs.project
 
+import com.emberjs.settings.EmberApplicationOptions
 import com.emberjs.utils.visitChildrenRecursively
 import com.intellij.lang.javascript.dialects.JSLanguageLevel
 import com.intellij.lang.javascript.library.JSLibraryManager
@@ -67,8 +68,7 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
             ApplicationManager.getApplication().invokeLater {
                 ApplicationManager.getApplication().runWriteAction {
                     roots.forEach {
-                        createLibrary("node_modules", project, it)
-                        createLibrary("bower_components", project, it)
+                        setupLibraries(it)
                     }
 
                     setupModules(project)
@@ -91,21 +91,34 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         }
     }
 
-    private fun createLibrary(name: String, project: Project, root: VirtualFile) {
+    private fun setupLibraries(root: VirtualFile) {
+        setupLibrary("node_modules", project, root, !EmberApplicationOptions.excludeNodeModules)
+        setupLibrary("bower_components", project, root, !EmberApplicationOptions.excludeBowerComponents)
+    }
+
+    private fun setupLibrary(name: String, project: Project, root: VirtualFile, create: Boolean) {
         val folder = root.findChild(name) ?: return
 
         JSLibraryManager.getInstance(project).apply {
             val libName = "$name ${root.name}"
 
-            if (getLibraryByName(libName) == null) {
+            val library = getLibraryByName(libName)
+            if (create && library == null) {
                 createLibrary(libName, arrayOf(folder), emptyArray(), emptyArray(), PROJECT, true).apply {
                     if (name == "node_modules") {
                         frameworkDescriptor = ScriptingFrameworkDescriptor(name, null)
                     }
                 }
             }
+            if (!create && library != null) {
+                removeLibrary(library)
+            }
 
-            libraryMappings.associateWithProject(libName)
+            if (create)
+                libraryMappings.associateWithProject(libName)
+            else
+                libraryMappings.disassociateWithProject(libName)
+
             commitChanges()
         }
     }
@@ -140,6 +153,12 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         entry.addSourceFolder("$rootUrl/tests/integration", TEST_SOURCE)
         entry.addExcludeFolder("$rootUrl/dist")
         entry.addExcludeFolder("$rootUrl/tmp")
+
+        if (EmberApplicationOptions.excludeNodeModules)
+            entry.addExcludeFolder("$rootUrl/node_modules")
+
+        if (EmberApplicationOptions.excludeBowerComponents)
+            entry.addExcludeFolder("$rootUrl/bower_components")
     }
 
     private val VirtualFile.isEmberFolder: Boolean
