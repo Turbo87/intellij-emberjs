@@ -6,6 +6,8 @@ Changelog
 ## v1.5.0
 
 - Add `Exclude node_modules/bower_components folder` application settings
+- Use "Resource Folders" only for IntelliJ
+- Update Kotlin to v1.0.1-2
 
 
 ## v1.4.2
