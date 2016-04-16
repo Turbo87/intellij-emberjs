@@ -2,6 +2,7 @@ package com.emberjs.cli
 
 import com.emberjs.utils.waitFor
 import com.intellij.execution.configurations.GeneralCommandLine
+import org.apache.commons.lang.SystemUtils
 import java.io.BufferedReader
 import java.util.concurrent.TimeUnit
 
@@ -10,8 +11,15 @@ class EmberCli(vararg val parameters: String) {
     var workDirectory: String? = null
 
     fun run(): BufferedReader {
+        val suffix = when {
+            SystemUtils.IS_OS_WINDOWS -> ".cmd"
+            else -> ""
+        }
+
+        val command = "$workDirectory/node_modules/.bin/ember$suffix"
+
         // complicated invocation due to IntelliJ 14 compat
-        val process = GeneralCommandLine("./node_modules/.bin/ember").apply {
+        val process = GeneralCommandLine(command).apply {
             addParameters(*parameters)
             withWorkDirectory(workDirectory)
         }.createProcess()
