@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.5.1
+
+- Fix broken `ember` invocation
+
+
 ## v1.5.0
 
 - Add `Exclude node_modules/bower_components folder` application settings
