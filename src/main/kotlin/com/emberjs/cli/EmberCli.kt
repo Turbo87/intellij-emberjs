@@ -19,9 +19,10 @@ class EmberCli(vararg val parameters: String) {
         val command = "$workDirectory/node_modules/.bin/ember$suffix"
 
         // complicated invocation due to IntelliJ 14 compat
+        val workDir = workDirectory
         val process = GeneralCommandLine(command).apply {
             addParameters(*parameters)
-            withWorkDirectory(workDirectory)
+            withWorkDirectory(workDir)
         }.createProcess()
 
         YesThread(process).start()
