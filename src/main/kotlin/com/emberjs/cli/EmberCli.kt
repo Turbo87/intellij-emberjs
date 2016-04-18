@@ -25,7 +25,7 @@ class EmberCli(vararg val parameters: String) {
 
         YesThread(process).start()
 
-        if (!process.waitFor(10, TimeUnit.SECONDS)) {
+        if (!process.waitFor(30, TimeUnit.SECONDS)) {
             process.destroy()
             throw Exception("Process timed out. Please try again on the command line.")
         }
