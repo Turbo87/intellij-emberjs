@@ -18,14 +18,14 @@ class EmberCli(vararg val parameters: String) {
 
         // complicated invocation due to IntelliJ 14 compat
         val workDir = workDirectory
-        val process = GeneralCommandLine("node_modules/.bin/ember$suffix").apply {
+        val process = GeneralCommandLine("$workDirectory/node_modules/.bin/ember$suffix").apply {
             addParameters(*parameters)
             withWorkDirectory(workDir)
         }.createProcess()
 
         YesThread(process).start()
 
-        if (!process.waitFor(10, TimeUnit.SECONDS)) {
+        if (!process.waitFor(30, TimeUnit.SECONDS)) {
             process.destroy()
             throw Exception("Process timed out. Please try again on the command line.")
         }
