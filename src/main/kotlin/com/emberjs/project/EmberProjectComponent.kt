@@ -55,6 +55,11 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
             }
         })
 
+        // assume the location of in-repo addons; it would be better to parse package.json
+        projectRoot.findChild("lib")?.children.orEmpty()
+                .filter { it.isInRepoAddon }
+                .forEach { roots.add(it) }
+
         if (roots.isNotEmpty()) {
             // Adjust JavaScript settings for the project
             setES6LanguageLevel(project)
@@ -164,6 +169,11 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
     private val VirtualFile.isEmberFolder: Boolean
         get() = findFileByRelativePath("app/app.js") != null ||
                 findFileByRelativePath(".ember-cli") != null
+
+    private val VirtualFile.isInRepoAddon: Boolean
+        get() = isDirectory &&
+                findFileByRelativePath("package.json") != null &&
+                findFileByRelativePath("index.js") != null
 
     companion object {
         private val IGNORED_FOLDERS = listOf("node_modules", "bower_components", "dist", "tmp")
