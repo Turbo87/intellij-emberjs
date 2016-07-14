@@ -19,11 +19,15 @@ class EmberResolver(val root: VirtualFile) {
     }
 
     private fun resolveNonTest(name: EmberName): VirtualFile? {
-        val fileExtension = when (name.type) {
-            "template" -> "hbs"
-            else -> "js"
+        val fileExtensions = when (name.type) {
+            "template" -> listOf("hbs", "handlebars")
+            else -> listOf("js")
         }
 
+        return fileExtensions.mapNotNull { resolveNonTestForExtension(name, it) }.firstOrNull()
+    }
+
+    private fun resolveNonTestForExtension(name: EmberName, fileExtension: String): VirtualFile? {
         val isComponent = (name.type == "component")
 
         return findIf(isComponent, "app/components/${name.name}/${name.type}.$fileExtension") ?:

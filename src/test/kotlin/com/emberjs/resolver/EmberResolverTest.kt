@@ -44,7 +44,8 @@ class EmberResolverTest {
             Pair("serializer-test:pet", "tests/unit/pet/serializer-test.js"),
             Pair("service-test:session", "tests/unit/session/service-test.js"),
             Pair("adapter-test:user", "tests/unit/user/adapter-test.js"),
-            Pair("model-test:user", "tests/unit/user/model-test.js")
+            Pair("model-test:user", "tests/unit/user/model-test.js"),
+            Pair("template:components/blog-post", "app/templates/components/blog-post.handlebars")
     ))
 
     @Test fun testAptible() = doTest(APTIBLE, mapOf(

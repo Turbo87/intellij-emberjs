@@ -75,7 +75,8 @@ class EmberNameTest {
             Pair("tests/unit/pet/serializer-test.js", "serializer-test:pet"),
             Pair("tests/unit/session/service-test.js", "service-test:session"),
             Pair("tests/unit/user/adapter-test.js", "adapter-test:user"),
-            Pair("tests/unit/user/model-test.js", "model-test:user")
+            Pair("tests/unit/user/model-test.js", "model-test:user"),
+            Pair("app/templates/components/blog-post.handlebars", "template:components/blog-post")
     ))
 
     @Test fun testAptible() = doTest(APTIBLE, mapOf(
