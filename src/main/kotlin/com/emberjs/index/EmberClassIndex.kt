@@ -14,13 +14,13 @@ class EmberClassIndex() :
         DataIndexer<String, Void?, FileContent> {
 
     override fun getName() = NAME
-    override fun getVersion() = 2
+    override fun getVersion() = 3
     override fun getKeyDescriptor() = KEY_DESCRIPTIOR
     override fun dependsOnFileContent() = false
 
     override fun getInputFilter() = this
     override fun acceptInput(file: VirtualFile) =
-            file.extension == "js" || file.extension == "hbs"
+            file.extension == "js" || file.extension == "hbs" || file.extension == "handlebars"
 
     override fun getIndexer() = this
     override fun map(inputData: FileContent): Map<String, Void?> {
