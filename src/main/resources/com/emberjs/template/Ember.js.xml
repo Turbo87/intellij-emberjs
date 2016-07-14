@@ -28,4 +28,23 @@
             <option name="JAVA_SCRIPT" value="true" />
         </context>
     </template>
+    <template name="test" value="test('$NAME$', function(assert) {&#10;  $END$&#10;});" description="Insert test case" toReformat="false" toShortenFQNames="true">
+        <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
+        <context>
+            <option name="JAVA_SCRIPT" value="false" />
+            <option name="JS_EXPRESSION" value="false" />
+            <option name="JSX_HTML" value="false" />
+            <option name="JS_STATEMENT" value="true" />
+        </context>
+    </template>
+    <template name="pt" value="return pauseTest();" description="Insert pauseTest" toReformat="false" toShortenFQNames="true">
+        <context>
+            <option name="JAVA_SCRIPT" value="true" />
+        </context>
+    </template>
+    <template name="then" value="andThen(() =&gt; {&#10;  $END$&#10;});" description="Insert andThen" toReformat="false" toShortenFQNames="true">
+        <context>
+            <option name="JAVA_SCRIPT" value="true" />
+        </context>
+    </template>
 </templateSet>
