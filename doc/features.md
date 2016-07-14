@@ -126,9 +126,9 @@ The following live templates are available:
 - `comp` – computed property
 - `compset` – computed property with setter
 - `compx` – computed property method
-- `test` - qunit test
-- `pt` - pauseTest
-- `then` - andThen
+- `test` – qunit test
+- `pt` – pauseTest
+- `then` – andThen
 
 -------------------------------------------------------------------------------
 
