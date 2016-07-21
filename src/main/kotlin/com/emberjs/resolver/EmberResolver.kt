@@ -12,6 +12,7 @@ class EmberResolver(val root: VirtualFile) {
         name ?: return null
 
         return when {
+            name.type == "acceptance-test" -> resolveAcceptanceTest(name)
             name.type.endsWith("-integration-test") -> resolveTest("integration", name)
             name.type.endsWith("-test") -> resolveTest("unit", name)
             else -> resolveNonTest(name)
@@ -40,6 +41,10 @@ class EmberResolver(val root: VirtualFile) {
 
         return find("tests/$testType/${name.name}/${type}-test.js") ?:
                 find("tests/$testType/${type}s/${name.name}-test.js")
+    }
+
+    private fun resolveAcceptanceTest(name: EmberName): VirtualFile? {
+        return find("tests/acceptance/${name.name}-test.js")
     }
 
     private fun find(path: String) = root.findFileByRelativePath(path)

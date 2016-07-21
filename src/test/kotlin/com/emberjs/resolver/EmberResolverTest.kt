@@ -65,7 +65,9 @@ class EmberResolverTest {
             Pair("component-test:login-box", "tests/unit/components/login-box-test.js"),
             Pair("initializer-test:with-active-class", "tests/unit/initializers/with-active-class-test.js"),
             Pair("route-test:index", "tests/unit/routes/index-test.js"),
-            Pair("route-test:databases/index", "tests/unit/routes/databases/index-test.js")
+            Pair("route-test:databases/index", "tests/unit/routes/databases/index-test.js"),
+            Pair("acceptance-test:login", "tests/acceptance/login-test.js"),
+            Pair("acceptance-test:databases/create", "tests/acceptance/databases/create-test.js")
     ))
 
     private fun doTest(root: VirtualFile, tests: Map<String, String?>) {
