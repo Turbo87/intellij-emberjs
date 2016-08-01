@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v1.5.2
+
+- Fix still broken `ember` invocation (#50)
+
+
 ## v1.5.1
 
 - Fix broken `ember` invocation
