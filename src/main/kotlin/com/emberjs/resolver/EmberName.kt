@@ -34,13 +34,15 @@ data class EmberName(val type: String, val name: String) {
             val testsFolder = root.findChild("tests")
             val unitTestsFolder = testsFolder?.findChild("unit")
             val integrationTestsFolder = testsFolder?.findChild("integration")
+            val acceptanceTestsFolder = testsFolder?.findChild("acceptance")
 
             return fromPod(appFolder, file) ?:
                     fromPodTest(unitTestsFolder, file) ?:
                     fromPodTest(integrationTestsFolder, file) ?:
                     fromClassic(appFolder, file) ?:
                     fromClassicTest(unitTestsFolder, file) ?:
-                    fromClassicTest(integrationTestsFolder, file)
+                    fromClassicTest(integrationTestsFolder, file) ?:
+                    fromAcceptanceTest(acceptanceTestsFolder, file)
         }
 
         fun fromClassic(appFolder: VirtualFile?, file: VirtualFile): EmberName? {
@@ -84,6 +86,23 @@ data class EmberName(val type: String, val name: String) {
 
                 EmberName("${type.name.toLowerCase()}${testSuffix}", name)
             }
+        }
+
+        fun fromAcceptanceTest(testsFolder: VirtualFile?, file: VirtualFile): EmberName? {
+            testsFolder ?: return null
+
+            if (!isAncestor(testsFolder, file, true))
+                return null
+
+            val path = file.parents
+                    .takeWhile { it != testsFolder }
+                    .map { it.name }
+                    .reversed()
+                    .joinToString("/")
+
+            val name = "$path/${file.nameWithoutExtension.removeSuffix("-test")}".removePrefix("/")
+
+            return EmberName("acceptance-test", name)
         }
 
         fun fromPod(appFolder: VirtualFile?, file: VirtualFile): EmberName? {

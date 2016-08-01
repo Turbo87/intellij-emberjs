@@ -88,13 +88,17 @@ class EmberNameTest {
             Pair("app/app/vhosts/template.hbs", "template:app/vhosts"),
             Pair("app/components/change-plan/component.js", "component:change-plan"),
             Pair("app/components/change-plan/template.hbs", "template:components/change-plan"),
+            Pair("config/environment.js", null),
             Pair("tests/integration/components/object-select-test.js", "component-integration-test:object-select"),
             Pair("tests/integration/helpers/eq-test.js", "helper-integration-test:eq"),
             Pair("tests/unit/claim/route-test.js", "route-test:claim"),
             Pair("tests/unit/components/login-box-test.js", "component-test:login-box"),
             Pair("tests/unit/initializers/with-active-class-test.js", "initializer-test:with-active-class"),
             Pair("tests/unit/routes/index-test.js", "route-test:index"),
-            Pair("tests/unit/routes/databases/index-test.js", "route-test:databases/index")
+            Pair("tests/unit/routes/databases/index-test.js", "route-test:databases/index"),
+            Pair("tests/acceptance/login-test.js", "acceptance-test:login"),
+            Pair("tests/acceptance/databases/create-test.js", "acceptance-test:databases/create"),
+            Pair("tests/helpers/start-app.js", null)
     ))
 
     private fun doTest(root: VirtualFile, tests: Map<String, String?>) {

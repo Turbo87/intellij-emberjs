@@ -156,6 +156,7 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         entry.addSourceFolder("$rootUrl/tests", TEST_SOURCE)
         entry.addSourceFolder("$rootUrl/tests/unit", TEST_SOURCE)
         entry.addSourceFolder("$rootUrl/tests/integration", TEST_SOURCE)
+        entry.addSourceFolder("$rootUrl/tests/acceptance", TEST_SOURCE)
         entry.addExcludeFolder("$rootUrl/dist")
         entry.addExcludeFolder("$rootUrl/tmp")
 
