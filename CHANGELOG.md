@@ -3,6 +3,16 @@ Changelog
 ===============================================================================
 
 
+## v2.0.0
+
+- Update minimum IntelliJ version to 2016.1
+- Compile with JDK 1.8
+- Add `.handlebars` file extension support (#55)
+- Add `test`, `pauseTest` and `andThen` live templates (#56 and #57)
+- Add support for in-repo-addons (#54)
+- Add support for acceptance tests (#58)
+
+
 ## v1.5.2
 
 - Fix still broken `ember` invocation (#50)
