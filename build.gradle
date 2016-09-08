@@ -6,14 +6,13 @@ buildscript {
 
 plugins {
     id "org.jetbrains.intellij" version "0.1.9"
+    id "com.zoltu.git-versioning" version "2.0.28"
 }
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
 
 sourceCompatibility = JAVA_VERSION
-
-version = getVersionName()
 
 repositories {
     jcenter()
@@ -47,25 +46,4 @@ test {
     testLogging {
         exceptionFormat = 'full'
     }
-}
-
-/*
- * Gets the version name from the latest Git tag
- */
-def getVersionName() {
-    def stdout = new ByteArrayOutputStream()
-    try {
-        exec {
-            commandLine 'git', 'describe', '--tags'
-            standardOutput = stdout
-        }
-    } catch (ignored) {
-        return '0.0.0'
-    }
-
-    def version = stdout.toString().trim()
-    if (version.startsWith('v'))
-        version = version.substring(1)
-
-    return version
 }
