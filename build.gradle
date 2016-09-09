@@ -30,7 +30,7 @@ intellij {
     downloadSources Boolean.valueOf(INTELLIJ_DOWNLOAD_SOURCES)
 
     pluginName = 'Ember.js'
-    plugins = ['JavaScriptLanguage', 'com.dmarcotte.handlebars:145.9']
+    plugins = ['JavaScriptLanguage', 'CSS', 'com.dmarcotte.handlebars:145.9']
     updateSinceUntilBuild = false
 
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
