@@ -17,4 +17,9 @@ object HbsPatterns {
                     .withSuperParent(3, PlatformPatterns.psiElement(HbTokenTypes.MUSTACHE_NAME)
                             .withParent(PlatformPatterns.psiElement(HbTokenTypes.OPEN_BLOCK_STACHE))
                             .afterLeaf(PlatformPatterns.psiElement(HbTokenTypes.OPEN_BLOCK)))
+
+    val SUB_EXPR_NAME_PATTERN: PsiElementPattern.Capture<PsiElement> =
+            PlatformPatterns.psiElement(HbTokenTypes.ID)
+                    .withSuperParent(3, PlatformPatterns.psiElement(HbTokenTypes.MUSTACHE_NAME)
+                            .withParent(PlatformPatterns.psiElement(HbTokenTypes.PARAM)))
 }

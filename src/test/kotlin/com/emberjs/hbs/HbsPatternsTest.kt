@@ -3,6 +3,7 @@ package com.emberjs.hbs
 import com.dmarcotte.handlebars.file.HbFileType
 import com.emberjs.hbs.HbsPatterns.BLOCK_MUSTACHE_NAME_PATTERN
 import com.emberjs.hbs.HbsPatterns.SIMPLE_MUSTACHE_NAME_PATTERN
+import com.emberjs.hbs.HbsPatterns.SUB_EXPR_NAME_PATTERN
 import com.intellij.patterns.PsiElementPattern
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
@@ -24,6 +25,17 @@ class HbsPatternsTest : LightPlatformCodeInsightFixtureTestCase() {
         test("{{/fo<caret>}}", false)
         test("{{foo (bar<caret>)}}", false)
         test("{{foo bar=(baz<caret>)}}", false)
+    }
+
+    fun testSubExpression() = with(SUB_EXPR_NAME_PATTERN) {
+        test("{{foo<caret>}}", false)
+        test("{{fo<caret>o}}", false)
+        test("{{#fo<caret>}}", false)
+        test("{{/fo<caret>}}", false)
+        test("{{foo (ba<caret>r baz)}}")
+        test("{{foo (bar ba<caret>z)}}", false)
+        test("{{foo bar=(ba<caret>z)}}")
+        test("{{foo bar=(baz ab<caret>c)}}", false)
     }
 
     private fun <T : PsiElement> PsiElementPattern.Capture<T>.test(text: String, matches: Boolean = true) {
