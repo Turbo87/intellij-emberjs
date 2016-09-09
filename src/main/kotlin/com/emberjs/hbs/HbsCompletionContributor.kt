@@ -2,6 +2,7 @@ package com.emberjs.hbs
 
 import com.emberjs.hbs.HbsPatterns.BLOCK_MUSTACHE_NAME_PATTERN
 import com.emberjs.hbs.HbsPatterns.SIMPLE_MUSTACHE_NAME_PATTERN
+import com.emberjs.hbs.HbsPatterns.SUB_EXPR_NAME_PATTERN
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 
@@ -14,5 +15,16 @@ class HbsCompletionContributor : CompletionContributor() {
     init {
         extend(CompletionType.BASIC, SIMPLE_MUSTACHE_NAME_PATTERN, HbsComponentCompletionProvider())
         extend(CompletionType.BASIC, BLOCK_MUSTACHE_NAME_PATTERN, HbsComponentCompletionProvider())
+
+        extend(CompletionType.BASIC, SIMPLE_MUSTACHE_NAME_PATTERN, HbsBuiltinHelperCompletionProvider(
+                "action", "component", "debugger", "get", "if", "input", "link-to", "loc", "log",
+                "outlet", "partial", "render", "textarea", "unbound"))
+
+        extend(CompletionType.BASIC, BLOCK_MUSTACHE_NAME_PATTERN, HbsBuiltinHelperCompletionProvider(
+                "component", "each", "each-in", "if", "link-to", "unless", "with"))
+
+        extend(CompletionType.BASIC, SUB_EXPR_NAME_PATTERN, HbsBuiltinHelperCompletionProvider(
+                "action", "component", "concat", "get", "hash", "if", "loc", "mut", "query-params",
+                "unbound", "unless"))
     }
 }
