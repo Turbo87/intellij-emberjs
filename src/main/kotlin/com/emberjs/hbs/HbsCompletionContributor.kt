@@ -16,6 +16,9 @@ class HbsCompletionContributor : CompletionContributor() {
         extend(CompletionType.BASIC, SIMPLE_MUSTACHE_NAME_PATTERN, HbsComponentCompletionProvider())
         extend(CompletionType.BASIC, BLOCK_MUSTACHE_NAME_PATTERN, HbsComponentCompletionProvider())
 
+        extend(CompletionType.BASIC, SIMPLE_MUSTACHE_NAME_PATTERN, HbsHelperCompletionProvider())
+        extend(CompletionType.BASIC, SUB_EXPR_NAME_PATTERN, HbsHelperCompletionProvider())
+
         extend(CompletionType.BASIC, SIMPLE_MUSTACHE_NAME_PATTERN, HbsBuiltinHelperCompletionProvider(
                 "action", "component", "debugger", "get", "if", "input", "link-to", "loc", "log",
                 "outlet", "partial", "render", "textarea", "unbound"))
