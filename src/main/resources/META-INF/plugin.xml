@@ -57,6 +57,8 @@
 
         <psi.referenceContributor language="JavaScript" implementation="com.emberjs.psi.EmberJSReferenceContributor"/>
 
+        <completion.contributor language="Handlebars" implementationClass="com.emberjs.hbs.HbsCompletionContributor"/>
+
         <iconProvider implementation="com.emberjs.icons.EmberIconProvider" order="first"/>
 
         <defaultLiveTemplatesProvider implementation="com.emberjs.template.EmberLiveTemplatesProvider"/>

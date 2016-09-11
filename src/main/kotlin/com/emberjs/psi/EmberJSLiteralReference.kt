@@ -3,6 +3,7 @@ package com.emberjs.psi
 import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
 import com.emberjs.index.EmberNameIndex
+import com.emberjs.lookup.EmberLookupElementBuilder
 import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
 import com.emberjs.resolver.EmberResolver
@@ -67,14 +68,7 @@ class EmberJSLiteralReference(element: JSLiteralExpression, val types: Iterable<
         FileBasedIndex.getInstance().processAllKeys(EmberNameIndex.NAME, processor, scope, null)
 
         return keys.filter { it.type == types.firstOrNull() }
-                .map { it.toLookupElement() }
+                .map { EmberLookupElementBuilder.create(it) }
                 .toTypedArray()
-    }
-
-    private fun EmberName.toLookupElement(): LookupElement {
-        return LookupElementBuilder.create(name.replace("/", "."))
-                .withTypeText(type)
-                .withIcon(EmberIconProvider.getIcon(type) ?: EmberIcons.EMPTY_16)
-                .withCaseSensitivity(true)
     }
 }
