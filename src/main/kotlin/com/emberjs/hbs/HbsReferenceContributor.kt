@@ -8,8 +8,8 @@ import com.intellij.util.ProcessingContext
 class HbsReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         with(registrar) {
-            register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsModuleReference(it as HbMustacheName, "component") }
-            register(HbsPatterns.BLOCK_MUSTACHE_NAME) { HbsModuleReference(it as HbMustacheName, "component") }
+            register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsComponentReference(it as HbMustacheName) }
+            register(HbsPatterns.BLOCK_MUSTACHE_NAME) { HbsComponentReference(it as HbMustacheName) }
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsModuleReference(it as HbMustacheName, "helper") }
             register(HbsPatterns.SUB_EXPR_NAME) { HbsModuleReference(it as HbMustacheName, "helper") }
         }

@@ -15,15 +15,18 @@ import com.intellij.util.FilteringProcessor
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FindSymbolParameters
 
-class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
+open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
         PsiPolyVariantReferenceBase<HbMustacheName>(element, TextRange(0, element.textLength), true) {
+
+    open fun matches(module: EmberName) =
+            module.type == moduleType && module.name == value
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 
         val scope = FindSymbolParameters.searchScopeFor(element.project, true)
 
         val collector = CommonProcessors.CollectProcessor<EmberName>()
-        val filter = FilteringProcessor<EmberName>(Condition { it.type == moduleType && it.name == value }, collector)
+        val filter = FilteringProcessor<EmberName>(Condition { matches(it) }, collector)
 
         val index = FileBasedIndex.getInstance()
         val psiManager = PsiManager.getInstance(element.project)
