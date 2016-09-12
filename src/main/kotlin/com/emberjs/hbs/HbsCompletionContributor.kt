@@ -13,12 +13,6 @@ import com.intellij.codeInsight.completion.CompletionType
  */
 class HbsCompletionContributor : CompletionContributor() {
     init {
-        extend(CompletionType.BASIC, SIMPLE_MUSTACHE_NAME_ID, HbsComponentCompletionProvider())
-        extend(CompletionType.BASIC, BLOCK_MUSTACHE_NAME_ID, HbsComponentCompletionProvider())
-
-        extend(CompletionType.BASIC, SIMPLE_MUSTACHE_NAME_ID, HbsHelperCompletionProvider())
-        extend(CompletionType.BASIC, SUB_EXPR_NAME_ID, HbsHelperCompletionProvider())
-
         extend(CompletionType.BASIC, SIMPLE_MUSTACHE_NAME_ID, HbsBuiltinHelperCompletionProvider(
                 "action", "component", "debugger", "get", "if", "input", "link-to", "loc", "log",
                 "outlet", "partial", "render", "textarea", "unbound"))
