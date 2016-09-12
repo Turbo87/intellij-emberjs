@@ -3,21 +3,40 @@ package com.emberjs.hbs
 import com.dmarcotte.handlebars.psi.HbMustacheName
 import com.emberjs.index.EmberNameIndex
 import com.emberjs.lookup.EmberLookupElementBuilder
+import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
+import com.emberjs.resolver.EmberResolver
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.*
 import com.intellij.util.CommonProcessors
 import com.intellij.util.FilteringProcessor
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FindSymbolParameters
-
+import com.intellij.psi.PsiElementResolveResult.createResults
 class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
-        PsiReferenceBase<HbMustacheName>(element, TextRange(0, element.textLength), true) {
+        PsiPolyVariantReferenceBase<HbMustacheName>(element, TextRange(0, element.textLength), true) {
 
-    override fun resolve(): PsiElement? {
-        return null
+    override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+        val rootsSeq = EmberProjectComponent.getInstance(element.project)?.roots?.asSequence() ?: return emptyArray()
+
+        val psiManager = PsiManager.getInstance(element.project)
+
+        // Iterate over Ember.js roots of the project
+        return createResults(rootsSeq.flatMap {
+            val resolver = EmberResolver(it)
+
+            // Look for type with matching name in root folder
+            sequenceOf(value, value.removeSuffix("s"))
+                    .map { resolver.resolve("$moduleType:$it") }
+                    .distinct()
+        }
+                .filterNotNull()
+
+                // Convert VirtualFile to PsiFile
+                .map { psiManager.findFile(it) }
+                .filterNotNull()
+                .toList())
     }
 
     override fun getVariants(): Array<out Any?> {
