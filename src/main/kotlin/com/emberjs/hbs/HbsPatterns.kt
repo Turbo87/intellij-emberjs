@@ -1,25 +1,29 @@
 package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.PsiElementPattern
+import com.dmarcotte.handlebars.psi.HbMustacheName
+import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
 
 object HbsPatterns {
-    val SIMPLE_MUSTACHE_NAME_PATTERN: PsiElementPattern.Capture<PsiElement> =
-            PlatformPatterns.psiElement(HbTokenTypes.ID)
-                    .withSuperParent(3, PlatformPatterns.psiElement(HbTokenTypes.MUSTACHE_NAME)
-                            .withParent(PlatformPatterns.psiElement(HbTokenTypes.MUSTACHE))
-                            .afterLeaf(PlatformPatterns.psiElement(HbTokenTypes.OPEN)))
+    val SIMPLE_MUSTACHE_NAME: Capture<HbMustacheName> = psiElement(HbMustacheName::class.java)
+            .withParent(psiElement(HbTokenTypes.MUSTACHE))
+            .afterLeaf(psiElement(HbTokenTypes.OPEN))
 
-    val BLOCK_MUSTACHE_NAME_PATTERN: PsiElementPattern.Capture<PsiElement> =
-            PlatformPatterns.psiElement(HbTokenTypes.ID)
-                    .withSuperParent(3, PlatformPatterns.psiElement(HbTokenTypes.MUSTACHE_NAME)
-                            .withParent(PlatformPatterns.psiElement(HbTokenTypes.OPEN_BLOCK_STACHE))
-                            .afterLeaf(PlatformPatterns.psiElement(HbTokenTypes.OPEN_BLOCK)))
+    val SIMPLE_MUSTACHE_NAME_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
+            .withSuperParent(3, SIMPLE_MUSTACHE_NAME)
 
-    val SUB_EXPR_NAME_PATTERN: PsiElementPattern.Capture<PsiElement> =
-            PlatformPatterns.psiElement(HbTokenTypes.ID)
-                    .withSuperParent(3, PlatformPatterns.psiElement(HbTokenTypes.MUSTACHE_NAME)
-                            .withParent(PlatformPatterns.psiElement(HbTokenTypes.PARAM)))
+    val BLOCK_MUSTACHE_NAME: Capture<HbMustacheName> = psiElement(HbMustacheName::class.java)
+            .withParent(psiElement(HbTokenTypes.OPEN_BLOCK_STACHE))
+            .afterLeaf(psiElement(HbTokenTypes.OPEN_BLOCK))
+
+    val BLOCK_MUSTACHE_NAME_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
+            .withSuperParent(3, BLOCK_MUSTACHE_NAME)
+
+    val SUB_EXPR_NAME: Capture<HbMustacheName> = psiElement(HbMustacheName::class.java)
+            .withParent(psiElement(HbTokenTypes.PARAM))
+
+    val SUB_EXPR_NAME_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
+            .withSuperParent(3, SUB_EXPR_NAME)
 }
