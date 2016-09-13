@@ -5,7 +5,7 @@ import com.emberjs.patterns.EmberPatterns.jsQuotedArgument
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 
-class EmberJSReferenceContributor : PsiReferenceContributor() {
+class EmberReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         PROVIDERS.forEach { registrar.registerReferenceProvider(it.first, it.second) }
@@ -55,6 +55,6 @@ class EmberJSReferenceContributor : PsiReferenceContributor() {
         )
 
         private fun argIn(name: String) = jsQuotedArgument(name, 0)
-        private fun providerFor(vararg types: String) = EmberJSReferenceProvider.forTypes(*types)
+        private fun providerFor(vararg types: String) = EmberReferenceProvider.forTypes(*types)
     }
 }

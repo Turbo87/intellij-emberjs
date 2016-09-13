@@ -6,7 +6,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 
-class EmberJSReferenceProvider(val types: Iterable<String>) : PsiReferenceProvider() {
+class EmberReferenceProvider(val types: Iterable<String>) : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
         return when (element) {
             is JSLiteralExpression -> arrayOf(EmberJSLiteralReference(element, types))
@@ -15,6 +15,6 @@ class EmberJSReferenceProvider(val types: Iterable<String>) : PsiReferenceProvid
     }
 
     companion object {
-        fun forTypes(vararg types: String) = EmberJSReferenceProvider(types.toList())
+        fun forTypes(vararg types: String) = EmberReferenceProvider(types.toList())
     }
 }
