@@ -10,26 +10,26 @@ import com.intellij.psi.PsiElementResolveResult.createResults
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
+import com.intellij.psi.search.ProjectScope
 import com.intellij.util.CommonProcessors
 import com.intellij.util.FilteringProcessor
 import com.intellij.util.indexing.FileBasedIndex
-import com.intellij.util.indexing.FindSymbolParameters
 
 open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
         PsiPolyVariantReferenceBase<HbMustacheName>(element, TextRange(0, element.textLength), true) {
+
+    val project = element.project
+    private val scope = ProjectScope.getAllScope(project)
+
+    private val index: FileBasedIndex by lazy { FileBasedIndex.getInstance() }
+    private val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
 
     open fun matches(module: EmberName) =
             module.type == moduleType && module.name == value
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-
-        val scope = FindSymbolParameters.searchScopeFor(element.project, true)
-
         val collector = CommonProcessors.CollectProcessor<EmberName>()
         val filter = FilteringProcessor<EmberName>(Condition { matches(it) }, collector)
-
-        val index = FileBasedIndex.getInstance()
-        val psiManager = PsiManager.getInstance(element.project)
 
         // Collect all components from the index
         index.processAllKeys(EmberNameIndex.NAME, filter, scope, null)
@@ -45,12 +45,8 @@ open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
     }
 
     override fun getVariants(): Array<out Any?> {
-        val scope = FindSymbolParameters.searchScopeFor(element.project, true)
-
         val collector = CommonProcessors.CollectProcessor<EmberName>()
         val filter = FilteringProcessor<EmberName>(Condition { it.type == moduleType }, collector)
-
-        val index = FileBasedIndex.getInstance()
 
         // Collect all components from the index
         index.processAllKeys(EmberNameIndex.NAME, filter, scope, null)
