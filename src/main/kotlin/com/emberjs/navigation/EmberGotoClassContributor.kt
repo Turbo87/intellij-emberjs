@@ -8,11 +8,8 @@ import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.DelegatingItemPresentation
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Condition
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.intellij.util.CommonProcessors
-import com.intellij.util.FilteringProcessor
 import com.intellij.util.indexing.FindSymbolParameters.searchScopeFor
 
 class EmberGotoClassContributor() : ChooseByNameContributor {
@@ -31,15 +28,10 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
     override fun getItemsByName(name: String, pattern: String, project: Project, includeNonProjectItems: Boolean): Array<NavigationItem> {
         val scope = searchScopeFor(project, includeNonProjectItems)
 
-        val collector = CommonProcessors.CollectProcessor<EmberName>()
-        val filter = FilteringProcessor<EmberName>(Condition { it.displayName == name }, collector)
-
         val psiManager = PsiManager.getInstance(project)
 
         // Collect all matching modules from the index
-        EmberNameIndex.processAllKeys(filter, scope)
-
-        return collector.results
+        return EmberNameIndex.getFilteredKeys(scope) { it.displayName == name }
 
                 // Find the corresponding PsiFiles
                 .flatMap { module ->

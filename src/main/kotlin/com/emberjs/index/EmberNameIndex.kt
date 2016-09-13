@@ -4,9 +4,12 @@ import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
 import com.emberjs.utils.guessProject
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Condition
 import com.intellij.openapi.vfs.VfsUtil.isAncestor
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.CommonProcessors
+import com.intellij.util.FilteringProcessor
 import com.intellij.util.Processor
 import com.intellij.util.indexing.*
 
@@ -45,5 +48,14 @@ class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
 
         fun getContainingFiles(module: EmberName, scope: GlobalSearchScope): Collection<VirtualFile>
                 = index.getContainingFiles(NAME, module, scope)
+
+        fun getFilteredKeys(scope: GlobalSearchScope, filterFn: (EmberName) -> Boolean): Collection<EmberName> {
+            val collector = CommonProcessors.CollectProcessor<EmberName>()
+            val filter = FilteringProcessor<EmberName>(Condition { filterFn(it) }, collector)
+
+            processAllKeys(filter, scope)
+
+            return collector.results
+        }
     }
 }

@@ -1,14 +1,9 @@
 package com.emberjs.psi
 
-import com.emberjs.icons.EmberIconProvider
-import com.emberjs.icons.EmberIcons
 import com.emberjs.index.EmberNameIndex
 import com.emberjs.lookup.EmberLookupElementBuilder
 import com.emberjs.project.EmberProjectComponent
-import com.emberjs.resolver.EmberName
 import com.emberjs.resolver.EmberResolver
-import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.javascript.psi.JSLiteralExpression
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult.createResults
@@ -16,8 +11,6 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.util.CommonProcessors
-import com.intellij.util.indexing.FileBasedIndex
 
 class EmberJSLiteralReference(element: JSLiteralExpression, val types: Iterable<String>) :
         PsiPolyVariantReferenceBase<JSLiteralExpression>(element, true) {
@@ -62,12 +55,7 @@ class EmberJSLiteralReference(element: JSLiteralExpression, val types: Iterable<
     override fun getVariants(): Array<out Any> {
         val scope = GlobalSearchScope.projectScope(project)
 
-        val keys = arrayListOf<EmberName>()
-        val processor = CommonProcessors.CollectProcessor(keys)
-
-        EmberNameIndex.processAllKeys(processor, scope)
-
-        return keys.filter { it.type == types.firstOrNull() }
+        return EmberNameIndex.getFilteredKeys(scope) { it.type == types.firstOrNull() }
                 .map { EmberLookupElementBuilder.create(it) }
                 .toTypedArray()
     }
