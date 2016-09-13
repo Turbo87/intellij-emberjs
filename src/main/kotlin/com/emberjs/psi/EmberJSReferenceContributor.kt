@@ -15,43 +15,43 @@ class EmberJSReferenceContributor : PsiReferenceContributor() {
 
         private val PROVIDERS = listOf(
                 // from Ember.inject
-                Pair(argIn("controller"), providerFor("controller")),
-                Pair(argIn("service"), providerFor("service")),
+                argIn("controller") to providerFor("controller"),
+                argIn("service") to providerFor("service"),
 
                 // from Ember.Controller
-                Pair(argIn("transitionToRoute"), providerFor("route")),
+                argIn("transitionToRoute") to providerFor("route"),
 
                 // from Ember.Route
-                Pair(argIn("controllerFor"), providerFor("controller")),
-                Pair(argIn("intermediateTransitionTo"), providerFor("route")),
-                Pair(argIn("modelFor"), providerFor("route")),
-                Pair(argIn("paramsFor"), providerFor("route")),
-                Pair(argIn("render").and(inEmberFile("route")), providerFor("template")),
-                Pair(argIn("replaceWith"), providerFor("route")),
-                Pair(argIn("transitionTo"), providerFor("route")),
+                argIn("controllerFor") to providerFor("controller"),
+                argIn("intermediateTransitionTo") to providerFor("route"),
+                argIn("modelFor") to providerFor("route"),
+                argIn("paramsFor") to providerFor("route"),
+                argIn("render").and(inEmberFile("route")) to providerFor("template"),
+                argIn("replaceWith") to providerFor("route"),
+                argIn("transitionTo") to providerFor("route"),
 
                 // from DS
-                Pair(argIn("attr").and(inEmberFile("model")), providerFor("transform")),
-                Pair(argIn("hasMany").and(inEmberFile("model")), providerFor("model")),
-                Pair(argIn("belongsTo").and(inEmberFile("model")), providerFor("model")),
+                argIn("attr").and(inEmberFile("model")) to providerFor("transform"),
+                argIn("hasMany").and(inEmberFile("model")) to providerFor("model"),
+                argIn("belongsTo").and(inEmberFile("model")) to providerFor("model"),
 
                 // from DS.Store
-                Pair(argIn("adapterFor"), providerFor("adapter")),
-                Pair(argIn("createRecord"), providerFor("model", "adapter")),
-                Pair(argIn("filter"), providerFor("model", "adapter")),
-                Pair(argIn("findAll"), providerFor("model", "adapter")),
-                Pair(argIn("findRecord"), providerFor("model", "adapter")),
-                Pair(argIn("hasRecordForId"), providerFor("model")),
-                Pair(argIn("modelFor"), providerFor("model")),
-                Pair(argIn("normalize"), providerFor("model", "serializer")),
-                Pair(argIn("peekAll"), providerFor("model")),
-                Pair(argIn("peekRecord"), providerFor("model")),
-                Pair(argIn("pushPayload"), providerFor("model")),
-                Pair(argIn("query"), providerFor("model", "adapter")),
-                Pair(argIn("queryRecord"), providerFor("model", "adapter")),
-                Pair(argIn("recordIsLoaded"), providerFor("model")),
-                Pair(argIn("unloadAll"), providerFor("model")),
-                Pair(argIn("unloadRecord"), providerFor("model"))
+                argIn("adapterFor") to providerFor("adapter"),
+                argIn("createRecord") to providerFor("model", "adapter"),
+                argIn("filter") to providerFor("model", "adapter"),
+                argIn("findAll") to providerFor("model", "adapter"),
+                argIn("findRecord") to providerFor("model", "adapter"),
+                argIn("hasRecordForId") to providerFor("model"),
+                argIn("modelFor") to providerFor("model"),
+                argIn("normalize") to providerFor("model", "serializer"),
+                argIn("peekAll") to providerFor("model"),
+                argIn("peekRecord") to providerFor("model"),
+                argIn("pushPayload") to providerFor("model"),
+                argIn("query") to providerFor("model", "adapter"),
+                argIn("queryRecord") to providerFor("model", "adapter"),
+                argIn("recordIsLoaded") to providerFor("model"),
+                argIn("unloadAll") to providerFor("model"),
+                argIn("unloadRecord") to providerFor("model")
         )
 
         private fun argIn(name: String) = jsQuotedArgument(name, 0)
