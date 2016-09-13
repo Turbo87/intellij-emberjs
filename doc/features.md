@@ -97,6 +97,17 @@ Have a look at the
 class to check for which methods this functionality is available.
 
 
+#### References and Completion in Handlebars
+
+The same code completion and reference functionality is also available inside
+of Handlebars templates for the components and helpers in your project. Note
+that this does not work for components/helpers imported from addons yet.
+
+![Handlebars Completion](hbs-component-completion.png)
+
+![Handlebars Reference Resolving](hbs-component-resolve.png)
+
+
 Using `ember-cli` from the IDE
 -------------------------------------------------------------------------------
 
