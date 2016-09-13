@@ -3,6 +3,12 @@ Changelog
 ===============================================================================
 
 
+## v2.1.0
+
+- Add component and helper name completion and resolving to Handlebars
+  templates (#62 and #65)
+
+
 ## v2.0.0
 
 - Update minimum IntelliJ version to 2016.1
