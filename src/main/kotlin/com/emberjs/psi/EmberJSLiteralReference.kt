@@ -56,6 +56,11 @@ class EmberJSLiteralReference(element: JSLiteralExpression, val types: Iterable<
         val scope = GlobalSearchScope.projectScope(project)
 
         return EmberNameIndex.getFilteredKeys(scope) { it.type == types.firstOrNull() }
+
+                // Filter out modules that are not related to this project
+                .filter { EmberNameIndex.hasContainingFiles(it, scope) }
+
+                // Convert search results for LookupElements
                 .map { EmberLookupElementBuilder.create(it) }
                 .toTypedArray()
     }
