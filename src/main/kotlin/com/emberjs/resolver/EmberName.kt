@@ -7,16 +7,15 @@ import com.intellij.openapi.vfs.VirtualFile
 
 data class EmberName(val type: String, val name: String) {
 
-    val fullName: String
-        get() = "$type:$name"
+    val fullName by lazy { "$type:$name" }
 
-    val displayName: String
-        get() {
-            if (type == "template" && name.startsWith("components/")) {
-                return "${name.removePrefix("components/").replace('/', '.')} component-template"
-            }
-            return "${name.replace('/', '.')} $type"
+    val displayName by lazy {
+        if (type == "template" && name.startsWith("components/")) {
+            "${name.removePrefix("components/").replace('/', '.')} component-template"
+        } else {
+            "${name.replace('/', '.')} $type"
         }
+    }
 
     val isTest: Boolean = type.endsWith("-test")
 

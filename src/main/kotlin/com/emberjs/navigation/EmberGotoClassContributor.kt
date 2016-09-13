@@ -2,52 +2,57 @@ package com.emberjs.navigation
 
 import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
-import com.emberjs.index.EmberClassIndex
-import com.emberjs.project.EmberProjectComponent
+import com.emberjs.index.EmberNameIndex
 import com.emberjs.resolver.EmberName
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.DelegatingItemPresentation
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VfsUtil.isAncestor
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FindSymbolParameters.searchScopeFor
 
 class EmberGotoClassContributor() : ChooseByNameContributor {
 
-    override fun getNames(project: Project, includeNonProjectItems: Boolean) =
-            FileBasedIndex.getInstance().getAllKeys(EmberClassIndex.NAME, project).toTypedArray()
+    private val iconProvider by lazy { EmberIconProvider() }
 
-    override fun getItemsByName(name: String, pattern: String, project: Project, includeNonProjectItems: Boolean) =
-            getItemsByName(name, project, searchScopeFor(project, includeNonProjectItems))
-
-    fun getItemsByName(name: String, project: Project, scope: GlobalSearchScope): Array<NavigationItem> {
-        // Query file index for the VirtualFile containing the indexed item
-        return FileBasedIndex.getInstance().getContainingFiles(EmberClassIndex.NAME, name, scope)
-                .flatMap { convert(it, project) }
+    /**
+     * Get all entries from the module index and extract the `displayName` property.
+     */
+    override fun getNames(project: Project, includeNonProjectItems: Boolean): Array<String> {
+        return EmberNameIndex.getAllKeys(project)
+                .map { it.displayName }
                 .toTypedArray()
     }
 
-    private fun convert(file: VirtualFile, project: Project): Collection<NavigationItem> {
-        val psiFile = PsiManager.getInstance(project).findFile(file) ?: return listOf()
-        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return listOf()
+    override fun getItemsByName(name: String, pattern: String, project: Project, includeNonProjectItems: Boolean): Array<NavigationItem> {
+        val scope = searchScopeFor(project, includeNonProjectItems)
 
-        val iconProvider = EmberIconProvider()
+        val psiManager = PsiManager.getInstance(project)
 
-        return roots.filter { isAncestor(it, file, true) }
-                .map { EmberName.from(it, file) }
-                .filterNotNull()
-                .map {
-                    val presentation = DelegatingItemPresentation(psiFile.presentation)
-                            .withPresentableText(it.displayName)
-                            .withLocationString(null)
-                            .withIcon(iconProvider.getIcon(it) ?: DEFAULT_ICON)
+        // Collect all matching modules from the index
+        return EmberNameIndex.getFilteredKeys(scope) { it.displayName == name }
 
-                    DelegatingNavigationItem(psiFile).withPresentation(presentation)
+                // Find the corresponding PsiFiles
+                .flatMap { module ->
+                    EmberNameIndex.getContainingFiles(module, scope)
+                            .map { psiManager.findFile(it)?.let { Pair(module, it) } }
+                            .filterNotNull()
                 }
+
+                // Convert search results for LookupElements
+                .map { convert(it.first, it.second) }
+                .toTypedArray()
+    }
+
+    private fun convert(module: EmberName, file: PsiFile): DelegatingNavigationItem {
+        val presentation = DelegatingItemPresentation(file.presentation)
+                .withPresentableText(module.displayName)
+                .withLocationString(null)
+                .withIcon(iconProvider.getIcon(module) ?: DEFAULT_ICON)
+
+        return DelegatingNavigationItem(file)
+                .withPresentation(presentation)
     }
 
     companion object {

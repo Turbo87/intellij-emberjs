@@ -14,89 +14,89 @@ class EmberGotoRelatedProviderTest {
     val provider = EmberGotoRelatedProvider()
 
     @Test fun testCratesIo() = doTest(CRATES_IO, mapOf(
-            Pair("app/adapters/dependency.js", listOf("app/models/dependency.js")),
-            Pair("app/adapters/application.js", listOf()),
-            Pair("app/components/crate-row.js", listOf("app/templates/components/crate-row.hbs")),
+            "app/adapters/dependency.js" to listOf("app/models/dependency.js"),
+            "app/adapters/application.js" to listOf(),
+            "app/components/crate-row.js" to listOf("app/templates/components/crate-row.hbs"),
 
-            Pair("app/controllers/crates.js", listOf(
+            "app/controllers/crates.js" to listOf(
                     "app/routes/crates.js",
-                    "app/templates/crates.hbs")),
+                    "app/templates/crates.hbs"),
 
-            Pair("app/controllers/crate/versions.js", listOf(
+            "app/controllers/crate/versions.js" to listOf(
                     "app/routes/crate/versions.js",
-                    "app/templates/crate/versions.hbs")),
+                    "app/templates/crate/versions.hbs"),
 
-            Pair("app/models/crate.js", listOf("app/serializers/crate.js")),
-            Pair("app/models/dependency.js", listOf("app/adapters/dependency.js")),
-            Pair("app/routes/login.js", listOf("app/templates/login.hbs")),
+            "app/models/crate.js" to listOf("app/serializers/crate.js"),
+            "app/models/dependency.js" to listOf("app/adapters/dependency.js"),
+            "app/routes/login.js" to listOf("app/templates/login.hbs"),
 
-            Pair("app/routes/crate/index.js", listOf(
+            "app/routes/crate/index.js" to listOf(
                     "app/controllers/crate/index.js",
-                    "app/templates/crate/index.hbs")),
+                    "app/templates/crate/index.hbs"),
 
-            Pair("app/routes/application.js", listOf(
+            "app/routes/application.js" to listOf(
                     "app/controllers/application.js",
-                    "app/templates/application.hbs")),
+                    "app/templates/application.hbs"),
 
-            Pair("app/serializers/crate.js", listOf("app/models/crate.js")),
-            Pair("app/services/session.js", listOf()),
+            "app/serializers/crate.js" to listOf("app/models/crate.js"),
+            "app/services/session.js" to listOf(),
 
-            Pair("app/templates/crates.hbs", listOf(
+            "app/templates/crates.hbs" to listOf(
                     "app/controllers/crates.js",
-                    "app/routes/crates.js")),
+                    "app/routes/crates.js"),
 
-            Pair("app/templates/application.hbs", listOf(
+            "app/templates/application.hbs" to listOf(
                     "app/controllers/application.js",
-                    "app/routes/application.js")),
+                    "app/routes/application.js"),
 
-            Pair("app/templates/crate/versions.hbs", listOf(
+            "app/templates/crate/versions.hbs" to listOf(
                     "app/controllers/crate/versions.js",
-                    "app/routes/crate/versions.js")),
+                    "app/routes/crate/versions.js"),
 
-            Pair("app/templates/components/crate-row.hbs", listOf("app/components/crate-row.js"))
+            "app/templates/components/crate-row.hbs" to listOf("app/components/crate-row.js")
     ));
 
     @Test fun testExample() = doTest(EXAMPLE, mapOf(
-            Pair("app/user/adapter.js", listOf("app/user/model.js")),
-            Pair("app/application/adapter.js", listOf()),
-            Pair("app/pet/model.js", listOf("app/pet/serializer.js")),
-            Pair("app/user/model.js", listOf("app/user/adapter.js")),
-            Pair("app/pet/serializer.js", listOf("app/pet/model.js")),
-            Pair("app/session/service.js", listOf())
+            "app/user/adapter.js" to listOf("app/user/model.js"),
+            "app/application/adapter.js" to listOf(),
+            "app/pet/model.js" to listOf("app/pet/serializer.js"),
+            "app/user/model.js" to listOf("app/user/adapter.js"),
+            "app/pet/serializer.js" to listOf("app/pet/model.js"),
+            "app/session/service.js" to listOf()
     ));
 
     @Test fun testAptible() = doTest(APTIBLE, mapOf(
-            Pair("app/components/billing-header/component.js", listOf("app/components/billing-header/template.hbs")),
+            "app/components/billing-header/component.js" to listOf("app/components/billing-header/template.hbs"),
 
-            Pair("app/claim/controller.js", listOf(
+            "app/claim/controller.js" to listOf(
                     "app/claim/route.js",
-                    "app/claim/template.hbs")),
+                    "app/claim/template.hbs"),
 
-            Pair("app/password/reset/controller.js", listOf(
+            "app/password/reset/controller.js" to listOf(
                     "app/password/reset/route.js",
-                    "app/password/reset/template.hbs")),
+                    "app/password/reset/template.hbs"),
 
-            Pair("app/claim/route.js", listOf(
+            "app/claim/route.js" to listOf(
                     "app/claim/controller.js",
-                    "app/claim/template.hbs")),
+                    "app/claim/template.hbs"),
 
-            Pair("app/password/reset/route.js", listOf(
+            "app/password/reset/route.js" to listOf(
                     "app/password/reset/controller.js",
-                    "app/password/reset/template.hbs")),
+                    "app/password/reset/template.hbs"),
 
-            Pair("app/application/route.js", listOf("app/application/template.hbs")),
+            "app/application/route.js" to listOf("app/application/template.hbs"),
 
-            Pair("app/claim/template.hbs", listOf(
+            "app/claim/template.hbs" to listOf(
                     "app/claim/controller.js",
-                    "app/claim/route.js")),
+                    "app/claim/route.js"),
 
-            Pair("app/application/template.hbs", listOf("app/application/route.js")),
+            "app/application/template.hbs" to listOf("app/application/route.js"),
 
-            Pair("app/password/reset/template.hbs", listOf(
+            "app/password/reset/template.hbs" to listOf(
                     "app/password/reset/controller.js",
-                    "app/password/reset/route.js")),
+                    "app/password/reset/route.js"),
 
-            Pair("app/components/billing-header/template.hbs", listOf("app/components/billing-header/component.js"))
+            "app/components/billing-header/template.hbs" to listOf("app/components/billing-header/component.js")
     ))
 
     private fun doTest(root: VirtualFile, tests: Map<String, List<String>>) {

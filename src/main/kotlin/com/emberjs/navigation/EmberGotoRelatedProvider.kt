@@ -48,12 +48,12 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
 
     companion object {
         val RELATED_TYPES = mapOf(
-                Pair("controller", listOf("route", "template")),
-                Pair("route", listOf("controller", "template")),
-                Pair("template", listOf("controller", "route")),
-                Pair("model", listOf("adapter", "serializer")),
-                Pair("adapter", listOf("model", "serializer")),
-                Pair("serializer", listOf("adapter", "model"))
+                "controller" to listOf("route", "template"),
+                "route" to listOf("controller", "template"),
+                "template" to listOf("controller", "route"),
+                "model" to listOf("adapter", "serializer"),
+                "adapter" to listOf("model", "serializer"),
+                "serializer" to listOf("adapter", "model")
         )
     }
 }
