@@ -40,7 +40,7 @@ open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
         return EmberNameIndex.getFilteredKeys(scope) { it.type == moduleType }
 
                 // Filter out components that are not related to this project
-                .filter { EmberNameIndex.getContainingFiles(it, scope).isNotEmpty() }
+                .filter { EmberNameIndex.hasContainingFiles(it, scope) }
 
                 // Convert search results for LookupElements
                 .map { EmberLookupElementBuilder.create(it) }

@@ -12,6 +12,7 @@ import com.intellij.util.CommonProcessors
 import com.intellij.util.FilteringProcessor
 import com.intellij.util.Processor
 import com.intellij.util.indexing.*
+import com.intellij.util.indexing.FileBasedIndex.ValueProcessor
 
 class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
 
@@ -48,6 +49,12 @@ class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
 
         fun getContainingFiles(module: EmberName, scope: GlobalSearchScope): Collection<VirtualFile>
                 = index.getContainingFiles(NAME, module, scope)
+
+        fun hasContainingFiles(module: EmberName, scope: GlobalSearchScope): Boolean {
+            val processor = AnyValueProcessor<Void>()
+            index.processValues(NAME, module, null, processor, scope)
+            return processor.called
+        }
 
         fun getFilteredKeys(scope: GlobalSearchScope, filterFn: (EmberName) -> Boolean): Collection<EmberName> {
             val collector = CommonProcessors.CollectProcessor<EmberName>()
