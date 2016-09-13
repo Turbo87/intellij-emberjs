@@ -13,7 +13,6 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.ProjectScope
 import com.intellij.util.CommonProcessors.CollectProcessor
 import com.intellij.util.FilteringProcessor
-import com.intellij.util.indexing.FileBasedIndex
 
 open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
         PsiPolyVariantReferenceBase<HbMustacheName>(element, TextRange(0, element.textLength), true) {
@@ -21,7 +20,6 @@ open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
     val project = element.project
     private val scope = ProjectScope.getAllScope(project)
 
-    private val index: FileBasedIndex by lazy { FileBasedIndex.getInstance() }
     private val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
 
     open fun matches(module: EmberName) =
@@ -32,12 +30,12 @@ open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
         val filter = FilteringProcessor<EmberName>(Condition { matches(it) }, collector)
 
         // Collect all components from the index
-        index.processAllKeys(EmberNameIndex.NAME, filter, scope, null)
+        EmberNameIndex.processAllKeys(filter, scope)
 
         return collector.results
 
                 // Filter out components that are not related to this project
-                .flatMap { index.getContainingFiles(EmberNameIndex.NAME, it, scope) }
+                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
 
                 // Convert search results for LookupElements
                 .map { psiManager.findFile(it) }
@@ -50,12 +48,12 @@ open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
         val filter = FilteringProcessor<EmberName>(Condition { it.type == moduleType }, collector)
 
         // Collect all components from the index
-        index.processAllKeys(EmberNameIndex.NAME, filter, scope, null)
+        EmberNameIndex.processAllKeys(filter, scope)
 
         return collector.results
 
                 // Filter out components that are not related to this project
-                .filter { index.getContainingFiles(EmberNameIndex.NAME, it, scope).isNotEmpty() }
+                .filter { EmberNameIndex.getContainingFiles(it, scope).isNotEmpty() }
 
                 // Convert search results for LookupElements
                 .map { EmberLookupElementBuilder.create(it) }

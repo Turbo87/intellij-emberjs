@@ -3,7 +3,11 @@ package com.emberjs.index
 import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
 import com.emberjs.utils.guessProject
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil.isAncestor
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.Processor
 import com.intellij.util.indexing.*
 
 class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
@@ -31,5 +35,16 @@ class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
     companion object {
         val NAME: ID<EmberName, Void> = ID.create("ember.names")
         val KEY_DESCRIPTIOR = EmberNameKeyDescriptor()
+
+        private val index by lazy { FileBasedIndex.getInstance() }
+
+        fun getAllKeys(project: Project): Collection<EmberName>
+                = index.getAllKeys(NAME, project)
+
+        fun processAllKeys(processor: Processor<EmberName>, scope: GlobalSearchScope, idFilter: IdFilter? = null)
+                = index.processAllKeys(NAME, processor, scope, idFilter)
+
+        fun getContainingFiles(module: EmberName, scope: GlobalSearchScope): Collection<VirtualFile>
+                = index.getContainingFiles(NAME, module, scope)
     }
 }

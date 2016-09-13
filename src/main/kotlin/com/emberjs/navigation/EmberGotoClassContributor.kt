@@ -13,19 +13,17 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.util.CommonProcessors
 import com.intellij.util.FilteringProcessor
-import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FindSymbolParameters.searchScopeFor
 
 class EmberGotoClassContributor() : ChooseByNameContributor {
 
-    private val index by lazy { FileBasedIndex.getInstance() }
     private val iconProvider by lazy { EmberIconProvider() }
 
     /**
      * Get all entries from the module index and extract the `displayName` property.
      */
     override fun getNames(project: Project, includeNonProjectItems: Boolean): Array<String> {
-        return index.getAllKeys(EmberNameIndex.NAME, project)
+        return EmberNameIndex.getAllKeys(project)
                 .map { it.displayName }
                 .toTypedArray()
     }
@@ -39,13 +37,13 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
         val psiManager = PsiManager.getInstance(project)
 
         // Collect all matching modules from the index
-        index.processAllKeys(EmberNameIndex.NAME, filter, scope, null)
+        EmberNameIndex.processAllKeys(filter, scope)
 
         return collector.results
 
                 // Find the corresponding PsiFiles
                 .flatMap { module ->
-                    index.getContainingFiles(EmberNameIndex.NAME, module, scope)
+                    EmberNameIndex.getContainingFiles(module, scope)
                             .map { psiManager.findFile(it)?.let { Pair(module, it) } }
                             .filterNotNull()
                 }

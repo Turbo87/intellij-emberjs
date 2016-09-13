@@ -65,7 +65,7 @@ class EmberJSLiteralReference(element: JSLiteralExpression, val types: Iterable<
         val keys = arrayListOf<EmberName>()
         val processor = CommonProcessors.CollectProcessor(keys)
 
-        FileBasedIndex.getInstance().processAllKeys(EmberNameIndex.NAME, processor, scope, null)
+        EmberNameIndex.processAllKeys(processor, scope)
 
         return keys.filter { it.type == types.firstOrNull() }
                 .map { EmberLookupElementBuilder.create(it) }
