@@ -14,7 +14,7 @@ class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
 
     override fun getName() = NAME
     override fun getVersion() = 3
-    override fun getKeyDescriptor() = KEY_DESCRIPTIOR
+    override fun getKeyDescriptor() = EmberNameKeyDescriptor()
     override fun dependsOnFileContent() = false
 
     override fun getInputFilter() = FileBasedIndex.InputFilter {
@@ -34,7 +34,6 @@ class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
 
     companion object {
         val NAME: ID<EmberName, Void> = ID.create("ember.names")
-        val KEY_DESCRIPTIOR = EmberNameKeyDescriptor()
 
         private val index by lazy { FileBasedIndex.getInstance() }
 
