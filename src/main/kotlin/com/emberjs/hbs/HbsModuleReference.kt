@@ -11,7 +11,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.ProjectScope
-import com.intellij.util.CommonProcessors
+import com.intellij.util.CommonProcessors.CollectProcessor
 import com.intellij.util.FilteringProcessor
 import com.intellij.util.indexing.FileBasedIndex
 
@@ -28,7 +28,7 @@ open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
             module.type == moduleType && module.name == value
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-        val collector = CommonProcessors.CollectProcessor<EmberName>()
+        val collector = CollectProcessor<EmberName>()
         val filter = FilteringProcessor<EmberName>(Condition { matches(it) }, collector)
 
         // Collect all components from the index
@@ -45,7 +45,7 @@ open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
     }
 
     override fun getVariants(): Array<out Any?> {
-        val collector = CommonProcessors.CollectProcessor<EmberName>()
+        val collector = CollectProcessor<EmberName>()
         val filter = FilteringProcessor<EmberName>(Condition { it.type == moduleType }, collector)
 
         // Collect all components from the index
