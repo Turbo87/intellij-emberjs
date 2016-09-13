@@ -34,14 +34,15 @@ open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
         // Collect all components from the index
         index.processAllKeys(EmberNameIndex.NAME, filter, scope, null)
 
-        return createResults(collector.results
+        return collector.results
 
                 // Filter out components that are not related to this project
                 .flatMap { index.getContainingFiles(EmberNameIndex.NAME, it, scope) }
 
                 // Convert search results for LookupElements
                 .map { psiManager.findFile(it) }
-                .filterNotNull())
+                .filterNotNull()
+                .let { createResults(it) }
     }
 
     override fun getVariants(): Array<out Any?> {
