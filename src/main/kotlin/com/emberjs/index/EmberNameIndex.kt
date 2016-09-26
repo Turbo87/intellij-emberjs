@@ -1,37 +1,26 @@
 package com.emberjs.index
 
-import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
-import com.emberjs.utils.guessProject
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Condition
-import com.intellij.openapi.vfs.VfsUtil.isAncestor
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.CommonProcessors
 import com.intellij.util.FilteringProcessor
 import com.intellij.util.Processor
 import com.intellij.util.indexing.*
-import com.intellij.util.indexing.FileBasedIndex.ValueProcessor
 
 class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
 
     override fun getName() = NAME
-    override fun getVersion() = 3
+    override fun getVersion() = 4
     override fun getKeyDescriptor() = EmberNameKeyDescriptor()
     override fun dependsOnFileContent() = false
 
     override fun getInputFilter() = FileBasedIndex.InputFilter { it.extension in FILE_EXTENSIONS }
 
     override fun getIndexer() = DataIndexer<EmberName, Void?, FileContent> { inputData ->
-        val file = inputData.file
-        val project = file.guessProject() ?: return@DataIndexer mapOf()
-        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return@DataIndexer mapOf()
-
-        roots.filter { isAncestor(it, file, true) }
-                .map { EmberName.from(it, file) }
-                .filterNotNull()
-                .associateBy({ it }, { null })
+        EmberName.from(inputData.file)?.let { mapOf(it to null) } ?: emptyMap()
     }
 
     companion object {
