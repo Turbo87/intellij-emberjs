@@ -83,7 +83,7 @@ data class EmberName(val type: String, val name: String) {
 
                 val name = "$path/${file.nameWithoutExtension.removeSuffix("-test")}".removePrefix("/")
 
-                EmberName("${type.name.toLowerCase()}${testSuffix}", name)
+                EmberName("${type.name.toLowerCase()}$testSuffix", name)
             }
         }
 
@@ -153,7 +153,7 @@ data class EmberName(val type: String, val name: String) {
                             }
                         }
 
-                EmberName("${type.name.toLowerCase()}${testSuffix}", name)
+                EmberName("${type.name.toLowerCase()}$testSuffix", name)
             }
         }
     }
