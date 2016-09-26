@@ -51,7 +51,7 @@ data class EmberName(val type: String, val name: String) {
 
             return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
 
-                var path = file.parents
+                val path = file.parents
                         .takeWhile { it != typeFolder }
                         .map { it.name }
                         .reversed()
@@ -75,7 +75,7 @@ data class EmberName(val type: String, val name: String) {
 
             return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
 
-                var path = file.parents
+                val path = file.parents
                         .takeWhile { it != typeFolder }
                         .map { it.name }
                         .reversed()
@@ -141,7 +141,7 @@ data class EmberName(val type: String, val name: String) {
 
             return EmberFileType.FILE_NAMES[fileName]?.let { type ->
 
-                var name = file.parents
+                val name = file.parents
                         .takeWhile { it != testsFolder }
                         .map { it.name }
                         .reversed()
