@@ -64,13 +64,6 @@ class EmberTestFinder : TestFinder {
 
     override fun isTest(element: PsiElement): Boolean {
         val file = element.originalVirtualFile
-
-        val project = file.guessProject() ?: return false
-        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return false
-
-        return roots.filter { VfsUtil.isAncestor(it, file, true) }
-                .map { EmberName.from(it, file) }
-                .filterNotNull()
-                .any { it.isTest }
+        return EmberName.from(file)?.let { it.isTest } ?: false
     }
 }
