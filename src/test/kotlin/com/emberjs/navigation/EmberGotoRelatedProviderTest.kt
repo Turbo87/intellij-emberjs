@@ -54,7 +54,7 @@ class EmberGotoRelatedProviderTest {
                     "app/routes/crate/versions.js"),
 
             "app/templates/components/crate-row.hbs" to listOf("app/components/crate-row.js")
-    ));
+    ))
 
     @Test fun testExample() = doTest(EXAMPLE, mapOf(
             "app/user/adapter.js" to listOf("app/user/model.js"),
@@ -63,7 +63,7 @@ class EmberGotoRelatedProviderTest {
             "app/user/model.js" to listOf("app/user/adapter.js"),
             "app/pet/serializer.js" to listOf("app/pet/model.js"),
             "app/session/service.js" to listOf()
-    ));
+    ))
 
     @Test fun testAptible() = doTest(APTIBLE, mapOf(
             "app/components/billing-header/component.js" to listOf("app/components/billing-header/template.hbs"),

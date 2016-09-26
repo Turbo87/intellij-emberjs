@@ -45,7 +45,7 @@ data class EmberName(val type: String, val name: String) {
         }
 
         fun fromClassic(appFolder: VirtualFile?, file: VirtualFile): EmberName? {
-            appFolder ?: return null;
+            appFolder ?: return null
 
             val typeFolder = file.parents.find { it.parent == appFolder } ?: return null
 
@@ -105,7 +105,7 @@ data class EmberName(val type: String, val name: String) {
         }
 
         fun fromPod(appFolder: VirtualFile?, file: VirtualFile): EmberName? {
-            appFolder ?: return null;
+            appFolder ?: return null
 
             if (!isAncestor(appFolder, file, true))
                 return null
@@ -127,7 +127,7 @@ data class EmberName(val type: String, val name: String) {
         }
 
         fun fromPodTest(testsFolder: VirtualFile?, file: VirtualFile): EmberName? {
-            testsFolder ?: return null;
+            testsFolder ?: return null
 
             if (!isAncestor(testsFolder, file, true))
                 return null

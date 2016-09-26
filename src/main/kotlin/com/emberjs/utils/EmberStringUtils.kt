@@ -3,9 +3,9 @@ package com.emberjs.utils
 import kotlin.text.MatchResult
 import kotlin.text.Regex
 
-private val STRING_CLASSIFY_REGEXP_1 = Regex("^(\\-|_)+(.)?");
-private val STRING_CLASSIFY_REGEXP_2 = Regex("(.)(\\-|\\_|\\.|\\s)+(.)?");
-private val STRING_CLASSIFY_REGEXP_3 = Regex("(^|\\/|\\.)([a-z])");
+private val STRING_CLASSIFY_REGEXP_1 = Regex("^(\\-|_)+(.)?")
+private val STRING_CLASSIFY_REGEXP_2 = Regex("(.)(\\-|\\_|\\.|\\s)+(.)?")
+private val STRING_CLASSIFY_REGEXP_3 = Regex("(^|\\/|\\.)([a-z])")
 
 public fun String.classify(): String {
     val replace1: (MatchResult) -> String = {
