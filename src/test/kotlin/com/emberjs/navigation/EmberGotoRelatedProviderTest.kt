@@ -1,19 +1,18 @@
 package com.emberjs.navigation
 
-import com.emberjs.EmberTestFixtures.APTIBLE
-import com.emberjs.EmberTestFixtures.CRATES_IO
-import com.emberjs.EmberTestFixtures.EXAMPLE
-import com.emberjs.utils.find
+import com.emberjs.EmberTestFixtures.FIXTURES_PATH
+import com.emberjs.index.EmberNameIndex
 import com.emberjs.utils.use
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.util.indexing.FileBasedIndex
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
 
-class EmberGotoRelatedProviderTest {
+class EmberGotoRelatedProviderTest : LightPlatformCodeInsightFixtureTestCase() {
 
     val provider = EmberGotoRelatedProvider()
 
-    @Test fun testCratesIo() = doTest(CRATES_IO, mapOf(
+    @Test fun testCratesIo() = doTest("crates.io", mapOf(
             "app/adapters/dependency.js" to listOf("app/models/dependency.js"),
             "app/adapters/application.js" to listOf(),
             "app/components/crate-row.js" to listOf("app/templates/components/crate-row.hbs"),
@@ -56,7 +55,7 @@ class EmberGotoRelatedProviderTest {
             "app/templates/components/crate-row.hbs" to listOf("app/components/crate-row.js")
     ))
 
-    @Test fun testExample() = doTest(EXAMPLE, mapOf(
+    @Test fun testExample() = doTest("example", mapOf(
             "app/user/adapter.js" to listOf("app/user/model.js"),
             "app/application/adapter.js" to listOf(),
             "app/pet/model.js" to listOf("app/pet/serializer.js"),
@@ -65,7 +64,7 @@ class EmberGotoRelatedProviderTest {
             "app/session/service.js" to listOf()
     ))
 
-    @Test fun testAptible() = doTest(APTIBLE, mapOf(
+    @Test fun testAptible() = doTest("dashboard.aptible.com", mapOf(
             "app/components/billing-header/component.js" to listOf("app/components/billing-header/template.hbs"),
 
             "app/claim/controller.js" to listOf(
@@ -99,12 +98,24 @@ class EmberGotoRelatedProviderTest {
             "app/components/billing-header/template.hbs" to listOf("app/components/billing-header/component.js")
     ))
 
-    private fun doTest(root: VirtualFile, tests: Map<String, List<String>>) {
+    override fun getTestDataPath() = FIXTURES_PATH.toString()
+
+    private fun doTest(fixtureName: String, tests: Map<String, List<String>>) {
+        // Load fixture files into the project
+        val root = myFixture.copyDirectoryToProject(fixtureName, "/")
+
+        // Rebuild index now that the `package.json` file is copied over
+        FileBasedIndex.getInstance().requestRebuild(EmberNameIndex.NAME)
+
+        val project = myFixture.project
+
         SoftAssertions().use {
             for ((path, related) in tests) {
-                assertThat(provider.getFiles(root, root.find(path)))
+                val file = root.findFileByRelativePath(path)!!
+
+                assertThat(provider.getItems(file, project).map { it.second })
                         .describedAs(path)
-                        .containsExactlyElementsOf(related.map { root.find(it) })
+                        .containsOnly(*related.map { root.findFileByRelativePath(it)!! }.toTypedArray())
             }
         }
     }
