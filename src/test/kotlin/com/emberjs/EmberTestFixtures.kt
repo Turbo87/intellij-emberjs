@@ -18,15 +18,13 @@ object EmberTestFixtures {
 
     fun from(path: Path) = from(path.toFile())
 
-    fun from(file: File): MockVirtualFile {
-        return when {
-            file.isDirectory -> MockVirtualDir(file.name).apply {
-                file.listFiles().forEach { child ->
-                    addChild(from(child))
-                }
+    fun from(file: File): MockVirtualFile = when {
+        file.isDirectory -> MockVirtualDir(file.name).apply {
+            file.listFiles().forEach { child ->
+                addChild(from(child))
             }
-
-            else -> MockVirtualFile(file.name)
         }
+
+        else -> MockVirtualFile(file.name)
     }
 }
