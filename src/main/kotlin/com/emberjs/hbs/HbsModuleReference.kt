@@ -32,7 +32,7 @@ open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
                 // Convert search results for LookupElements
                 .map { psiManager.findFile(it) }
                 .filterNotNull()
-                .let { createResults(it) }
+                .let(::createResults)
     }
 
     override fun getVariants(): Array<out Any?> {
