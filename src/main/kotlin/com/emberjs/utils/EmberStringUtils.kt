@@ -7,7 +7,7 @@ private val STRING_CLASSIFY_REGEXP_1 = Regex("^(\\-|_)+(.)?")
 private val STRING_CLASSIFY_REGEXP_2 = Regex("(.)(\\-|\\_|\\.|\\s)+(.)?")
 private val STRING_CLASSIFY_REGEXP_3 = Regex("(^|\\/|\\.)([a-z])")
 
-public fun String.classify(): String {
+fun String.classify(): String {
     val replace1: (MatchResult) -> String = {
         it.groups[2]?.value?.toUpperCase()?.prepend("_").orEmpty()
     }
@@ -23,5 +23,5 @@ public fun String.classify(): String {
             .replace(STRING_CLASSIFY_REGEXP_3) { it.value.toUpperCase() }
 }
 
-public fun String.prepend(prefix: String) = "$prefix${this}"
-public fun String.append(suffix: String) = "${this}$suffix"
+fun String.prepend(prefix: String) = "$prefix${this}"
+fun String.append(suffix: String) = "${this}$suffix"
