@@ -1,12 +1,9 @@
 package com.emberjs.icons
 
-import com.emberjs.project.EmberProjectComponent
 import com.emberjs.resolver.EmberName
-import com.emberjs.utils.guessProject
 import com.intellij.icons.AllIcons
 import com.intellij.ide.IconProvider
 import com.intellij.openapi.util.Iconable
-import com.intellij.openapi.vfs.VfsUtil.isAncestor
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -19,17 +16,9 @@ class EmberIconProvider : IconProvider() {
 
     fun getIcon(psiFile: PsiFile?) = psiFile?.virtualFile?.let { getIcon(it) }
 
-    fun getIcon(file: VirtualFile): Icon? {
-        if (file.extension != "js" && file.extension != "hbs")
-            return null
-
-        val project = file.guessProject() ?: return null
-        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return null
-
-        return roots.filter { isAncestor(it, file, true) }
-                .map { root -> EmberName.from(root, file)?.let { getIcon(it) } }
-                .filterNotNull()
-                .firstOrNull()
+    fun getIcon(file: VirtualFile) = when {
+        file.extension == "js" -> EmberName.from(file)?.let { getIcon(it) }
+        else -> null
     }
 
     fun getIcon(name: EmberName) = getIcon(name.type)

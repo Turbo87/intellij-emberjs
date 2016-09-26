@@ -1,49 +1,46 @@
 package com.emberjs.navigation
 
-import com.emberjs.project.EmberProjectComponent
+import com.emberjs.index.EmberNameIndex
 import com.emberjs.resolver.EmberName
-import com.emberjs.resolver.EmberResolver
 import com.intellij.navigation.GotoRelatedItem
 import com.intellij.navigation.GotoRelatedProvider
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
+import com.intellij.psi.search.ProjectScope
 
 class EmberGotoRelatedProvider : GotoRelatedProvider() {
 
     override fun getItems(context: DataContext): List<GotoRelatedItem> {
         val project = PlatformDataKeys.PROJECT.getData(context) ?: return listOf()
         val file = PlatformDataKeys.VIRTUAL_FILE.getData(context) ?: return listOf()
-        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return listOf()
 
         val psiManager = PsiManager.getInstance(project)
 
-        return roots.filter { VfsUtil.isAncestor(it, file, true) }
-                .flatMap { root ->
-                    getFiles(root, file).map {
-                        EmberGotoRelatedItem.from(EmberName.from(root, it), psiManager.findFile(it))
-                    }
-                }
+        return getItems(file, project)
+                .map { EmberGotoRelatedItem.from(it.first, psiManager.findFile(it.second)) }
                 .filterNotNull()
     }
 
-    fun getFiles(root: VirtualFile, file: VirtualFile): List<VirtualFile> {
-        val name = EmberName.from(root, file) ?: return listOf()
+    fun getItems(file: VirtualFile, project: Project): List<Pair<EmberName, VirtualFile>> {
+        val name = EmberName.from(file) ?: return listOf()
 
-        val resolver = EmberResolver(root)
+        val modulesToSearch = when {
+            name.type == "template" && name.name.startsWith("components/") ->
+                listOf(EmberName("component", name.name.removePrefix("components/")))
 
-        when (name.type) {
-            "template" -> if (name.name.startsWith("components/")) {
-                return listOf(resolver.resolve("component", name.name.removePrefix("components/"))).filterNotNull()
-            }
-            "component" -> {
-                return listOf(resolver.resolve("template", "components/${name.name}")).filterNotNull()
-            }
+            name.type == "component" ->
+                listOf(EmberName("template", "components/${name.name}"))
+
+            else -> RELATED_TYPES[name.type].orEmpty().map { EmberName(it, name.name) }
         }
 
-        return RELATED_TYPES[name.type].orEmpty().map { resolver.resolve(it, name.name) }.filterNotNull()
+        val scope = ProjectScope.getAllScope(project)
+
+        return EmberNameIndex.getFilteredKeys(scope) { it in modulesToSearch }
+                .flatMap { module -> EmberNameIndex.getContainingFiles(module, scope).map { module to it } }
     }
 
     companion object {
