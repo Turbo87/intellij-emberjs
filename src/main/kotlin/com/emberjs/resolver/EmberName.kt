@@ -45,13 +45,13 @@ data class EmberName(val type: String, val name: String) {
         }
 
         fun fromClassic(appFolder: VirtualFile?, file: VirtualFile): EmberName? {
-            appFolder ?: return null;
+            appFolder ?: return null
 
             val typeFolder = file.parents.find { it.parent == appFolder } ?: return null
 
             return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
 
-                var path = file.parents
+                val path = file.parents
                         .takeWhile { it != typeFolder }
                         .map { it.name }
                         .reversed()
@@ -75,7 +75,7 @@ data class EmberName(val type: String, val name: String) {
 
             return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
 
-                var path = file.parents
+                val path = file.parents
                         .takeWhile { it != typeFolder }
                         .map { it.name }
                         .reversed()
@@ -83,7 +83,7 @@ data class EmberName(val type: String, val name: String) {
 
                 val name = "$path/${file.nameWithoutExtension.removeSuffix("-test")}".removePrefix("/")
 
-                EmberName("${type.name.toLowerCase()}${testSuffix}", name)
+                EmberName("${type.name.toLowerCase()}$testSuffix", name)
             }
         }
 
@@ -105,7 +105,7 @@ data class EmberName(val type: String, val name: String) {
         }
 
         fun fromPod(appFolder: VirtualFile?, file: VirtualFile): EmberName? {
-            appFolder ?: return null;
+            appFolder ?: return null
 
             if (!isAncestor(appFolder, file, true))
                 return null
@@ -127,7 +127,7 @@ data class EmberName(val type: String, val name: String) {
         }
 
         fun fromPodTest(testsFolder: VirtualFile?, file: VirtualFile): EmberName? {
-            testsFolder ?: return null;
+            testsFolder ?: return null
 
             if (!isAncestor(testsFolder, file, true))
                 return null
@@ -141,7 +141,7 @@ data class EmberName(val type: String, val name: String) {
 
             return EmberFileType.FILE_NAMES[fileName]?.let { type ->
 
-                var name = file.parents
+                val name = file.parents
                         .takeWhile { it != testsFolder }
                         .map { it.name }
                         .reversed()
@@ -153,7 +153,7 @@ data class EmberName(val type: String, val name: String) {
                             }
                         }
 
-                EmberName("${type.name.toLowerCase()}${testSuffix}", name)
+                EmberName("${type.name.toLowerCase()}$testSuffix", name)
             }
         }
     }

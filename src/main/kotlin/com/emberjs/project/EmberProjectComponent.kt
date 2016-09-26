@@ -19,7 +19,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.webcore.ScriptingFrameworkDescriptor
 import com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.PROJECT
-import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
+import org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import com.intellij.util.PlatformUtils

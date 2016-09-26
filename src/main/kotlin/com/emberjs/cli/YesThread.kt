@@ -16,7 +16,7 @@ class YesThread(private val process: Process) : Thread("yes") {
             try {
                 Thread.sleep(50)
             } catch (e: InterruptedException) {
-                break;
+                break
             }
         }
     }

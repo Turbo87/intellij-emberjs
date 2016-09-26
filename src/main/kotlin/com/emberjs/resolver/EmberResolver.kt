@@ -39,7 +39,7 @@ class EmberResolver(val root: VirtualFile) {
     private fun resolveTest(testType: String, name: EmberName): VirtualFile? {
         val type = name.type.removeSuffix("-test").removeSuffix("-$testType")
 
-        return find("tests/$testType/${name.name}/${type}-test.js") ?:
+        return find("tests/$testType/${name.name}/$type-test.js") ?:
                 find("tests/$testType/${type}s/${name.name}-test.js")
     }
 

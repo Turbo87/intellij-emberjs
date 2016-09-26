@@ -7,6 +7,6 @@ class EmberLiveTemplatesProvider : DefaultLiveTemplatesProvider {
     override fun getHiddenLiveTemplateFiles() = emptyArray<String>()
 
     companion object {
-        val DEFAULT_TEMPLATES = arrayOf("/com/emberjs/template/Ember.js", "/com/emberjs/template/HTMLBars");
+        val DEFAULT_TEMPLATES = arrayOf("/com/emberjs/template/Ember.js", "/com/emberjs/template/HTMLBars")
     }
 }
