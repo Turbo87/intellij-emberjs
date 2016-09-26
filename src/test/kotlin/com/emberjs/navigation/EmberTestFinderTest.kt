@@ -1,25 +1,27 @@
 package com.emberjs.navigation
 
-import com.emberjs.EmberTestFixtures.APTIBLE
-import com.emberjs.EmberTestFixtures.CRATES_IO
-import com.emberjs.EmberTestFixtures.EXAMPLE
-import com.emberjs.utils.find
+import com.emberjs.EmberTestFixtures.FIXTURES_PATH
+import com.emberjs.index.EmberNameIndex
+import com.emberjs.resolver.EmberName
 import com.emberjs.utils.use
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiManager
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.util.indexing.FileBasedIndex
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
 
-class EmberTestFinderTest {
+class EmberTestFinderTest : LightPlatformCodeInsightFixtureTestCase() {
 
     val finder = EmberTestFinder()
 
-    @Test fun testCratesIo() = doTest(CRATES_IO, mapOf(
+    @Test fun testCratesIo() = doTest("crates.io", mapOf(
             "app/helpers/format-email.js" to listOf("tests/unit/helpers/format-email-test.js"),
             "app/helpers/format-num.js" to listOf("tests/unit/helpers/format-num-test.js"),
             "app/mixins/pagination.js" to listOf("tests/unit/mixins/pagination-test.js")
     ))
 
-    @Test fun testExample() = doTest(EXAMPLE, mapOf(
+    @Test fun testExample() = doTest("example", mapOf(
             "app/pet/model.js" to listOf("tests/unit/pet/model-test.js"),
             "app/pet/serializer.js" to listOf("tests/unit/pet/serializer-test.js"),
             "app/session/service.js" to listOf("tests/unit/session/service-test.js"),
@@ -27,7 +29,7 @@ class EmberTestFinderTest {
             "app/user/model.js" to listOf("tests/unit/user/model-test.js")
     ))
 
-    @Test fun testAptible() = doTest(APTIBLE, mapOf(
+    @Test fun testAptible() = doTest("dashboard.aptible.com", mapOf(
             "app/claim/route.js" to listOf("tests/unit/claim/route-test.js"),
             "app/components/object-select/component.js" to listOf("tests/integration/components/object-select-test.js"),
             "app/components/login-box/component.js" to listOf("tests/unit/components/login-box-test.js"),
@@ -36,17 +38,31 @@ class EmberTestFinderTest {
             "app/databases/index/route.js" to listOf("tests/unit/routes/databases/index-test.js")
     ))
 
-    private fun doTest(root: VirtualFile, tests: Map<String, List<String>>) {
+    override fun getTestDataPath() = FIXTURES_PATH.toString()
+
+    private fun doTest(fixtureName: String, tests: Map<String, List<String>>) {
+        // Load fixture files into the project
+        val root = myFixture.copyDirectoryToProject(fixtureName, "/")
+
+        // Rebuild index now that the `package.json` file is copied over
+        FileBasedIndex.getInstance().requestRebuild(EmberNameIndex.NAME)
+
+        val project = myFixture.project
+        val psiManager = PsiManager.getInstance(project)
+
         SoftAssertions().use {
             for ((path, relatedTests) in tests) {
-                assertThat(finder.findTestsForClass(root.find(path), root))
-                        .describedAs(path)
-                        .containsExactlyElementsOf(relatedTests.map { root.find(it) })
+                val file = root.findFileByRelativePath(path)!!
+                val relatedFiles = relatedTests.map { root.findFileByRelativePath(it)!! }
 
-                relatedTests.forEach {
-                    assertThat(finder.findClassesForTest(root.find(it), root))
+                assertThat(finder.findTestsForClass(psiManager.findFile(file)!!))
+                        .describedAs(path)
+                        .containsOnly(*relatedFiles.map { psiManager.findFile(it)!! }.toTypedArray())
+
+                relatedFiles.forEach {
+                    assertThat(finder.findClassesForTest(psiManager.findFile(it)!!))
                             .describedAs(path)
-                            .isEqualTo(root.find(path))
+                            .containsOnly(psiManager.findFile(file)!!)
                 }
             }
         }

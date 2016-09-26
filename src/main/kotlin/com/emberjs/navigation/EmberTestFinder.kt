@@ -1,15 +1,12 @@
 package com.emberjs.navigation
 
-import com.emberjs.project.EmberProjectComponent
+import com.emberjs.index.EmberNameIndex
 import com.emberjs.resolver.EmberName
-import com.emberjs.resolver.EmberResolver
-import com.emberjs.utils.guessProject
 import com.emberjs.utils.originalVirtualFile
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
+import com.intellij.psi.search.ProjectScope
 import com.intellij.testIntegration.TestFinder
 
 class EmberTestFinder : TestFinder {
@@ -18,48 +15,40 @@ class EmberTestFinder : TestFinder {
     }
 
     override fun findTestsForClass(element: PsiElement): Collection<PsiElement> {
+        val project = element.project
         val file = element.originalVirtualFile
 
-        val project = file.guessProject() ?: return emptyList()
-        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return listOf()
+        val name = EmberName.from(file) ?: return emptyList()
+
+        val search = listOf("-test", "-integration-test")
+                .map { EmberName("${name.type}$it", name.name) }
 
         val psiManager = PsiManager.getInstance(project)
+        val scope = ProjectScope.getAllScope(project)
 
-        return roots.filter { VfsUtil.isAncestor(it, file, true) }
-                .flatMap { findTestsForClass(file, it) }
-                .map { psiManager.findFile(it) }
+        return EmberNameIndex.getFilteredKeys(scope) { it in search }
+                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
                 .filterNotNull()
-    }
-
-    fun findTestsForClass(file: VirtualFile, root: VirtualFile): Collection<VirtualFile> {
-        val name = EmberName.from(root, file) ?: return emptyList()
-
-        val resolver = EmberResolver(root)
-        return listOf("-test", "-integration-test")
-                .map { resolver.resolve("${name.type}$it", name.name) }
+                .map { psiManager.findFile(it) }
                 .filterNotNull()
     }
 
     override fun findClassesForTest(element: PsiElement): Collection<PsiElement> {
+        val project = element.project
         val file = element.originalVirtualFile
 
-        val project = file.guessProject() ?: return emptyList()
-        val roots = EmberProjectComponent.getInstance(project)?.roots ?: return listOf()
+        val name = EmberName.from(file) ?: return emptyList()
+
+        val search = EmberName(name.type.removeSuffix("-test").removeSuffix("-integration"), name.name)
 
         val psiManager = PsiManager.getInstance(project)
+        val scope = ProjectScope.getAllScope(project)
 
-        return roots.filter { VfsUtil.isAncestor(it, file, true) }
-                .map { findClassesForTest(file, it) }
+        return EmberNameIndex.getFilteredKeys(scope) { it == search }
+                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
                 .filterNotNull()
                 .map { psiManager.findFile(it) }
                 .filterNotNull()
-    }
-
-    fun findClassesForTest(file: VirtualFile, root: VirtualFile): VirtualFile? {
-        val name = EmberName.from(root, file) ?: return null
-
-        return EmberResolver(root)
-                .resolve(name.type.removeSuffix("-test").removeSuffix("-integration"), name.name)
     }
 
     override fun isTest(element: PsiElement): Boolean {
