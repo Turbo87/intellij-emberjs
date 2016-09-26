@@ -1,6 +1,5 @@
 package com.emberjs.hbs
 
-import com.dmarcotte.handlebars.psi.HbMustacheName
 import com.intellij.patterns.ElementPattern
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
@@ -8,10 +7,12 @@ import com.intellij.util.ProcessingContext
 class HbsReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         with(registrar) {
-            register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsComponentReference(it as HbMustacheName) }
-            register(HbsPatterns.BLOCK_MUSTACHE_NAME) { HbsComponentReference(it as HbMustacheName) }
-            register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsModuleReference(it as HbMustacheName, "helper") }
-            register(HbsPatterns.SUB_EXPR_NAME) { HbsModuleReference(it as HbMustacheName, "helper") }
+            register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsComponentReference(it) }
+            register(HbsPatterns.BLOCK_MUSTACHE_NAME) { HbsComponentReference(it) }
+            register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsModuleReference(it, "helper") }
+            register(HbsPatterns.SUB_EXPR_NAME) { HbsModuleReference(it, "helper") }
+            registerReferenceProvider(HbsPatterns.LINK_TO_BLOCK_TARGET, HbsLinkToReferenceProvider())
+            registerReferenceProvider(HbsPatterns.LINK_TO_SIMPLE_TARGET, HbsLinkToReferenceProvider())
         }
     }
 

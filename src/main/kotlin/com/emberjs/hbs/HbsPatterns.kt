@@ -1,10 +1,11 @@
 package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
-import com.dmarcotte.handlebars.psi.HbMustacheName
+import com.dmarcotte.handlebars.psi.*
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiWhiteSpace
 
 object HbsPatterns {
     val SIMPLE_MUSTACHE_NAME: Capture<HbMustacheName> = psiElement(HbMustacheName::class.java)
@@ -26,4 +27,17 @@ object HbsPatterns {
 
     val SUB_EXPR_NAME_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
             .withSuperParent(3, SUB_EXPR_NAME)
+
+    val LINK_TO_BLOCK_TARGET = psiElement(HbParam::class.java)
+            .withChild(psiElement(HbStringLiteral::class.java))
+            .withParent(psiElement(HbOpenBlockMustache::class.java))
+            .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbMustacheName::class.java)
+                    .withText("link-to"))
+
+    val LINK_TO_SIMPLE_TARGET = psiElement(HbParam::class.java)
+            .withChild(psiElement(HbStringLiteral::class.java))
+            .withParent(psiElement(HbSimpleMustache::class.java))
+            .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbParam::class.java)
+                    .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbMustacheName::class.java)
+                            .withText("link-to")))
 }

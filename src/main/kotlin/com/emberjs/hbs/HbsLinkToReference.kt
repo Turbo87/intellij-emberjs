@@ -11,20 +11,29 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.ProjectScope
 
-open class HbsModuleReference(element: PsiElement, val moduleType: String) :
-        PsiPolyVariantReferenceBase<PsiElement>(element, TextRange(0, element.textLength), true) {
+class HbsLinkToReference(element: PsiElement, range: TextRange, val moduleName: String) :
+        PsiPolyVariantReferenceBase<PsiElement>(element, range, true) {
 
-    val project = element.project
+    private val project = element.project
     private val scope = ProjectScope.getAllScope(project)
 
     private val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
 
-    open fun matches(module: EmberName) =
-            module.type == moduleType && module.name == value
+    override fun getVariants(): Array<out Any> {
+        // Collect all components from the index
+        return EmberNameIndex.getFilteredKeys(scope) { matches(it) }
+
+                // Filter out components that are not related to this project
+                .filter { EmberNameIndex.hasContainingFiles(it, scope) }
+
+                // Convert search results for LookupElements
+                .map { EmberLookupElementBuilder.create(it) }
+                .toTypedArray()
+    }
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         // Collect all components from the index
-        return EmberNameIndex.getFilteredKeys(scope) { matches(it) }
+        return EmberNameIndex.getFilteredKeys(scope) { matches(it) && it.name == moduleName }
 
                 // Filter out components that are not related to this project
                 .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
@@ -35,15 +44,14 @@ open class HbsModuleReference(element: PsiElement, val moduleType: String) :
                 .let(::createResults)
     }
 
-    override fun getVariants(): Array<out Any?> {
-        // Collect all components from the index
-        return EmberNameIndex.getFilteredKeys(scope) { it.type == moduleType }
+    fun matches(module: EmberName): Boolean {
+        if (module.type == "template")
+            return !module.name.startsWith("components/")
 
-                // Filter out components that are not related to this project
-                .filter { EmberNameIndex.hasContainingFiles(it, scope) }
+        return module.type in MODULE_TYPES
+    }
 
-                // Convert search results for LookupElements
-                .map { EmberLookupElementBuilder.create(it) }
-                .toTypedArray()
+    companion object {
+        val MODULE_TYPES = arrayOf("controller", "route")
     }
 }
