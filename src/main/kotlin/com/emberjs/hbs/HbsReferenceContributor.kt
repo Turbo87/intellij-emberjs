@@ -11,6 +11,8 @@ class HbsReferenceContributor : PsiReferenceContributor() {
             register(HbsPatterns.BLOCK_MUSTACHE_NAME) { HbsComponentReference(it) }
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsModuleReference(it, "helper") }
             register(HbsPatterns.SUB_EXPR_NAME) { HbsModuleReference(it, "helper") }
+            registerReferenceProvider(HbsPatterns.LINK_TO_BLOCK_TARGET, HbsLinkToReferenceProvider())
+            registerReferenceProvider(HbsPatterns.LINK_TO_SIMPLE_TARGET, HbsLinkToReferenceProvider())
         }
     }
 
