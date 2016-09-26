@@ -21,9 +21,7 @@ class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
     override fun getKeyDescriptor() = EmberNameKeyDescriptor()
     override fun dependsOnFileContent() = false
 
-    override fun getInputFilter() = FileBasedIndex.InputFilter {
-        it.extension == "js" || it.extension == "hbs" || it.extension == "handlebars"
-    }
+    override fun getInputFilter() = FileBasedIndex.InputFilter { it.extension in FILE_EXTENSIONS }
 
     override fun getIndexer() = DataIndexer<EmberName, Void?, FileContent> { inputData ->
         val file = inputData.file
@@ -38,6 +36,7 @@ class EmberNameIndex() : ScalarIndexExtension<EmberName>() {
 
     companion object {
         val NAME: ID<EmberName, Void> = ID.create("ember.names")
+        private val FILE_EXTENSIONS = setOf("js", "hbs", "handlebars")
 
         private val index by lazy { FileBasedIndex.getInstance() }
 
