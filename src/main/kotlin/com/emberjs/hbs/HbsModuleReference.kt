@@ -1,18 +1,18 @@
 package com.emberjs.hbs
 
-import com.dmarcotte.handlebars.psi.HbMustacheName
 import com.emberjs.index.EmberNameIndex
 import com.emberjs.lookup.EmberLookupElementBuilder
 import com.emberjs.resolver.EmberName
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult.createResults
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.ProjectScope
 
-open class HbsModuleReference(element: HbMustacheName, val moduleType: String) :
-        PsiPolyVariantReferenceBase<HbMustacheName>(element, TextRange(0, element.textLength), true) {
+open class HbsModuleReference(element: PsiElement, val moduleType: String) :
+        PsiPolyVariantReferenceBase<PsiElement>(element, TextRange(0, element.textLength), true) {
 
     val project = element.project
     private val scope = ProjectScope.getAllScope(project)
