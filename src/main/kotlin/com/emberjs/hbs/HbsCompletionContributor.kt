@@ -15,13 +15,13 @@ class HbsCompletionContributor : CompletionContributor() {
     init {
         extend(CompletionType.BASIC, SIMPLE_MUSTACHE_NAME_ID, HbsBuiltinHelperCompletionProvider(
                 "action", "component", "debugger", "get", "if", "input", "link-to", "loc", "log",
-                "outlet", "partial", "render", "textarea", "unbound"))
+                "outlet", "partial", "readonly", "render", "textarea", "unbound"))
 
         extend(CompletionType.BASIC, BLOCK_MUSTACHE_NAME_ID, HbsBuiltinHelperCompletionProvider(
                 "component", "each", "each-in", "if", "link-to", "unless", "with"))
 
         extend(CompletionType.BASIC, SUB_EXPR_NAME_ID, HbsBuiltinHelperCompletionProvider(
                 "action", "component", "concat", "get", "hash", "if", "loc", "mut", "query-params",
-                "unbound", "unless"))
+                "readonly", "unbound", "unless"))
     }
 }
