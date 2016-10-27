@@ -22,6 +22,6 @@ class HbsCompletionContributor : CompletionContributor() {
 
         extend(CompletionType.BASIC, SUB_EXPR_NAME_ID, HbsBuiltinHelperCompletionProvider(
                 "action", "component", "concat", "get", "hash", "if", "loc", "mut", "query-params",
-                "unbound", "unless"))
+                "readonly", "unbound", "unless"))
     }
 }
