@@ -34,6 +34,15 @@ fun VirtualFile.getEmberModule(project: Project) =
 fun VirtualFile.visitChildrenRecursively(visitor: VirtualFileVisitor<Any>) =
         VfsUtil.visitChildrenRecursively(this, visitor)
 
+val VirtualFile.isEmberFolder: Boolean
+    get() = findFileByRelativePath("app/app.js") != null ||
+            findFileByRelativePath(".ember-cli") != null
+
+val VirtualFile.isInRepoAddon: Boolean
+    get() = findFileByRelativePath("package.json") != null &&
+            parent.name == "lib" &&
+            parent.parent.isEmberFolder
+
 /**
  * Searches all parent paths until it finds a path containing a `package.json` file.
  */
@@ -45,4 +54,4 @@ val VirtualFile.parentModule: VirtualFile?
  * then checks if the package is an Ember CLI project.
  */
 val VirtualFile.parentEmberModule: VirtualFile?
-    get() = this.parentModule?.let { if (it.findChild(".ember-cli") != null) it else null }
+    get() = this.parentModule?.let { if (it.isEmberFolder || it.isInRepoAddon) it else null }
