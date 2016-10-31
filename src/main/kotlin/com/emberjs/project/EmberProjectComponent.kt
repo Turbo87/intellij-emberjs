@@ -25,6 +25,8 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import com.intellij.util.PlatformUtils
 import org.jetbrains.jps.model.JpsElement
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType
+import com.emberjs.utils.isEmberFolder
+import com.emberjs.utils.isInRepoAddon
 
 /**
  * This class is responsible for looking for folders with an `app/app.js` file on project load
@@ -166,15 +168,6 @@ class EmberProjectComponent(val project: Project) : AbstractProjectComponent(pro
         if (EmberApplicationOptions.excludeBowerComponents)
             entry.addExcludeFolder("$rootUrl/bower_components")
     }
-
-    private val VirtualFile.isEmberFolder: Boolean
-        get() = findFileByRelativePath("app/app.js") != null ||
-                findFileByRelativePath(".ember-cli") != null
-
-    private val VirtualFile.isInRepoAddon: Boolean
-        get() = isDirectory &&
-                findFileByRelativePath("package.json") != null &&
-                findFileByRelativePath("index.js") != null
 
     companion object {
         private val IGNORED_FOLDERS = listOf("node_modules", "bower_components", "dist", "tmp")
