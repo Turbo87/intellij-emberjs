@@ -16,7 +16,7 @@ matrix:
 
 before_deploy:
   - ./gradlew buildPlugin
-  - if [[ $ORG_GRADLE_PROJECT_INTELLIJ_VERSION = 2016.1 ]]; then ./gradlew publishPlugin; fi
+  - if [[ $ORG_GRADLE_PROJECT_INTELLIJ_VERSION = 2016.2 ]]; then ./gradlew publishPlugin; fi
 
 deploy:
   provider: releases
