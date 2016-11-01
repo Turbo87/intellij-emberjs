@@ -3,8 +3,9 @@ Changelog
 ===============================================================================
 
 
-## v2.2.0
+## v2016.2.1
 
+- Change release naming scheme to reflect IntelliJ target version
 - Add `{{link-to}}` target completion and resolving to Handlebars 
   templates (#71)
 - Add `readonly` helper completion to Handlebars templates (#81)
