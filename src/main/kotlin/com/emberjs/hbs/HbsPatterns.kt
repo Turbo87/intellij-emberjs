@@ -29,13 +29,13 @@ object HbsPatterns {
     val SUB_EXPR_NAME_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
             .withSuperParent(3, SUB_EXPR_NAME)
 
-    val LINK_TO_BLOCK_TARGET = psiElement(HbParam::class.java)
+    val LINK_TO_BLOCK_TARGET: Capture<HbParam> = psiElement(HbParam::class.java)
             .withChild(psiElement(HbStringLiteral::class.java))
             .withParent(psiElement(HbOpenBlockMustache::class.java))
             .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbMustacheName::class.java)
                     .withText("link-to"))
 
-    val LINK_TO_SIMPLE_TARGET = psiElement(HbParam::class.java)
+    val LINK_TO_SIMPLE_TARGET: Capture<HbParam> = psiElement(HbParam::class.java)
             .withChild(psiElement(HbStringLiteral::class.java))
             .withParent(psiElement(HbSimpleMustache::class.java))
             .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbParam::class.java)
