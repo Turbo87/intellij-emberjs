@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
-        classpath 'com.github.JetBrains:gradle-intellij-plugin:835db33'
+        classpath 'com.github.JetBrains:gradle-intellij-plugin:2749c1c'
     }
 }
 
