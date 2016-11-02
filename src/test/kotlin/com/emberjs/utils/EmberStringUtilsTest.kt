@@ -5,23 +5,48 @@ import org.junit.Test
 
 class EmberStringUtilsTest {
 
-    @Test fun `classify normal string`() = doTest("my favorite items", "MyFavoriteItems")
-    @Test fun `classify dasherized string`() = doTest("css-class-name", "CssClassName")
-    @Test fun `classify underscored string`() = doTest("action_name", "ActionName")
-    @Test fun `classify namespaced camelized string`() = doTest("privateDocs/ownerInvoice", "PrivateDocs/OwnerInvoice")
-    @Test fun `classify namespaced underscored string`() = doTest("private_docs/owner_invoice", "PrivateDocs/OwnerInvoice")
-    @Test fun `classify namespaced dasherized string`() = doTest("private-docs/owner-invoice", "PrivateDocs/OwnerInvoice")
-    @Test fun `classify prefixed dasherized string`() = doTest("-view-registry", "_ViewRegistry")
-    @Test fun `classify namespaced prefixed dasherized string`() = doTest("components/-text-field", "Components/_TextField")
-    @Test fun `classify underscore-prefixed underscored string`() = doTest("_Foo_Bar", "_FooBar")
-    @Test fun `classify underscore-prefixed dasherized string`() = doTest("_Foo-Bar", "_FooBar")
-    @Test fun `classify underscore-prefixed-namespaced underscore-prefixed string`() = doTest("_foo/_bar", "_Foo/_Bar")
-    @Test fun `classify dash-prefixed-namespaced underscore-prefixed string`() = doTest("-foo/_bar", "_Foo/_Bar")
-    @Test fun `classify dash-prefixed-namespaced dash-prefixed string`() = doTest("-foo/-bar", "_Foo/_Bar")
-    @Test fun `does nothing with classified string`() = doTest("InnerHTML", "InnerHTML")
-    @Test fun `does nothing with classified prefixed string`() = doTest("_FooBar", "_FooBar")
+    @Test fun `classify normal string`() = classify("my favorite items", "MyFavoriteItems")
+    @Test fun `classify dasherized string`() = classify("css-class-name", "CssClassName")
+    @Test fun `classify underscored string`() = classify("action_name", "ActionName")
+    @Test fun `classify namespaced camelized string`() = classify("privateDocs/ownerInvoice", "PrivateDocs/OwnerInvoice")
+    @Test fun `classify namespaced underscored string`() = classify("private_docs/owner_invoice", "PrivateDocs/OwnerInvoice")
+    @Test fun `classify namespaced dasherized string`() = classify("private-docs/owner-invoice", "PrivateDocs/OwnerInvoice")
+    @Test fun `classify prefixed dasherized string`() = classify("-view-registry", "_ViewRegistry")
+    @Test fun `classify namespaced prefixed dasherized string`() = classify("components/-text-field", "Components/_TextField")
+    @Test fun `classify underscore-prefixed underscored string`() = classify("_Foo_Bar", "_FooBar")
+    @Test fun `classify underscore-prefixed dasherized string`() = classify("_Foo-Bar", "_FooBar")
+    @Test fun `classify underscore-prefixed-namespaced underscore-prefixed string`() = classify("_foo/_bar", "_Foo/_Bar")
+    @Test fun `classify dash-prefixed-namespaced underscore-prefixed string`() = classify("-foo/_bar", "_Foo/_Bar")
+    @Test fun `classify dash-prefixed-namespaced dash-prefixed string`() = classify("-foo/-bar", "_Foo/_Bar")
+    @Test fun `does nothing with classified string`() = classify("InnerHTML", "InnerHTML")
+    @Test fun `does nothing with classified prefixed string`() = classify("_FooBar", "_FooBar")
 
-    private fun doTest(input: String, expected: String) {
+    @Test fun `decamelize does nothing with normal string`() = decamelize("my favorite items", "my favorite items")
+    @Test fun `decamelize does nothing with dasherized string`() = decamelize("css-class-name", "css-class-name")
+    @Test fun `decamelize does nothing with underscored string`() = decamelize("action_name", "action_name")
+    @Test fun `decamelize converts a camelized string into all lower case separated by underscores`() = decamelize("innerHTML", "inner_html")
+    @Test fun `decamelizes strings with numbers`() = decamelize("size160Url", "size160_url")
+    @Test fun `decamelize namespaced classified string`() = decamelize("PrivateDocs/OwnerInvoice", "private_docs/owner_invoice")
+    @Test fun `decamelize namespaced camelized string`() = decamelize("privateDocs/ownerInvoice", "private_docs/owner_invoice")
+
+    @Test fun `dasherize normal string`() = dasherize("my favorite items", "my-favorite-items");
+    @Test fun `dasherize does nothing with dasherized string`() = dasherize("css-class-name", "css-class-name");
+    @Test fun `dasherize underscored string`() = dasherize("action_name", "action-name");
+    @Test fun `dasherize camelcased string`() = dasherize("innerHTML", "inner-html");
+    @Test fun `dasherize string that is the property name of Object prototype`() = dasherize("toString", "to-string");
+    @Test fun `dasherize namespaced classified string`() = dasherize("PrivateDocs/OwnerInvoice", "private-docs/owner-invoice");
+    @Test fun `dasherize namespaced camelized string`() = dasherize("privateDocs/ownerInvoice", "private-docs/owner-invoice");
+    @Test fun `dasherize namespaced underscored string`() = dasherize("private_docs/owner_invoice", "private-docs/owner-invoice");
+
+    private fun classify(input: String, expected: String) {
         assertThat(input.classify()).isEqualTo(expected)
+    }
+
+    private fun decamelize(input: String, expected: String) {
+        assertThat(input.decamelize()).isEqualTo(expected)
+    }
+
+    private fun dasherize(input: String, expected: String) {
+        assertThat(input.dasherize()).isEqualTo(expected)
     }
 }
