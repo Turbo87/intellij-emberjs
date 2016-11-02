@@ -51,6 +51,7 @@
         <fileBasedIndex implementation="com.emberjs.index.EmberNameIndex"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
         <gotoRelatedProvider implementation="com.emberjs.navigation.EmberGotoRelatedProvider"/>
+        <annotator language="ECMAScript 6" implementationClass="com.emberjs.psi.EmberInjectionAnnotator"/>
 
         <testFinder implementation="com.emberjs.navigation.EmberTestFinder"/>
 
