@@ -29,11 +29,24 @@ class EmberStringUtilsTest {
     @Test fun `decamelize namespaced classified string`() = decamelize("PrivateDocs/OwnerInvoice", "private_docs/owner_invoice")
     @Test fun `decamelize namespaced camelized string`() = decamelize("privateDocs/ownerInvoice", "private_docs/owner_invoice")
 
+    @Test fun `dasherize normal string`() = dasherize("my favorite items", "my-favorite-items");
+    @Test fun `dasherize does nothing with dasherized string`() = dasherize("css-class-name", "css-class-name");
+    @Test fun `dasherize underscored string`() = dasherize("action_name", "action-name");
+    @Test fun `dasherize camelcased string`() = dasherize("innerHTML", "inner-html");
+    @Test fun `dasherize string that is the property name of Object prototype`() = dasherize("toString", "to-string");
+    @Test fun `dasherize namespaced classified string`() = dasherize("PrivateDocs/OwnerInvoice", "private-docs/owner-invoice");
+    @Test fun `dasherize namespaced camelized string`() = dasherize("privateDocs/ownerInvoice", "private-docs/owner-invoice");
+    @Test fun `dasherize namespaced underscored string`() = dasherize("private_docs/owner_invoice", "private-docs/owner-invoice");
+
     private fun classify(input: String, expected: String) {
         assertThat(input.classify()).isEqualTo(expected)
     }
 
     private fun decamelize(input: String, expected: String) {
         assertThat(input.decamelize()).isEqualTo(expected)
+    }
+
+    private fun dasherize(input: String, expected: String) {
+        assertThat(input.dasherize()).isEqualTo(expected)
     }
 }

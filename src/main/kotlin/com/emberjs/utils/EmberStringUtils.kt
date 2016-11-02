@@ -28,5 +28,9 @@ private val STRING_DECAMELIZE_REGEXP = Regex("([a-z\\d])([A-Z])")
 
 fun String.decamelize(): String = replace(STRING_DECAMELIZE_REGEXP, "$1_$2").toLowerCase(Locale.ROOT)
 
+private val STRING_DASHERIZE_REGEXP = Regex("[ _]")
+
+fun String.dasherize(): String = decamelize().replace(STRING_DASHERIZE_REGEXP, "-")
+
 fun String.prepend(prefix: String) = "$prefix${this}"
 fun String.append(suffix: String) = "${this}$suffix"
