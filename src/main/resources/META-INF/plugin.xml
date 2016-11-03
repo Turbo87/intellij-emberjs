@@ -32,7 +32,7 @@
          on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
     <depends>JavaScript</depends>
-    <depends optional="true">com.dmarcotte.handlebars</depends>
+    <depends optional="true" config-file="handlebars.xml">com.dmarcotte.handlebars</depends>
 
     <project-components>
         <component>
@@ -56,9 +56,6 @@
         <testFinder implementation="com.emberjs.navigation.EmberTestFinder"/>
 
         <psi.referenceContributor language="JavaScript" implementation="com.emberjs.psi.EmberReferenceContributor"/>
-
-        <completion.contributor language="Handlebars" implementationClass="com.emberjs.hbs.HbsCompletionContributor"/>
-        <psi.referenceContributor language="Handlebars" implementation="com.emberjs.hbs.HbsReferenceContributor"/>
 
         <iconProvider implementation="com.emberjs.icons.EmberIconProvider" order="first"/>
 
