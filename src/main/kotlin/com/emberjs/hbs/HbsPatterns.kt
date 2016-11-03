@@ -43,4 +43,12 @@ object HbsPatterns {
             .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbParam::class.java)
                     .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbMustacheName::class.java)
                             .withText("link-to")))
+
+    val TRANSLATION_KEY: Capture<HbParam> = STRING_PARAM
+            .withParent(psiElement(HbSimpleMustache::class.java))
+            .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbMustacheName::class.java).withText("t"))
+
+    val TRANSLATION_KEY_IN_SEXPR: Capture<HbParam> = STRING_PARAM
+            .withParent(psiElement(HbParam::class.java))
+            .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbParam::class.java).withText("t"))
 }
