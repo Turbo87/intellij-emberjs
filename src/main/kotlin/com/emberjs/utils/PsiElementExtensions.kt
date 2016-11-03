@@ -16,3 +16,18 @@ val PsiElement.module: Module?
 
 val PsiElement.emberModule: Module?
     get() = module?.let { if (ModuleType.get(it) is EmberModuleType) it else null }
+
+val PsiElement.parents: Iterable<PsiElement>
+    get() = object : Iterable<PsiElement> {
+        override fun iterator(): Iterator<PsiElement> {
+            var file = this@parents
+
+            return object : Iterator<PsiElement> {
+                override fun hasNext() = file.parent != null
+                override fun next(): PsiElement {
+                    file = file.parent
+                    return file
+                }
+            }
+        }
+    }

@@ -58,6 +58,8 @@
 
         <psi.referenceContributor language="JavaScript" implementation="com.emberjs.psi.EmberReferenceContributor"/>
 
+        <fileBasedIndex implementation="com.emberjs.intl.EmberTranslationIndex"/>
+
         <iconProvider implementation="com.emberjs.icons.EmberIconProvider" order="first"/>
 
         <defaultLiveTemplatesProvider implementation="com.emberjs.template.EmberLiveTemplatesProvider"/>
