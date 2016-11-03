@@ -16,6 +16,12 @@ class EmberTranslationIndexTest : LightPlatformCodeInsightFixtureTestCase() {
     fun testQuotes3() = doTest("quote-test3", mapOf("en" to "Foo\"bar"))
     fun testQuotes4() = doTest("quote-test4", mapOf("en" to "Foo\"bar"))
 
+    fun testAllKeys() {
+        val keys = EmberTranslationIndex.getTranslationKeys(myFixture.project)
+        assertThat(keys).containsOnly("foo", "long-string", "parent.child",
+                "quote-test1", "quote-test2", "quote-test3", "quote-test4")
+    }
+
     override fun getTestDataPath(): String? {
         val resource = ClassLoader.getSystemResource("com/emberjs/intl/fixtures")
         return Paths.get(resource.toURI()).toAbsolutePath().toString()

@@ -5,6 +5,7 @@ import com.emberjs.utils.parents
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.util.PsiFilter
+import com.intellij.util.CommonProcessors.CollectProcessor
 import com.intellij.util.indexing.*
 import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
@@ -46,6 +47,12 @@ class EmberTranslationIndex() : FileBasedIndexExtension<String, String>() {
         }
 
         private val index by lazy { FileBasedIndex.getInstance() }
+
+        fun getTranslationKeys(project: Project): Set<String> {
+            val processor = CollectProcessor<String>()
+            index.processAllKeys(NAME, processor, project)
+            return processor.results.toSet()
+        }
 
         fun getTranslations(key: String, project: Project): Map<String, String> {
             val result = LinkedHashMap<String, String>()
