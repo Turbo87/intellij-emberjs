@@ -27,4 +27,5 @@ class HbsTranslationFoldingBuilderTest : LightPlatformCodeInsightFixtureTestCase
 
     fun testFolding() = doTest("folding-test")
     fun testUnknownTranslation() = doTest("missing-translation-folding-test")
+    fun testSubexpression() = doTest("sexpr-folding-test")
 }

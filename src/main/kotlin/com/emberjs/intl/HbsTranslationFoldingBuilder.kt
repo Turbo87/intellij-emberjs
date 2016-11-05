@@ -15,9 +15,10 @@ class HbsTranslationFoldingBuilder : FoldingBuilder {
     override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
         val file = node.psi as? HbPsiFile ?: return emptyArray()
 
-        return file.collect(HbsPatterns.TRANSLATION_KEY.toFilter())
-                .map { buildFoldingDescriptor(it) }
-                .toTypedArray()
+        val simpleMustaches = file.collect(HbsPatterns.TRANSLATION_KEY.toFilter())
+        val subexpressions = file.collect(HbsPatterns.TRANSLATION_KEY_IN_SEXPR.toFilter())
+
+        return (simpleMustaches + subexpressions).map { buildFoldingDescriptor(it) }.toTypedArray()
     }
 
     private fun buildFoldingDescriptor(element: HbParam): FoldingDescriptor {
@@ -30,11 +31,15 @@ class HbsTranslationFoldingBuilder : FoldingBuilder {
         // store translations on ASTNode user data
         element.node.putUserData(TRANSLATIONS_KEY, translations)
 
-        // return FoldingDescriptor
         return FoldingDescriptor(element, element.parent.textRange)
     }
 
-    override fun getPlaceholderText(node: ASTNode): String? {
+    override fun getPlaceholderText(node: ASTNode): String? = when {
+        node.psi.parent is HbParam -> "\"${getRawPlaceholderText(node)}\""
+        else -> getRawPlaceholderText(node)
+    }
+
+    fun getRawPlaceholderText(node: ASTNode): String {
         return node.getUserData(TRANSLATIONS_KEY)?.get("en") ?:
                 "Missing translation: ${node.text.substring(1, node.textLength - 1)}"
     }
