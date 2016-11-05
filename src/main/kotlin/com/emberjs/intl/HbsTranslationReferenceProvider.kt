@@ -1,4 +1,4 @@
-package com.emberjs.hbs
+package com.emberjs.intl
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -11,4 +11,3 @@ class HbsTranslationReferenceProvider : PsiReferenceProvider() {
         return arrayOf(HbsTranslationReference(element, TextRange(1, element.text.length - 1)))
     }
 }
-

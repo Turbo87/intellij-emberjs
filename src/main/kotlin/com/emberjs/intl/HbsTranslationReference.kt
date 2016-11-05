@@ -1,6 +1,5 @@
-package com.emberjs.hbs
+package com.emberjs.intl
 
-import com.emberjs.intl.EmberTranslationIndex
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReferenceBase
