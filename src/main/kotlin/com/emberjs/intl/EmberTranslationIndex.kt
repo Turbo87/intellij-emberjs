@@ -1,77 +1,42 @@
 package com.emberjs.intl
 
-import com.emberjs.utils.isEmberFolder
-import com.emberjs.utils.parents
+import com.intellij.ide.plugins.PluginManager
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.ProjectScope
-import com.intellij.psi.util.PsiFilter
 import com.intellij.util.CommonProcessors.CollectProcessor
-import com.intellij.util.indexing.*
-import com.intellij.util.io.DataExternalizer
-import com.intellij.util.io.EnumeratorStringDescriptor
-import com.intellij.util.io.KeyDescriptor
-import org.jetbrains.yaml.psi.YAMLDocument
-import org.jetbrains.yaml.psi.YAMLFile
-import org.jetbrains.yaml.psi.YAMLKeyValue
-import org.jetbrains.yaml.psi.YAMLScalar
+import com.intellij.util.indexing.FileBasedIndex
+import com.intellij.util.indexing.ID
 import java.util.*
 
-class EmberTranslationIndex() : FileBasedIndexExtension<String, String>() {
+object EmberTranslationIndex {
+    val NAME: ID<String, String> = ID.create("ember.translations")
 
-    override fun getName() = NAME
-    override fun getVersion() = 1
-    override fun dependsOnFileContent() = true
-
-    override fun getKeyDescriptor(): KeyDescriptor<String> = EnumeratorStringDescriptor.INSTANCE
-    override fun getValueExternalizer(): DataExternalizer<String> = EnumeratorStringDescriptor.INSTANCE
-
-    override fun getInputFilter() = FileBasedIndex.InputFilter {
-        it.extension == "yaml" && it.parent.name == "translations" && it.parent.parent.isEmberFolder
+    val YAML_PLUGIN_ENABLED by lazy {
+        PluginManager.getPlugin(PluginId.findId("org.jetbrains.plugins.yaml"))?.isEnabled ?: false
     }
 
-    override fun getIndexer() = DataIndexer<String, String, FileContent> { index(it) }
+    private val index by lazy { FileBasedIndex.getInstance() }
 
-    fun index(fileContent: FileContent): Map<String, String> {
-        val psiFile = fileContent.psiFile as? YAMLFile ?: return emptyMap()
+    fun getTranslationKeys(project: Project): Set<String> {
+        if (!YAML_PLUGIN_ENABLED) return emptySet()
 
-        return ArrayList<YAMLKeyValue>()
-                .apply { psiFile.accept(YAML_ELEMENT_FILTER.createVisitor(this)) }
-                .associate { it.keyPath to it.valueText }
+        val processor = CollectProcessor<String>()
+        index.processAllKeys(NAME, processor, project)
+        return processor.results.toSet()
     }
 
-    companion object {
-        val NAME: ID<String, String> = ID.create("ember.translations")
+    fun getTranslations(key: String, project: Project): Map<String, String> {
+        if (!YAML_PLUGIN_ENABLED) return emptyMap()
 
-        val YAML_ELEMENT_FILTER = object : PsiFilter<YAMLKeyValue>(YAMLKeyValue::class.java) {
-            override fun accept(element: YAMLKeyValue) = element.value is YAMLScalar
+        val result = LinkedHashMap<String, String>()
+        val processor = FileBasedIndex.ValueProcessor<String> { file, value ->
+            result[file.nameWithoutExtension] = value
+            true
         }
 
-        private val index by lazy { FileBasedIndex.getInstance() }
-
-        fun getTranslationKeys(project: Project): Set<String> {
-            val processor = CollectProcessor<String>()
-            index.processAllKeys(NAME, processor, project)
-            return processor.results.toSet()
-        }
-
-        fun getTranslations(key: String, project: Project): Map<String, String> {
-            val result = LinkedHashMap<String, String>()
-            val processor = FileBasedIndex.ValueProcessor<String> { file, value ->
-                result[file.nameWithoutExtension] = value
-                true
-            }
-
-            index.processValues(NAME, key, null, processor, ProjectScope.getAllScope(project))
-            return result
-        }
-
-        private val YAMLKeyValue.keyPath: String
-            get() = this.parents.takeWhile { it !is YAMLDocument }
-                    .filterIsInstance(YAMLKeyValue::class.java)
-                    .let { listOf(this, *it.toTypedArray()) }
-                    .map { it.keyText }
-                    .reversed()
-                    .joinToString(".")
+        index.processValues(NAME, key, null, processor, ProjectScope.getAllScope(project))
+        return result
     }
 }
 
