@@ -1,0 +1,7 @@
+{{t "long-string" placeholder="foo"}}
+
+{{t "long-string" placeholder = foo foo=5}}
+
+{{t "long-string" placeholder=(concat foo bar)}}
+
+{{concat "abc" (t "long-string" placeholder=foo)}}

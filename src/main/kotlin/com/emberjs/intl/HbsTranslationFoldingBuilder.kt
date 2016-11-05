@@ -1,9 +1,12 @@
 package com.emberjs.intl
 
+import com.dmarcotte.handlebars.psi.HbHash
 import com.dmarcotte.handlebars.psi.HbParam
 import com.dmarcotte.handlebars.psi.HbPsiFile
 import com.emberjs.hbs.HbsPatterns
+import com.emberjs.utils.append
 import com.emberjs.utils.collect
+import com.emberjs.utils.prepend
 import com.emberjs.utils.toFilter
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilder
@@ -39,8 +42,8 @@ class HbsTranslationFoldingBuilder : FoldingBuilder {
         else -> getRawPlaceholderText(node)
     }
 
-    fun getRawPlaceholderText(node: ASTNode): String {
-        return node.getUserData(TRANSLATIONS_KEY)?.get("en") ?:
+    private fun getRawPlaceholderText(node: ASTNode): String {
+        return node.getUserData(TRANSLATIONS_KEY)?.get("en")?.fillPlaceholders(node) ?:
                 "Missing translation: ${node.text.substring(1, node.textLength - 1)}"
     }
 
@@ -48,7 +51,37 @@ class HbsTranslationFoldingBuilder : FoldingBuilder {
         return node.getUserData(TRANSLATIONS_KEY).let { it != null && it.isNotEmpty() }
     }
 
+    private fun String.fillPlaceholders(node: ASTNode): String {
+        return fillPlaceholders(node.psi as HbParam)
+    }
+
+    private fun String.fillPlaceholders(param: HbParam): String {
+        val hashParams = param.parent.children
+                .filterIsInstance(HbHash::class.java)
+                .map { hash -> hash.hashName?.let { it to hash.valueElement } }
+                .filterNotNull()
+                .toMap()
+
+        if (hashParams.isEmpty()) return this
+
+        return PLACEHOLDER_RE.replace(this) {
+            val (key) = it.destructured
+            hashParams[key]?.let { extractPlaceholderReplacement(it.text) } ?: it.value
+        }
+    }
+
+    private val HbHash.valueElement: HbParam?
+        get() = children.filterIsInstance(HbParam::class.java).firstOrNull()
+
+    private fun extractPlaceholderReplacement(text: String) = when {
+        text.startsWith("\"") -> text.removeSurrounding("\"")
+        text.startsWith("'") -> text.removeSurrounding("'")
+        text.startsWith("(") -> text.removeSurrounding("(", ")").prepend("{{").append("}}")
+        else -> text.prepend("{{").append("}}")
+    }
+
     companion object {
         private val TRANSLATIONS_KEY = Key<Map<String, String>>("ember.translations")
+        private val PLACEHOLDER_RE = """\{([\w-]+)\}""".toRegex()
     }
 }
