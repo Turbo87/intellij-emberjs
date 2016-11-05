@@ -52,6 +52,10 @@ class YAMLTranslationIndexExtension() : FileBasedIndexExtension<String, String>(
                     .map { it.keyText }
                     .reversed()
                     .joinToString(".")
+
+        fun findKeyInFile(key: String, file: YAMLFile) = ArrayList<YAMLKeyValue>()
+                .apply { file.accept(YAML_ELEMENT_FILTER.createVisitor(this)) }
+                .find { it.keyPath == key }
     }
 }
 

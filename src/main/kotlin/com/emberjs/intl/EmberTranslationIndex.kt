@@ -3,6 +3,7 @@ package com.emberjs.intl
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.ProjectScope
 import com.intellij.util.CommonProcessors.CollectProcessor
 import com.intellij.util.indexing.FileBasedIndex
@@ -37,6 +38,15 @@ object EmberTranslationIndex {
 
         index.processValues(NAME, key, null, processor, ProjectScope.getAllScope(project))
         return result
+    }
+
+    fun getFilesWithKey(key: String, project: Project): List<VirtualFile> {
+        if (!YAML_PLUGIN_ENABLED) return emptyList()
+
+        return ArrayList<VirtualFile>().apply {
+            val processor = FileBasedIndex.ValueProcessor<String> { file, value -> add(file); true }
+            index.processValues(NAME, key, null, processor, ProjectScope.getAllScope(project))
+        }
     }
 }
 
