@@ -3,20 +3,19 @@ package com.emberjs.intl
 import com.dmarcotte.handlebars.psi.HbParam
 import com.dmarcotte.handlebars.psi.HbPsiFile
 import com.emberjs.hbs.HbsPatterns
+import com.emberjs.utils.collect
+import com.emberjs.utils.toFilter
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.Key
-import com.intellij.psi.util.PsiFilter
-import java.util.*
 
 class HbsTranslationFoldingBuilder : FoldingBuilder {
     override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
         val file = node.psi as? HbPsiFile ?: return emptyArray()
 
-        return ArrayList<HbParam>()
-                .apply { file.accept(TRANSLATION_KEY_FILTER.createVisitor(this)) }
+        return file.collect(HbsPatterns.TRANSLATION_KEY.toFilter())
                 .map { buildFoldingDescriptor(it) }
                 .toTypedArray()
     }
@@ -46,9 +45,5 @@ class HbsTranslationFoldingBuilder : FoldingBuilder {
 
     companion object {
         private val TRANSLATIONS_KEY = Key<Map<String, String>>("ember.translations")
-
-        private val TRANSLATION_KEY_FILTER = object : PsiFilter<HbParam>(HbParam::class.java) {
-            override fun accept(element: HbParam) = HbsPatterns.TRANSLATION_KEY.accepts(element)
-        }
     }
 }
