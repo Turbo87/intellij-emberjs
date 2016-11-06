@@ -13,3 +13,7 @@ export default {
     }
   }
 };
+
+let foo = {
+  bar: 'baz'
+};

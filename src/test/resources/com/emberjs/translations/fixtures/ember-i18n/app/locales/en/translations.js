@@ -11,5 +11,9 @@ export default {
       'text': 'Add',
       'disabled': 'Saving...'
     }
-  }
+  },
+
+  'nested': {
+    'and.dotted': 'foobar',
+  },
 };
