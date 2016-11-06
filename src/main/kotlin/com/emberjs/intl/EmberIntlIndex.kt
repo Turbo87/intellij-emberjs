@@ -1,9 +1,9 @@
 package com.emberjs.intl
 
+import com.emberjs.intellij.isEnabled
 import com.emberjs.utils.findMainPackageJson
 import com.emberjs.utils.isEmberFolder
 import com.emberjs.yaml.keyPath
-import com.intellij.ide.plugins.PluginManager
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -45,9 +45,7 @@ class EmberIntlIndex() : FileBasedIndexExtension<String, String>() {
     companion object {
         val NAME: ID<String, String> = ID.create("ember.translations")
 
-        private val YAML_PLUGIN_ENABLED by lazy {
-            PluginManager.getPlugin(PluginId.findId("org.jetbrains.plugins.yaml"))?.isEnabled ?: false
-        }
+        private val YAML_PLUGIN_ENABLED by lazy { PluginId.findId("org.jetbrains.plugins.yaml").isEnabled }
 
         private val index by lazy { FileBasedIndex.getInstance() }
 
