@@ -1,8 +1,8 @@
 package com.emberjs.intl
 
-import com.emberjs.intl.EmberIntlIndex.getFilesWithKey
-import com.emberjs.intl.EmberIntlIndex.getTranslationKeys
-import com.emberjs.intl.EmberIntlIndexExtension.Companion.findKeyInFile
+import com.emberjs.intl.EmberIntlIndex.Companion.findKeyInFile
+import com.emberjs.intl.EmberIntlIndex.Companion.getFilesWithKey
+import com.emberjs.intl.EmberIntlIndex.Companion.getTranslationKeys
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
