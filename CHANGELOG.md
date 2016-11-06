@@ -3,6 +3,11 @@ Changelog
 ===============================================================================
 
 
+## v2016.2.2
+
+- Add [ember-intl](https://github.com/jasonmit/ember-intl) support (#90)
+
+
 ## v2016.2.1
 
 - Change release naming scheme to reflect IntelliJ target version
