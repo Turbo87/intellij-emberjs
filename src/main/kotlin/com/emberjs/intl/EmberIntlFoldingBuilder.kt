@@ -10,6 +10,7 @@ import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.Key
+import com.intellij.psi.PsiFile
 
 class EmberIntlFoldingBuilder : FoldingBuilder {
     override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
@@ -20,18 +21,21 @@ class EmberIntlFoldingBuilder : FoldingBuilder {
         val simpleMustaches = file.collect(HbsPatterns.TRANSLATION_KEY.toFilter())
         val subexpressions = file.collect(HbsPatterns.TRANSLATION_KEY_IN_SEXPR.toFilter())
 
-        return (simpleMustaches + subexpressions).map { buildFoldingDescriptor(it) }.toTypedArray()
+        val baseLocale = EmberIntl.findBaseLocale(file)
+
+        return (simpleMustaches + subexpressions).map { buildFoldingDescriptor(it, baseLocale) }.toTypedArray()
     }
 
-    private fun buildFoldingDescriptor(element: HbParam): FoldingDescriptor {
+    private fun buildFoldingDescriptor(element: HbParam, baseLocale: String?): FoldingDescriptor {
         // read translation key from HbParam element
         val key = element.text.substring(1, element.textLength - 1)
 
         // query translation index for translation key
         val translations = EmberIntlIndex.getTranslations(key, element.project)
 
-        // store translations on ASTNode user data
+        // store translations and base locale on ASTNode user data
         element.node.putUserData(TRANSLATIONS_KEY, translations)
+        element.node.putUserData(BASE_LOCALE_KEY, baseLocale)
 
         return FoldingDescriptor(element, element.parent.textRange)
     }
@@ -42,7 +46,14 @@ class EmberIntlFoldingBuilder : FoldingBuilder {
     }
 
     private fun getRawPlaceholderText(node: ASTNode): String {
-        return node.getUserData(TRANSLATIONS_KEY)?.get("en")?.fillPlaceholders(node) ?:
+        val translations = node.getUserData(TRANSLATIONS_KEY)
+        val baseLocale = node.getUserData(BASE_LOCALE_KEY)
+
+        val translation = translations?.get(baseLocale) ?:
+                translations?.get("en-us") ?:
+                translations?.get("en")
+
+        return translation?.fillPlaceholders(node) ?:
                 "Missing translation: ${node.text.substring(1, node.textLength - 1)}"
     }
 
@@ -80,7 +91,8 @@ class EmberIntlFoldingBuilder : FoldingBuilder {
     }
 
     companion object {
-        private val TRANSLATIONS_KEY = Key<Map<String, String>>("ember.translations")
+        private val TRANSLATIONS_KEY = Key<Map<String, String>>("ember-intl.translations")
+        private val BASE_LOCALE_KEY = Key<String?>("ember-intl.baseLocale")
         private val PLACEHOLDER_RE = """\{([\w-]+)\}""".toRegex()
     }
 }
