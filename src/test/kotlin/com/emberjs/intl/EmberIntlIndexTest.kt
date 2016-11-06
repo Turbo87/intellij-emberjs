@@ -15,8 +15,11 @@ class EmberIntlIndexTest : LightPlatformCodeInsightFixtureTestCase() {
     fun testQuotes2() = doTest("quote-test2", mapOf("en" to "Foo'bar"))
     fun testQuotes3() = doTest("quote-test3", mapOf("en" to "Foo\"bar"))
     fun testQuotes4() = doTest("quote-test4", mapOf("en" to "Foo\"bar"))
+    fun testWithoutDependency() = doTest("foo", emptyMap(), "no-dependencies")
 
     fun testAllKeys() {
+        loadFixture("ember-intl")
+
         val keys = EmberIntlIndex.getTranslationKeys(myFixture.project)
         assertThat(keys).containsOnly("foo", "long-string", "parent.child",
                 "quote-test1", "quote-test2", "quote-test3", "quote-test4")
@@ -27,19 +30,23 @@ class EmberIntlIndexTest : LightPlatformCodeInsightFixtureTestCase() {
         return Paths.get(resource.toURI()).toAbsolutePath().toString()
     }
 
-    override fun setUp() {
-        super.setUp()
-
+    private fun loadFixture(fixtureName: String) {
         // Load fixture files into the project
-        myFixture.copyDirectoryToProject("ember-intl", "/")
+        myFixture.copyDirectoryToProject(fixtureName, "/")
 
         // Rebuild index now that the `package.json` file is copied over
         FileBasedIndex.getInstance().requestRebuild(EmberIntlIndex.NAME)
     }
 
-    private fun doTest(key: String, expected: Map<String, String>) {
+    private fun doTest(key: String, expected: Map<String, String>, fixtureName: String = "ember-intl") {
+        loadFixture(fixtureName)
+
         val translations = EmberIntlIndex.getTranslations(key, myFixture.project)
-        val _expected = expected.entries.map { entry(it.key, it.value) }.toTypedArray()
-        assertThat(translations).containsOnly(*_expected)
+        if (expected.isEmpty()) {
+            assertThat(translations).isEmpty()
+        } else {
+            val _expected = expected.entries.map { entry(it.key, it.value) }.toTypedArray()
+            assertThat(translations).containsOnly(*_expected)
+        }
     }
 }
