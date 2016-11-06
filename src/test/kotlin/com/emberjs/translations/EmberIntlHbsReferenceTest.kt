@@ -89,4 +89,24 @@ class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
 
         assertThat(result).isNull()
     }
+
+    fun testI18nReference() {
+        loadFixture("ember-i18n")
+        myFixture.configureByText(HbFileType.INSTANCE, "{{t \"nest<caret>ed.and.dotted\"}}")
+
+        val reference = myFixture.getReferenceAtCaretPosition()!!
+        val result = reference.resolve()
+
+        assertThat(result).isNotNull()
+    }
+
+    fun testI18nReferenceUnknown() {
+        loadFixture("ember-i18n")
+        myFixture.configureByText(HbFileType.INSTANCE, "{{t \"unkn<caret>own\"}}")
+
+        val reference = myFixture.getReferenceAtCaretPosition()!!
+        val result = reference.resolve()
+
+        assertThat(result).isNull()
+    }
 }
