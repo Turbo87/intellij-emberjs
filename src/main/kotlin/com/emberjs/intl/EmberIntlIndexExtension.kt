@@ -5,7 +5,6 @@ import com.emberjs.utils.findMainPackageJson
 import com.emberjs.utils.isEmberFolder
 import com.emberjs.yaml.keyPath
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.util.PsiFilter
 import com.intellij.util.indexing.DataIndexer
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileBasedIndexExtension
@@ -14,9 +13,6 @@ import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
 import com.intellij.util.io.KeyDescriptor
 import org.jetbrains.yaml.psi.YAMLFile
-import org.jetbrains.yaml.psi.YAMLKeyValue
-import org.jetbrains.yaml.psi.YAMLScalar
-import java.util.*
 
 class EmberIntlIndexExtension() : FileBasedIndexExtension<String, String>() {
 
@@ -44,13 +40,6 @@ class EmberIntlIndexExtension() : FileBasedIndexExtension<String, String>() {
     }
 
     companion object {
-        val YAML_ELEMENT_FILTER = object : PsiFilter<YAMLKeyValue>(YAMLKeyValue::class.java) {
-            override fun accept(element: YAMLKeyValue) = element.value is YAMLScalar
-        }
-
-        fun findKeyInFile(key: String, file: YAMLFile) = ArrayList<YAMLKeyValue>()
-                .apply { file.accept(YAML_ELEMENT_FILTER.createVisitor(this)) }
-                .find { it.keyPath == key }
+        fun findKeyInFile(key: String, file: YAMLFile) = YAMLKeyValueFinder(key).findIn(file)
     }
 }
-
