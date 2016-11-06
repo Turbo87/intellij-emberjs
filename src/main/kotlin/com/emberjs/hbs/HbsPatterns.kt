@@ -29,18 +29,26 @@ object HbsPatterns {
     val SUB_EXPR_NAME_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
             .withSuperParent(3, SUB_EXPR_NAME)
 
-    val LINK_TO_BLOCK_TARGET: Capture<HbParam> = psiElement(HbParam::class.java)
+    val STRING_PARAM: Capture<HbParam> = psiElement(HbParam::class.java)
             .withChild(psiElement(HbMustacheName::class.java)
                     .withChild(psiElement(HbStringLiteral::class.java)))
+
+    val LINK_TO_BLOCK_TARGET: Capture<HbParam> = STRING_PARAM
             .withParent(psiElement(HbOpenBlockMustache::class.java))
             .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbMustacheName::class.java)
                     .withText("link-to"))
 
-    val LINK_TO_SIMPLE_TARGET: Capture<HbParam> = psiElement(HbParam::class.java)
-            .withChild(psiElement(HbMustacheName::class.java)
-                    .withChild(psiElement(HbStringLiteral::class.java)))
+    val LINK_TO_SIMPLE_TARGET: Capture<HbParam> = STRING_PARAM
             .withParent(psiElement(HbSimpleMustache::class.java))
             .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbParam::class.java)
                     .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbMustacheName::class.java)
                             .withText("link-to")))
+
+    val TRANSLATION_KEY: Capture<HbParam> = STRING_PARAM
+            .withParent(psiElement(HbSimpleMustache::class.java))
+            .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbMustacheName::class.java).withText("t"))
+
+    val TRANSLATION_KEY_IN_SEXPR: Capture<HbParam> = STRING_PARAM
+            .withParent(psiElement(HbParam::class.java))
+            .afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java), psiElement(HbParam::class.java).withText("t"))
 }
