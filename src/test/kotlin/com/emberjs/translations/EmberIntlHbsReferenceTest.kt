@@ -19,6 +19,7 @@ class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
 
         // Rebuild index now that the `package.json` file is copied over
         FileBasedIndex.getInstance().requestRebuild(EmberIntlIndex.NAME)
+        FileBasedIndex.getInstance().requestRebuild(EmberI18nIndex.NAME)
     }
 
     fun testCompletion1() {
@@ -38,6 +39,15 @@ class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
 
         assertThat(result).containsExactly("foo", "long-string", "nested.key.with-child", "parent.child",
                 "quote-test1", "quote-test2", "quote-test3", "quote-test4")
+    }
+
+    fun testI18nCompletion() {
+        loadFixture("ember-i18n")
+        myFixture.configureByText(HbFileType.INSTANCE, "{{t \"<caret>\"}}")
+
+        val result = myFixture.completeBasic().map { it.lookupString }
+
+        assertThat(result).contains("foo", "button.add_user.text", "nested.and.dotted")
     }
 
     fun testReference1() {
