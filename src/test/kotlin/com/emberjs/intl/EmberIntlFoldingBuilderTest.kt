@@ -11,22 +11,22 @@ class EmberIntlFoldingBuilderTest : LightPlatformCodeInsightFixtureTestCase() {
         return Paths.get(resource.toURI()).toAbsolutePath().toString()
     }
 
-    override fun setUp() {
-        super.setUp()
-
+    fun doTest(templateName: String, fixtureName: String = "ember-intl") {
         // Load fixture files into the project
-        myFixture.copyDirectoryToProject("ember-intl", "/")
+        myFixture.copyDirectoryToProject(fixtureName, "/")
 
         // Rebuild index now that the `package.json` file is copied over
         FileBasedIndex.getInstance().requestRebuild(EmberIntlIndex.NAME)
-    }
 
-    fun doTest(templateName: String) = myFixture.testFoldingWithCollapseStatus(
-            "$testDataPath/ember-intl/app/templates/$templateName-expectation.hbs",
-            "$testDataPath/ember-intl/app/templates/$templateName.hbs")
+        myFixture.testFoldingWithCollapseStatus(
+                "$testDataPath/$fixtureName/app/templates/$templateName-expectation.hbs",
+                "$testDataPath/$fixtureName/app/templates/$templateName.hbs")
+    }
 
     fun testFolding() = doTest("folding-test")
     fun testUnknownTranslation() = doTest("missing-translation-folding-test")
     fun testPlaceholders() = doTest("placeholder-folding-test")
     fun testSubexpression() = doTest("sexpr-folding-test")
+
+    fun testFoldingWithoutDependency() = doTest("folding-test", "no-dependencies")
 }
