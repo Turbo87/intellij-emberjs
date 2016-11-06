@@ -4,6 +4,7 @@ import com.emberjs.intl.EmberIntlIndex.NAME
 import com.emberjs.utils.findMainPackageJson
 import com.emberjs.utils.isEmberFolder
 import com.emberjs.utils.parents
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.util.PsiFilter
 import com.intellij.util.indexing.DataIndexer
 import com.intellij.util.indexing.FileBasedIndex
@@ -27,9 +28,11 @@ class EmberIntlIndexExtension() : FileBasedIndexExtension<String, String>() {
     override fun getKeyDescriptor(): KeyDescriptor<String> = EnumeratorStringDescriptor.INSTANCE
     override fun getValueExternalizer(): DataExternalizer<String> = EnumeratorStringDescriptor.INSTANCE
 
-    override fun getInputFilter() = FileBasedIndex.InputFilter {
-        it.extension == "yaml" && it.parent.name == "translations" && it.parent.parent.isEmberFolder &&
-                findMainPackageJson(it)?.isDependencyOfAnyType("ember-intl") == true
+    override fun getInputFilter() = FileBasedIndex.InputFilter { acceptFile(it) }
+
+    private fun acceptFile(file: VirtualFile): Boolean {
+        return file.extension == "yaml" && file.parent.name == "translations" && file.parent.parent.isEmberFolder &&
+                findMainPackageJson(file)?.isDependencyOfAnyType("ember-intl") == true
     }
 
     override fun getIndexer() = DataIndexer<String, String, FileContent> { index(it) }
