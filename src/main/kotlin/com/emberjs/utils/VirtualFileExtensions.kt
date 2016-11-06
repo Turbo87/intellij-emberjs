@@ -1,6 +1,7 @@
 package com.emberjs.utils
 
 import com.emberjs.project.EmberModuleType
+import com.intellij.javascript.nodejs.PackageJsonData
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.module.ModuleUtilCore.findModuleForFile
 import com.intellij.openapi.project.Project
@@ -55,3 +56,10 @@ val VirtualFile.parentModule: VirtualFile?
  */
 val VirtualFile.parentEmberModule: VirtualFile?
     get() = this.parentModule?.let { if (it.isEmberFolder || it.isInRepoAddon) it else null }
+
+fun findMainPackageJsonFile(file: VirtualFile) = file.parents.asSequence()
+        .filter { it.isEmberFolder }
+        .map { it.findChild("package.json") }
+        .firstOrNull { it != null }
+
+fun findMainPackageJson(file: VirtualFile) = findMainPackageJsonFile(file)?.let { PackageJsonData.parse(it, null) }

@@ -4,19 +4,18 @@ import com.dmarcotte.handlebars.psi.HbHash
 import com.dmarcotte.handlebars.psi.HbParam
 import com.dmarcotte.handlebars.psi.HbPsiFile
 import com.emberjs.hbs.HbsPatterns
-import com.emberjs.utils.append
-import com.emberjs.utils.collect
-import com.emberjs.utils.prepend
-import com.emberjs.utils.toFilter
+import com.emberjs.utils.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.Key
 
-class HbsTranslationFoldingBuilder : FoldingBuilder {
+class EmberIntlFoldingBuilder : FoldingBuilder {
     override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
         val file = node.psi as? HbPsiFile ?: return emptyArray()
+
+        if (findMainPackageJson(file.virtualFile)?.isDependencyOfAnyType("ember-intl") != true) return emptyArray()
 
         val simpleMustaches = file.collect(HbsPatterns.TRANSLATION_KEY.toFilter())
         val subexpressions = file.collect(HbsPatterns.TRANSLATION_KEY_IN_SEXPR.toFilter())
@@ -29,7 +28,7 @@ class HbsTranslationFoldingBuilder : FoldingBuilder {
         val key = element.text.substring(1, element.textLength - 1)
 
         // query translation index for translation key
-        val translations = EmberTranslationIndex.getTranslations(key, element.project)
+        val translations = EmberIntlIndex.getTranslations(key, element.project)
 
         // store translations on ASTNode user data
         element.node.putUserData(TRANSLATIONS_KEY, translations)

@@ -1,6 +1,6 @@
 package com.emberjs.hbs
 
-import com.emberjs.intl.HbsTranslationReferenceProvider
+import com.emberjs.intl.EmberIntlHbsReferenceProvider
 import com.intellij.patterns.ElementPattern
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
@@ -14,8 +14,8 @@ class HbsReferenceContributor : PsiReferenceContributor() {
             register(HbsPatterns.SUB_EXPR_NAME) { HbsModuleReference(it, "helper") }
             registerReferenceProvider(HbsPatterns.LINK_TO_BLOCK_TARGET, HbsLinkToReferenceProvider())
             registerReferenceProvider(HbsPatterns.LINK_TO_SIMPLE_TARGET, HbsLinkToReferenceProvider())
-            registerReferenceProvider(HbsPatterns.TRANSLATION_KEY, HbsTranslationReferenceProvider())
-            registerReferenceProvider(HbsPatterns.TRANSLATION_KEY_IN_SEXPR, HbsTranslationReferenceProvider())
+            registerReferenceProvider(HbsPatterns.TRANSLATION_KEY, EmberIntlHbsReferenceProvider())
+            registerReferenceProvider(HbsPatterns.TRANSLATION_KEY_IN_SEXPR, EmberIntlHbsReferenceProvider())
         }
     }
 

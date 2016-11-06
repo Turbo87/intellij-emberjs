@@ -4,29 +4,29 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 import com.intellij.util.indexing.FileBasedIndex
 import java.nio.file.Paths
 
-class HbsTranslationFoldingBuilderTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberIntlFoldingBuilderTest : LightPlatformCodeInsightFixtureTestCase() {
 
     override fun getTestDataPath(): String? {
         val resource = ClassLoader.getSystemResource("com/emberjs/intl/fixtures")
         return Paths.get(resource.toURI()).toAbsolutePath().toString()
     }
 
-    override fun setUp() {
-        super.setUp()
-
+    fun doTest(templateName: String, fixtureName: String = "ember-intl") {
         // Load fixture files into the project
-        myFixture.copyDirectoryToProject("fixture1", "/")
+        myFixture.copyDirectoryToProject(fixtureName, "/")
 
         // Rebuild index now that the `package.json` file is copied over
-        FileBasedIndex.getInstance().requestRebuild(EmberTranslationIndex.NAME)
-    }
+        FileBasedIndex.getInstance().requestRebuild(EmberIntlIndex.NAME)
 
-    fun doTest(templateName: String) = myFixture.testFoldingWithCollapseStatus(
-            "$testDataPath/fixture1/app/templates/$templateName-expectation.hbs",
-            "$testDataPath/fixture1/app/templates/$templateName.hbs")
+        myFixture.testFoldingWithCollapseStatus(
+                "$testDataPath/$fixtureName/app/templates/$templateName-expectation.hbs",
+                "$testDataPath/$fixtureName/app/templates/$templateName.hbs")
+    }
 
     fun testFolding() = doTest("folding-test")
     fun testUnknownTranslation() = doTest("missing-translation-folding-test")
     fun testPlaceholders() = doTest("placeholder-folding-test")
     fun testSubexpression() = doTest("sexpr-folding-test")
+
+    fun testFoldingWithoutDependency() = doTest("folding-test", "no-dependencies")
 }

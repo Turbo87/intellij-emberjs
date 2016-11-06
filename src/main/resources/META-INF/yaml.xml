@@ -1,6 +1,6 @@
 <!-- Extensions that use classes only available when the YAML plugin is installed. -->
 <idea-plugin version="2">
     <extensions defaultExtensionNs="com.intellij">
-        <fileBasedIndex implementation="com.emberjs.intl.YAMLTranslationIndexExtension"/>
+        <fileBasedIndex implementation="com.emberjs.intl.EmberIntlIndexExtension"/>
     </extensions>
 </idea-plugin>

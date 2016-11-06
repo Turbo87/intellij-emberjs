@@ -10,7 +10,7 @@ import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.ID
 import java.util.*
 
-object EmberTranslationIndex {
+object EmberIntlIndex {
     val NAME: ID<String, String> = ID.create("ember.translations")
 
     val YAML_PLUGIN_ENABLED by lazy {
