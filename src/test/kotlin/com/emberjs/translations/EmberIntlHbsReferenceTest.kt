@@ -1,4 +1,4 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
 import com.dmarcotte.handlebars.file.HbFileType
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
@@ -9,7 +9,7 @@ import java.nio.file.Paths
 class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
 
     override fun getTestDataPath(): String? {
-        val resource = ClassLoader.getSystemResource("com/emberjs/intl/fixtures")
+        val resource = ClassLoader.getSystemResource("com/emberjs/translations/fixtures")
         return Paths.get(resource.toURI()).toAbsolutePath().toString()
     }
 

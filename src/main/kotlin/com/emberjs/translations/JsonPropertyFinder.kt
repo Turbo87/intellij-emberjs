@@ -1,4 +1,4 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
 import com.emberjs.json.keyPath
 import com.intellij.json.psi.JsonProperty

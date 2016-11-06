@@ -1,6 +1,6 @@
 package com.emberjs.hbs
 
-import com.emberjs.intl.EmberIntlHbsReferenceProvider
+import com.emberjs.translations.EmberIntlHbsReferenceProvider
 import com.intellij.patterns.ElementPattern
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext

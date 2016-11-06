@@ -1,20 +1,20 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
 import com.intellij.lang.javascript.psi.JSLiteralExpression
 import com.intellij.lang.javascript.psi.JSProperty
 import com.intellij.lang.javascript.psi.JSRecursiveWalkingElementVisitor
 import com.intellij.psi.PsiElement
 
-class EmberI18nDefaultLocaleFinder : JSRecursiveWalkingElementVisitor() {
-    var defaultLocale: String? = null
+class EmberIntlBaseLocaleFinder : JSRecursiveWalkingElementVisitor() {
+    var baseLocale: String? = null
 
     override fun visitJSProperty(node: JSProperty) {
-        if (node.name == "defaultLocale") {
+        if (node.name == "baseLocale") {
             stopWalking()
 
             val value = node.value
             if (value is JSLiteralExpression && value.isQuotedLiteral) {
-                defaultLocale = value.valueAsPropertyName
+                baseLocale = value.valueAsPropertyName
             }
         }
 
@@ -23,6 +23,6 @@ class EmberI18nDefaultLocaleFinder : JSRecursiveWalkingElementVisitor() {
 
     fun findIn(element: PsiElement): String? {
         element.accept(this)
-        return defaultLocale
+        return baseLocale
     }
 }

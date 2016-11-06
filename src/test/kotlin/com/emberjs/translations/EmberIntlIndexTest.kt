@@ -1,4 +1,4 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
 import com.intellij.util.indexing.FileBasedIndex
@@ -27,7 +27,7 @@ class EmberIntlIndexTest : LightPlatformCodeInsightFixtureTestCase() {
     }
 
     override fun getTestDataPath(): String? {
-        val resource = ClassLoader.getSystemResource("com/emberjs/intl/fixtures")
+        val resource = ClassLoader.getSystemResource("com/emberjs/translations/fixtures")
         return Paths.get(resource.toURI()).toAbsolutePath().toString()
     }
 

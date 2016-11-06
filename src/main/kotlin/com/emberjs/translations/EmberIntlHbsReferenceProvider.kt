@@ -1,4 +1,4 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement

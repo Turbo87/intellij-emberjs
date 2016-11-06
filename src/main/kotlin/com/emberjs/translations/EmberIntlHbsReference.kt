@@ -1,7 +1,7 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
-import com.emberjs.intl.EmberIntlIndex.Companion.getFilesWithKey
-import com.emberjs.intl.EmberIntlIndex.Companion.getTranslationKeys
+import com.emberjs.translations.EmberIntlIndex.Companion.getFilesWithKey
+import com.emberjs.translations.EmberIntlIndex.Companion.getTranslationKeys
 import com.intellij.json.psi.JsonFile
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
