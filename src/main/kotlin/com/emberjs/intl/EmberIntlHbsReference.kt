@@ -2,6 +2,7 @@ package com.emberjs.intl
 
 import com.emberjs.intl.EmberIntlIndex.Companion.getFilesWithKey
 import com.emberjs.intl.EmberIntlIndex.Companion.getTranslationKeys
+import com.intellij.json.psi.JsonFile
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
@@ -24,6 +25,7 @@ class EmberIntlHbsReference(element: PsiElement, range: TextRange) :
     private fun fileToElement(file: VirtualFile) = psiManager.findFile(file)?.let { fileToElement(it) }
 
     private fun fileToElement(file: PsiFile) = when (file) {
+        is JsonFile -> JsonPropertyFinder(value).findIn(file)
         is YAMLFile -> YAMLKeyValueFinder(value).findIn(file)
         else -> null
     }

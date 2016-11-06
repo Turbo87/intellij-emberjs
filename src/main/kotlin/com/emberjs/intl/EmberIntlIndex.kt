@@ -1,12 +1,16 @@
 package com.emberjs.intl
 
 import com.emberjs.intellij.isEnabled
+import com.emberjs.json.keyPath
 import com.emberjs.utils.findMainPackageJson
 import com.emberjs.utils.isEmberFolder
 import com.emberjs.yaml.keyPath
+import com.intellij.json.psi.JsonFile
+import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.ProjectScope
 import com.intellij.util.CommonProcessors
 import com.intellij.util.indexing.*
@@ -28,18 +32,21 @@ class EmberIntlIndex() : FileBasedIndexExtension<String, String>() {
     override fun getInputFilter() = FileBasedIndex.InputFilter { acceptFile(it) }
 
     private fun acceptFile(file: VirtualFile): Boolean {
-        return YAML_PLUGIN_ENABLED &&
-                file.extension == "yaml" && file.parent.name == "translations" && file.parent.parent.isEmberFolder &&
+        return (file.extension == "json" || (YAML_PLUGIN_ENABLED && file.extension == "yaml")) &&
+                file.parent.name == "translations" && file.parent.parent.isEmberFolder &&
                 findMainPackageJson(file)?.isDependencyOfAnyType("ember-intl") == true
     }
 
-    override fun getIndexer() = DataIndexer<String, String, FileContent> { index(it) }
+    override fun getIndexer() = DataIndexer<String, String, FileContent> { index(it.psiFile) }
 
-    fun index(fileContent: FileContent): Map<String, String> {
-        val psiFile = fileContent.psiFile as? YAMLFile ?: return emptyMap()
+    fun index(file: PsiFile) = when (file) {
+        is JsonFile -> JsonStringPropertyCollector().collectFrom(file)
+                .associate { it.keyPath to (it.value as JsonStringLiteral).value }
 
-        return YAMLScalarKeyValueCollector().collectFrom(psiFile)
+        is YAMLFile -> YAMLScalarKeyValueCollector().collectFrom(file)
                 .associate { it.keyPath to it.valueText }
+
+        else -> emptyMap()
     }
 
     companion object {

@@ -13,17 +13,16 @@ class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
         return Paths.get(resource.toURI()).toAbsolutePath().toString()
     }
 
-    override fun setUp() {
-        super.setUp()
-
+    private fun loadFixture(fixtureName: String = "ember-intl") {
         // Load fixture files into the project
-        myFixture.copyDirectoryToProject("ember-intl", "/")
+        myFixture.copyDirectoryToProject(fixtureName, "/")
 
         // Rebuild index now that the `package.json` file is copied over
         FileBasedIndex.getInstance().requestRebuild(EmberIntlIndex.NAME)
     }
 
     fun testCompletion1() {
+        loadFixture()
         myFixture.configureByText(HbFileType.INSTANCE, "{{t \"quo<caret>\"}}")
 
         val result = myFixture.completeBasic().map { it.lookupString }
@@ -32,6 +31,7 @@ class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
     }
 
     fun testCompletion2() {
+        loadFixture()
         myFixture.configureByText(HbFileType.INSTANCE, "{{t \"<caret>\"}}")
 
         val result = myFixture.completeBasic().map { it.lookupString }
@@ -41,6 +41,7 @@ class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
     }
 
     fun testReference1() {
+        loadFixture()
         myFixture.configureByText(HbFileType.INSTANCE, "{{t \"long-st<caret>ring\"}}")
 
         val reference = myFixture.getReferenceAtCaretPosition()!!
@@ -50,6 +51,7 @@ class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
     }
 
     fun testNestedReference() {
+        loadFixture()
         myFixture.configureByText(HbFileType.INSTANCE, "{{t \"nested.key.<caret>with-child\"}}")
 
         val reference = myFixture.getReferenceAtCaretPosition()!!
@@ -58,7 +60,18 @@ class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
         assertThat(result).isNotNull()
     }
 
+    fun testJsonReference() {
+        loadFixture("ember-intl-json")
+        myFixture.configureByText(HbFileType.INSTANCE, "{{t \"f<caret>oo\"}}")
+
+        val reference = myFixture.getReferenceAtCaretPosition()!!
+        val result = reference.resolve()
+
+        assertThat(result).isNotNull()
+    }
+
     fun testReference2() {
+        loadFixture()
         myFixture.configureByText(HbFileType.INSTANCE, "{{t \"unkn<caret>own\"}}")
 
         val reference = myFixture.getReferenceAtCaretPosition()!!

@@ -28,6 +28,7 @@ class EmberIntlFoldingBuilderTest : LightPlatformCodeInsightFixtureTestCase() {
     fun testPlaceholders() = doTest("placeholder-folding-test")
     fun testSubexpression() = doTest("sexpr-folding-test")
 
+    fun testJson() = doTest("json", "ember-intl-json")
     fun testFoldingWithoutDependency() = doTest("folding-test", "no-dependencies")
     fun testBaseLocale() = doTest("base-locale-test", "ember-intl-with-base-locale")
 }

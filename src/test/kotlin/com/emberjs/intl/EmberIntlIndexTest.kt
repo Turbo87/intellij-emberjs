@@ -15,6 +15,7 @@ class EmberIntlIndexTest : LightPlatformCodeInsightFixtureTestCase() {
     fun testQuotes2() = doTest("quote-test2", mapOf("en" to "Foo'bar"))
     fun testQuotes3() = doTest("quote-test3", mapOf("en" to "Foo\"bar"))
     fun testQuotes4() = doTest("quote-test4", mapOf("en" to "Foo\"bar"))
+    fun testJson() = doTest("foo", mapOf("en" to "bar baz"), "ember-intl-json")
     fun testWithoutDependency() = doTest("foo", emptyMap(), "no-dependencies")
 
     fun testAllKeys() {
