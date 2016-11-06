@@ -4,11 +4,8 @@ import com.emberjs.intl.EmberIntlIndex.Companion.getFilesWithKey
 import com.emberjs.intl.EmberIntlIndex.Companion.getTranslationKeys
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiElement
+import com.intellij.psi.*
 import com.intellij.psi.PsiElementResolveResult.createResults
-import com.intellij.psi.PsiManager
-import com.intellij.psi.PsiPolyVariantReferenceBase
-import com.intellij.psi.ResolveResult
 import org.jetbrains.yaml.psi.YAMLFile
 
 class EmberIntlHbsReference(element: PsiElement, range: TextRange) :
@@ -24,11 +21,10 @@ class EmberIntlHbsReference(element: PsiElement, range: TextRange) :
 
     override fun getVariants(): Array<out Any> = getTranslationKeys(project).toTypedArray()
 
-    private fun fileToElement(file: VirtualFile): PsiElement? {
-        if (file.extension != "yaml") return null
+    private fun fileToElement(file: VirtualFile) = psiManager.findFile(file)?.let { fileToElement(it) }
 
-        val psiFile = psiManager.findFile(file)
-        val yamlFile = psiFile as? YAMLFile ?: return null
-        return YAMLKeyValueFinder(value).findIn(yamlFile)
+    private fun fileToElement(file: PsiFile) = when (file) {
+        is YAMLFile -> YAMLKeyValueFinder(value).findIn(file)
+        else -> null
     }
 }
