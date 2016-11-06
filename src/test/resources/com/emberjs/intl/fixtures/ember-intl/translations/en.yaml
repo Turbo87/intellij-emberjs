@@ -2,6 +2,8 @@ foo: bar baz
 long-string: 'Something veeeeery long with a {placeholder}'
 parent:
   child: this is nested
+nested.key:
+  with-child: this is also nested
 quote-test1: Foo'bar
 quote-test2: "Foo'bar"
 quote-test3: "Foo\"bar"

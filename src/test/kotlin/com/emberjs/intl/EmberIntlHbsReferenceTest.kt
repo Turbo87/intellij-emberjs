@@ -36,12 +36,21 @@ class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
 
         val result = myFixture.completeBasic().map { it.lookupString }
 
-        assertThat(result).containsExactly("foo", "long-string", "parent.child",
+        assertThat(result).containsExactly("foo", "long-string", "nested.key.with-child", "parent.child",
                 "quote-test1", "quote-test2", "quote-test3", "quote-test4")
     }
 
     fun testReference1() {
         myFixture.configureByText(HbFileType.INSTANCE, "{{t \"long-st<caret>ring\"}}")
+
+        val reference = myFixture.getReferenceAtCaretPosition()!!
+        val result = reference.resolve()
+
+        assertThat(result).isNotNull()
+    }
+
+    fun testNestedReference() {
+        myFixture.configureByText(HbFileType.INSTANCE, "{{t \"nested.key.<caret>with-child\"}}")
 
         val reference = myFixture.getReferenceAtCaretPosition()!!
         val result = reference.resolve()

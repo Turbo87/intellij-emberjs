@@ -21,7 +21,7 @@ class EmberIntlIndexTest : LightPlatformCodeInsightFixtureTestCase() {
         loadFixture("ember-intl")
 
         val keys = EmberIntlIndex.getTranslationKeys(myFixture.project)
-        assertThat(keys).containsOnly("foo", "long-string", "parent.child",
+        assertThat(keys).containsOnly("foo", "long-string", "parent.child", "nested.key.with-child",
                 "quote-test1", "quote-test2", "quote-test3", "quote-test4")
     }
 
