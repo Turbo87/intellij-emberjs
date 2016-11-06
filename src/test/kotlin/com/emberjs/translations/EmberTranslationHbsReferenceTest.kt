@@ -6,7 +6,7 @@ import com.intellij.util.indexing.FileBasedIndex
 import org.assertj.core.api.Assertions.assertThat
 import java.nio.file.Paths
 
-class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberTranslationHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
 
     override fun getTestDataPath(): String? {
         val resource = ClassLoader.getSystemResource("com/emberjs/translations/fixtures")

@@ -10,7 +10,7 @@ import com.intellij.psi.*
 import com.intellij.psi.PsiElementResolveResult.createResults
 import org.jetbrains.yaml.psi.YAMLFile
 
-class EmberIntlHbsReference(element: PsiElement, range: TextRange) :
+class EmberTranslationHbsReference(element: PsiElement, range: TextRange) :
         PsiPolyVariantReferenceBase<PsiElement>(element, range, true) {
 
     private val project = element.project
