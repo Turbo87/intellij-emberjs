@@ -26,9 +26,9 @@ class EmberTranslationHbsReference(element: PsiElement, range: TextRange) :
     private fun fileToElement(file: VirtualFile) = psiManager.findFile(file)?.let { fileToElement(it) }
 
     private fun fileToElement(file: PsiFile) = when (file) {
-        is JSFile -> JSPropertyFinder(value).findIn(file)
-        is JsonFile -> JsonPropertyFinder(value).findIn(file)
-        is YAMLFile -> YAMLKeyValueFinder(value).findIn(file)
+        is JSFile -> JSPropertyFinder(value).findIn(file)?.value
+        is JsonFile -> JsonPropertyFinder(value).findIn(file)?.value
+        is YAMLFile -> YAMLKeyValueFinder(value).findIn(file)?.value
         else -> null
     }
 }
