@@ -6,7 +6,7 @@ import com.intellij.util.indexing.FileBasedIndex
 import org.assertj.core.api.Assertions.assertThat
 import java.nio.file.Paths
 
-class HbsTranslationReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberIntlHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
 
     override fun getTestDataPath(): String? {
         val resource = ClassLoader.getSystemResource("com/emberjs/intl/fixtures")
@@ -20,7 +20,7 @@ class HbsTranslationReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
         myFixture.copyDirectoryToProject("fixture1", "/")
 
         // Rebuild index now that the `package.json` file is copied over
-        FileBasedIndex.getInstance().requestRebuild(EmberTranslationIndex.NAME)
+        FileBasedIndex.getInstance().requestRebuild(EmberIntlIndex.NAME)
     }
 
     fun testCompletion1() {

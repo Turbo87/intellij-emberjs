@@ -1,8 +1,8 @@
 package com.emberjs.intl
 
-import com.emberjs.intl.EmberTranslationIndex.getFilesWithKey
-import com.emberjs.intl.EmberTranslationIndex.getTranslationKeys
-import com.emberjs.intl.YAMLTranslationIndexExtension.Companion.findKeyInFile
+import com.emberjs.intl.EmberIntlIndex.getFilesWithKey
+import com.emberjs.intl.EmberIntlIndex.getTranslationKeys
+import com.emberjs.intl.EmberIntlIndexExtension.Companion.findKeyInFile
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -12,7 +12,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import org.jetbrains.yaml.psi.YAMLFile
 
-class HbsTranslationReference(element: PsiElement, range: TextRange) :
+class EmberIntlHbsReference(element: PsiElement, range: TextRange) :
         PsiPolyVariantReferenceBase<PsiElement>(element, range, true) {
 
     private val project = element.project

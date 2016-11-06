@@ -4,7 +4,7 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 import com.intellij.util.indexing.FileBasedIndex
 import java.nio.file.Paths
 
-class HbsTranslationFoldingBuilderTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberIntlFoldingBuilderTest : LightPlatformCodeInsightFixtureTestCase() {
 
     override fun getTestDataPath(): String? {
         val resource = ClassLoader.getSystemResource("com/emberjs/intl/fixtures")
@@ -18,7 +18,7 @@ class HbsTranslationFoldingBuilderTest : LightPlatformCodeInsightFixtureTestCase
         myFixture.copyDirectoryToProject("fixture1", "/")
 
         // Rebuild index now that the `package.json` file is copied over
-        FileBasedIndex.getInstance().requestRebuild(EmberTranslationIndex.NAME)
+        FileBasedIndex.getInstance().requestRebuild(EmberIntlIndex.NAME)
     }
 
     fun doTest(templateName: String) = myFixture.testFoldingWithCollapseStatus(

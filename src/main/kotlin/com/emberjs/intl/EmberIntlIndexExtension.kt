@@ -1,6 +1,6 @@
 package com.emberjs.intl
 
-import com.emberjs.intl.EmberTranslationIndex.NAME
+import com.emberjs.intl.EmberIntlIndex.NAME
 import com.emberjs.utils.isEmberFolder
 import com.emberjs.utils.parents
 import com.intellij.psi.util.PsiFilter
@@ -17,7 +17,7 @@ import org.jetbrains.yaml.psi.YAMLKeyValue
 import org.jetbrains.yaml.psi.YAMLScalar
 import java.util.*
 
-class YAMLTranslationIndexExtension() : FileBasedIndexExtension<String, String>() {
+class EmberIntlIndexExtension() : FileBasedIndexExtension<String, String>() {
 
     override fun getName() = NAME
     override fun getVersion() = 1

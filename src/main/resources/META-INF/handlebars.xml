@@ -3,6 +3,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <completion.contributor language="Handlebars" implementationClass="com.emberjs.hbs.HbsCompletionContributor"/>
         <psi.referenceContributor language="Handlebars" implementation="com.emberjs.hbs.HbsReferenceContributor"/>
-        <lang.foldingBuilder language="Handlebars" implementationClass="com.emberjs.intl.HbsTranslationFoldingBuilder"/>
+        <lang.foldingBuilder language="Handlebars" implementationClass="com.emberjs.intl.EmberIntlFoldingBuilder"/>
     </extensions>
 </idea-plugin>

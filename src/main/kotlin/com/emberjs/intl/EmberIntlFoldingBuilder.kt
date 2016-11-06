@@ -14,7 +14,7 @@ import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.Key
 
-class HbsTranslationFoldingBuilder : FoldingBuilder {
+class EmberIntlFoldingBuilder : FoldingBuilder {
     override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
         val file = node.psi as? HbPsiFile ?: return emptyArray()
 
@@ -29,7 +29,7 @@ class HbsTranslationFoldingBuilder : FoldingBuilder {
         val key = element.text.substring(1, element.textLength - 1)
 
         // query translation index for translation key
-        val translations = EmberTranslationIndex.getTranslations(key, element.project)
+        val translations = EmberIntlIndex.getTranslations(key, element.project)
 
         // store translations on ASTNode user data
         element.node.putUserData(TRANSLATIONS_KEY, translations)
