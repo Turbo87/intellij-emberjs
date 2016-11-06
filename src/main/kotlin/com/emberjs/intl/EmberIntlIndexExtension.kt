@@ -3,7 +3,7 @@ package com.emberjs.intl
 import com.emberjs.intl.EmberIntlIndex.NAME
 import com.emberjs.utils.findMainPackageJson
 import com.emberjs.utils.isEmberFolder
-import com.emberjs.utils.parents
+import com.emberjs.yaml.keyPath
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.util.PsiFilter
 import com.intellij.util.indexing.DataIndexer
@@ -13,7 +13,6 @@ import com.intellij.util.indexing.FileContent
 import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
 import com.intellij.util.io.KeyDescriptor
-import org.jetbrains.yaml.psi.YAMLDocument
 import org.jetbrains.yaml.psi.YAMLFile
 import org.jetbrains.yaml.psi.YAMLKeyValue
 import org.jetbrains.yaml.psi.YAMLScalar
@@ -49,14 +48,6 @@ class EmberIntlIndexExtension() : FileBasedIndexExtension<String, String>() {
         val YAML_ELEMENT_FILTER = object : PsiFilter<YAMLKeyValue>(YAMLKeyValue::class.java) {
             override fun accept(element: YAMLKeyValue) = element.value is YAMLScalar
         }
-
-        private val YAMLKeyValue.keyPath: String
-            get() = this.parents.takeWhile { it !is YAMLDocument }
-                    .filterIsInstance(YAMLKeyValue::class.java)
-                    .let { listOf(this, *it.toTypedArray()) }
-                    .map { it.keyText }
-                    .reversed()
-                    .joinToString(".")
 
         fun findKeyInFile(key: String, file: YAMLFile) = ArrayList<YAMLKeyValue>()
                 .apply { file.accept(YAML_ELEMENT_FILTER.createVisitor(this)) }
