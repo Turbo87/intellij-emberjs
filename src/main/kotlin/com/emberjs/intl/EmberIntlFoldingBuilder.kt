@@ -10,7 +10,6 @@ import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.Key
-import com.intellij.psi.PsiFile
 
 class EmberIntlFoldingBuilder : FoldingBuilder {
     override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
@@ -28,7 +27,7 @@ class EmberIntlFoldingBuilder : FoldingBuilder {
 
     private fun buildFoldingDescriptor(element: HbParam, baseLocale: String?): FoldingDescriptor {
         // read translation key from HbParam element
-        val key = element.text.substring(1, element.textLength - 1)
+        val key = element.text.unquote()
 
         // query translation index for translation key
         val translations = EmberIntlIndex.getTranslations(key, element.project)
@@ -53,8 +52,7 @@ class EmberIntlFoldingBuilder : FoldingBuilder {
                 translations?.get("en-us") ?:
                 translations?.get("en")
 
-        return translation?.fillPlaceholders(node) ?:
-                "Missing translation: ${node.text.substring(1, node.textLength - 1)}"
+        return translation?.fillPlaceholders(node) ?: "Missing translation: ${node.text.unquote()}"
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
