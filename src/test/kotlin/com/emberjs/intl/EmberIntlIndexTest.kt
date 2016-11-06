@@ -31,7 +31,7 @@ class EmberIntlIndexTest : LightPlatformCodeInsightFixtureTestCase() {
         super.setUp()
 
         // Load fixture files into the project
-        myFixture.copyDirectoryToProject("fixture1", "/")
+        myFixture.copyDirectoryToProject("ember-intl", "/")
 
         // Rebuild index now that the `package.json` file is copied over
         FileBasedIndex.getInstance().requestRebuild(EmberIntlIndex.NAME)
