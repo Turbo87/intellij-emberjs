@@ -74,7 +74,5 @@ class EmberIntlIndex() : FileBasedIndexExtension<String, String>() {
                 index.processValues(NAME, key, null, processor, ProjectScope.getAllScope(project))
             }
         }
-
-        fun findKeyInFile(key: String, file: YAMLFile) = YAMLKeyValueFinder(key).findIn(file)
     }
 }

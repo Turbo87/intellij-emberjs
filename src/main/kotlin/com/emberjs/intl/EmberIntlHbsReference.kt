@@ -1,6 +1,5 @@
 package com.emberjs.intl
 
-import com.emberjs.intl.EmberIntlIndex.Companion.findKeyInFile
 import com.emberjs.intl.EmberIntlIndex.Companion.getFilesWithKey
 import com.emberjs.intl.EmberIntlIndex.Companion.getTranslationKeys
 import com.intellij.openapi.util.TextRange
@@ -30,6 +29,6 @@ class EmberIntlHbsReference(element: PsiElement, range: TextRange) :
 
         val psiFile = psiManager.findFile(file)
         val yamlFile = psiFile as? YAMLFile ?: return null
-        return findKeyInFile(value, yamlFile)
+        return YAMLKeyValueFinder(value).findIn(yamlFile)
     }
 }
