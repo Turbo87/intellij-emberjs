@@ -4,6 +4,8 @@ import com.emberjs.intl.EmberIntlIndex.NAME
 import com.emberjs.utils.findMainPackageJson
 import com.emberjs.utils.isEmberFolder
 import com.emberjs.yaml.keyPath
+import com.intellij.ide.plugins.PluginManager
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.DataIndexer
 import com.intellij.util.indexing.FileBasedIndex
@@ -26,7 +28,8 @@ class EmberIntlIndexExtension() : FileBasedIndexExtension<String, String>() {
     override fun getInputFilter() = FileBasedIndex.InputFilter { acceptFile(it) }
 
     private fun acceptFile(file: VirtualFile): Boolean {
-        return file.extension == "yaml" && file.parent.name == "translations" && file.parent.parent.isEmberFolder &&
+        return YAML_PLUGIN_ENABLED &&
+                file.extension == "yaml" && file.parent.name == "translations" && file.parent.parent.isEmberFolder &&
                 findMainPackageJson(file)?.isDependencyOfAnyType("ember-intl") == true
     }
 
@@ -40,6 +43,10 @@ class EmberIntlIndexExtension() : FileBasedIndexExtension<String, String>() {
     }
 
     companion object {
+        private val YAML_PLUGIN_ENABLED by lazy {
+            PluginManager.getPlugin(PluginId.findId("org.jetbrains.plugins.yaml"))?.isEnabled ?: false
+        }
+
         fun findKeyInFile(key: String, file: YAMLFile) = YAMLKeyValueFinder(key).findIn(file)
     }
 }
