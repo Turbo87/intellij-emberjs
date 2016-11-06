@@ -23,7 +23,7 @@ module.exports = function(environment) {
     },
 
     i18n: {
-      defaultLocale: 'zh'
+      defaultLocale: 'de'
     }
   };
 

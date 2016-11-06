@@ -21,6 +21,6 @@ class EmberI18nTest : LightPlatformCodeInsightFixtureTestCase() {
 
         val psiFile = myFixture.configureByFile("app/templates/application.hbs")
 
-        assertThat(EmberI18n.findDefaultLocale(psiFile)).isEqualTo("zh")
+        assertThat(EmberI18n.findDefaultLocale(psiFile)).isEqualTo("de")
     }
 }
