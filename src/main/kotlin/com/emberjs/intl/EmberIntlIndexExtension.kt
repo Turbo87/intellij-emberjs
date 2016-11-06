@@ -39,8 +39,7 @@ class EmberIntlIndexExtension() : FileBasedIndexExtension<String, String>() {
     fun index(fileContent: FileContent): Map<String, String> {
         val psiFile = fileContent.psiFile as? YAMLFile ?: return emptyMap()
 
-        return ArrayList<YAMLKeyValue>()
-                .apply { psiFile.accept(YAML_ELEMENT_FILTER.createVisitor(this)) }
+        return YAMLScalarKeyValueCollector().collectFrom(psiFile)
                 .associate { it.keyPath to it.valueText }
     }
 
