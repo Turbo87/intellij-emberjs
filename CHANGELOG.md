@@ -3,6 +3,12 @@ Changelog
 ===============================================================================
 
 
+## v2016.2.3
+
+- ember-intl: Add support for JSON translation files (#95)
+- ember-intl: Use `baseLocale` property (#93)
+
+
 ## v2016.2.2
 
 - Add [ember-intl](https://github.com/jasonmit/ember-intl) support (#90)
