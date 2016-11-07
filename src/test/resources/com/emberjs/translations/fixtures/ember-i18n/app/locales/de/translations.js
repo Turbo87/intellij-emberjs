@@ -1,8 +1,8 @@
 export default {
   foo: 'Bar Baz',
   'user.edit.title': 'Benutzer editieren',
-  'user.followers.title.one': 'Ein Anhänger',
-  'user.followers.title.other': 'Alle {{count}} Anhänger',
+  'user.followers.title.one': 'Ein Folgender',
+  'user.followers.title.other': 'Alle {{count}} Folgenden',
 
   // nested objects work just like dotted keys
   'button': {
