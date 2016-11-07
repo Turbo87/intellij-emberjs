@@ -1,4 +1,4 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
 import com.emberjs.yaml.keyPath
 import com.intellij.psi.PsiElement

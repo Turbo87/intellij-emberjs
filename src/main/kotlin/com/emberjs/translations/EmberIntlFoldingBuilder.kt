@@ -1,4 +1,4 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
 import com.dmarcotte.handlebars.psi.HbHash
 import com.dmarcotte.handlebars.psi.HbParam

@@ -11,5 +11,8 @@ object Ember {
      * This does not stop for in-repo-addon roots.
      */
     fun findProjectFolder(file: VirtualFile) = file.parents.asSequence().firstOrNull { it.isEmberFolder }
+
+    fun findEnvironmentConfigFile(file: VirtualFile) =
+            Ember.findProjectFolder(file)?.findFileByRelativePath("config/environment.js")
 }
 

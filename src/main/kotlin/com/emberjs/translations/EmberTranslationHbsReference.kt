@@ -1,15 +1,16 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
-import com.emberjs.intl.EmberIntlIndex.Companion.getFilesWithKey
-import com.emberjs.intl.EmberIntlIndex.Companion.getTranslationKeys
+import com.emberjs.translations.EmberTranslationIndices.getFilesWithKey
+import com.emberjs.translations.EmberTranslationIndices.getTranslationKeys
 import com.intellij.json.psi.JsonFile
+import com.intellij.lang.javascript.psi.JSFile
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.PsiElementResolveResult.createResults
 import org.jetbrains.yaml.psi.YAMLFile
 
-class EmberIntlHbsReference(element: PsiElement, range: TextRange) :
+class EmberTranslationHbsReference(element: PsiElement, range: TextRange) :
         PsiPolyVariantReferenceBase<PsiElement>(element, range, true) {
 
     private val project = element.project
@@ -25,8 +26,9 @@ class EmberIntlHbsReference(element: PsiElement, range: TextRange) :
     private fun fileToElement(file: VirtualFile) = psiManager.findFile(file)?.let { fileToElement(it) }
 
     private fun fileToElement(file: PsiFile) = when (file) {
-        is JsonFile -> JsonPropertyFinder(value).findIn(file)
-        is YAMLFile -> YAMLKeyValueFinder(value).findIn(file)
+        is JSFile -> JSPropertyFinder(value).findIn(file)?.value
+        is JsonFile -> JsonPropertyFinder(value).findIn(file)?.value
+        is YAMLFile -> YAMLKeyValueFinder(value).findIn(file)?.value
         else -> null
     }
 }

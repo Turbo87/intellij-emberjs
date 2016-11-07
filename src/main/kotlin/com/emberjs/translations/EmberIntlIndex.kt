@@ -1,4 +1,4 @@
-package com.emberjs.intl
+package com.emberjs.translations
 
 import com.emberjs.intellij.isEnabled
 import com.emberjs.json.keyPath
@@ -50,7 +50,7 @@ class EmberIntlIndex() : FileBasedIndexExtension<String, String>() {
     }
 
     companion object {
-        val NAME: ID<String, String> = ID.create("ember.translations")
+        val NAME: ID<String, String> = ID.create("ember.intl")
 
         private val YAML_PLUGIN_ENABLED by lazy { PluginId.findId("org.jetbrains.plugins.yaml").isEnabled }
 

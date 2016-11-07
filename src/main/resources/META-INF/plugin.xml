@@ -56,7 +56,8 @@
 
         <testFinder implementation="com.emberjs.navigation.EmberTestFinder"/>
 
-        <fileBasedIndex implementation="com.emberjs.intl.EmberIntlIndex"/>
+        <fileBasedIndex implementation="com.emberjs.translations.EmberI18nIndex"/>
+        <fileBasedIndex implementation="com.emberjs.translations.EmberIntlIndex"/>
 
         <psi.referenceContributor language="JavaScript" implementation="com.emberjs.psi.EmberReferenceContributor"/>
 
