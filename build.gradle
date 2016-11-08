@@ -36,7 +36,6 @@ intellij {
 
     pluginName = 'Ember.js'
     plugins = ['JavaScriptLanguage', 'CSS', 'yaml', 'com.dmarcotte.handlebars:162.80']
-    updateSinceUntilBuild = false
 
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
