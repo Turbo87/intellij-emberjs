@@ -36,6 +36,9 @@
     <depends optional="true" config-file="handlebars.xml">com.dmarcotte.handlebars</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <directoryProjectGenerator implementation="com.emberjs.cli.EmberCliProjectGenerator"/>
+        <projectTemplatesFactory implementation="com.emberjs.cli.EmberCliProjectTemplatesFactory"/>
+
         <applicationConfigurable instance="com.emberjs.settings.EmberApplicationConfigurable"/>
         <framework.detector implementation="com.emberjs.cli.EmberCliFrameworkDetector"/>
 
