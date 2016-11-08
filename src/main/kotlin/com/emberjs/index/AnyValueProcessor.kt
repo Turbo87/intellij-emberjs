@@ -7,7 +7,7 @@ class AnyValueProcessor<T> : FileBasedIndex.ValueProcessor<T> {
     var called = false
         private set
 
-    override fun process(file: VirtualFile?, value: T): Boolean {
+    override fun process(file: VirtualFile, value: T): Boolean {
         called = true
         return false
     }
