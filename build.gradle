@@ -50,3 +50,9 @@ test {
         exceptionFormat = 'full'
     }
 }
+
+task cleanSandboxPlugins(type: Delete) {
+    delete '.sandbox/plugins'
+}
+
+prepareSandbox.dependsOn cleanSandboxPlugins
