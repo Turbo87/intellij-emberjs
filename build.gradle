@@ -41,7 +41,6 @@ intellij {
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
     publish {
-        pluginId '8049'
         username "$JETBRAINS_USERNAME"
         password "$JETBRAINS_PASSWORD"
     }
