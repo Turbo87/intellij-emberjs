@@ -4,6 +4,7 @@ import com.emberjs.cli.EmberCliBlueprint
 import com.emberjs.cli.EmberCliBlueprintListLoader
 import com.emberjs.cli.EmberCliFilter
 import com.emberjs.cli.EmberCliProjectGenerator
+import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
 import com.emberjs.utils.isEmberFolder
 import com.intellij.execution.configurations.CommandLineTokenizer
@@ -46,14 +47,12 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
         val model = DefaultListModel<EmberCliBlueprint>()
         val list = JBList<EmberCliBlueprint>(model).apply {
             cellRenderer = object : JBList.StripedListCellRenderer() {
-                override fun getListCellRendererComponent(list: JList<*>?,
-                                                          value: Any?,
-                                                          index: Int,
-                                                          isSelected: Boolean,
-                                                          cellHasFocus: Boolean): Component {
-                    val component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
-                    icon = JBUI.emptyIcon(5)
-                    return component
+                override fun getListCellRendererComponent(list: JList<*>?, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
+                    return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).apply {
+                        icon = (value as? EmberCliBlueprint)?.name
+                                ?.let { EmberIconProvider.getIcon(it) }
+                                ?: EmberIcons.EMPTY_16
+                    }
                 }
             }
         }
