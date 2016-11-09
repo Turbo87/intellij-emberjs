@@ -35,12 +35,11 @@
     <depends optional="true">org.jetbrains.plugins.yaml</depends>
     <depends optional="true" config-file="handlebars.xml">com.dmarcotte.handlebars</depends>
 
-    <project-components>
+    <module-components>
         <component>
-            <implementation-class>com.emberjs.project.EmberProjectComponent</implementation-class>
-            <skipForDefaultProject/>
+            <implementation-class>com.emberjs.project.EmberModuleComponent</implementation-class>
         </component>
-    </project-components>
+    </module-components>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable instance="com.emberjs.settings.EmberApplicationConfigurable"/>
