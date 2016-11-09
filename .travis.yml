@@ -3,20 +3,11 @@ jdk:
   - oraclejdk8
 
 env:
-  global:
-    - ORG_GRADLE_PROJECT_INTELLIJ_DOWNLOAD_SOURCES=false
-  matrix:
-    - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=2016.2
-    - ORG_GRADLE_PROJECT_INTELLIJ_VERSION=LATEST-EAP-SNAPSHOT
-
-matrix:
-  fast_finish: true
-  allow_failures:
-    - env: ORG_GRADLE_PROJECT_INTELLIJ_VERSION=LATEST-EAP-SNAPSHOT
+  - ORG_GRADLE_PROJECT_INTELLIJ_DOWNLOAD_SOURCES=false
 
 before_deploy:
   - ./gradlew buildPlugin
-  - if [[ $ORG_GRADLE_PROJECT_INTELLIJ_VERSION = 2016.2 ]]; then ./gradlew publishPlugin; fi
+  - ./gradlew publishPlugin
 
 deploy:
   provider: releases
