@@ -6,7 +6,6 @@ import com.intellij.lang.javascript.library.JSLibraryManager
 import com.intellij.lang.javascript.linter.jshint.JSHintConfiguration
 import com.intellij.lang.javascript.linter.jshint.JSHintState
 import com.intellij.lang.javascript.settings.JSRootConfiguration
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleComponent
 import com.intellij.openapi.project.Project
@@ -24,6 +23,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType
 import com.emberjs.utils.isEmberFolder
 import com.emberjs.utils.isInRepoAddon
+import com.intellij.openapi.startup.StartupManager
 
 class EmberModuleComponent(val module: Module) : ModuleComponent {
     override fun getComponentName(): String = this.javaClass.name
@@ -49,14 +49,12 @@ class EmberModuleComponent(val module: Module) : ModuleComponent {
             }
 
             // Add node_modules and bower_components as library folders
-            ApplicationManager.getApplication().invokeLater {
-                ApplicationManager.getApplication().runWriteAction {
-                    roots.forEach {
-                        setupLibraries(module.project, it)
-                    }
-
-                    setupModule(module, roots)
+            StartupManager.getInstance(module.project).registerPostStartupActivity {
+                roots.forEach {
+                    setupLibraries(module.project, it)
                 }
+
+                setupModule(module, roots)
             }
         }
     }
