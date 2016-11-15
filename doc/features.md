@@ -8,11 +8,11 @@ Project Discovery
 
 Ember.js projects are automatically discovered when imported via 
 `File → New → Project from Existing Sources...`. The importer will look for an
-`app/app.js` file and will flag the project as an Ember.js project if the file
+`.ember-cli` file and will flag the project as an Ember.js project if the file
 exists.
 
 The language level for Ember.js projects is automatically set to ES6 and
-JSHint support is enabled using the `.jshintrc` file.
+JSHint support is enabled if a `.jshintrc` file is found.
 
 
 Marking special folders

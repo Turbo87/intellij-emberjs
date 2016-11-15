@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2016.2.5
+
+- Replace "Ember.js" module with framework detector (#100)
+
+
 ## v2016.2.4
 
 - Add [ember-i18n](https://github.com/jamesarosen/ember-i18n) support (#96)
