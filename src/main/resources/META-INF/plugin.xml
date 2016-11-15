@@ -35,19 +35,9 @@
     <depends optional="true">org.jetbrains.plugins.yaml</depends>
     <depends optional="true" config-file="handlebars.xml">com.dmarcotte.handlebars</depends>
 
-    <project-components>
-        <component>
-            <implementation-class>com.emberjs.project.EmberProjectComponent</implementation-class>
-            <skipForDefaultProject/>
-        </component>
-    </project-components>
-
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable instance="com.emberjs.settings.EmberApplicationConfigurable"/>
-
-        <moduleType id="EMBER_MODULE" implementationClass="com.emberjs.project.EmberModuleType"/>
-        <moduleBuilder builderClass="com.emberjs.project.EmberModuleBuilder"/>
-        <projectStructureDetector implementation="com.emberjs.project.EmberProjectStructureDetector"/>
+        <framework.detector implementation="com.emberjs.cli.EmberCliFrameworkDetector"/>
 
         <fileBasedIndex implementation="com.emberjs.index.EmberNameIndex"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
