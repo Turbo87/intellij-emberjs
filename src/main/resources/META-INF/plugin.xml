@@ -54,6 +54,9 @@
         <iconProvider implementation="com.emberjs.icons.EmberIconProvider" order="first"/>
 
         <defaultLiveTemplatesProvider implementation="com.emberjs.template.EmberLiveTemplatesProvider"/>
+
+        <!-- deprecated and only included for legacy reasons -->
+        <moduleType id="EMBER_MODULE" implementationClass="com.emberjs.project.EmberModuleType"/>
     </extensions>
 
     <actions>
