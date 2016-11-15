@@ -10,10 +10,7 @@ val AnActionEvent.module: Module?
     get() = getData(LangDataKeys.MODULE)
 
 val AnActionEvent.emberRoot: VirtualFile?
-    get() {
-        val module = module ?: return null
-        return ModuleRootManager.getInstance(module).contentRoots.find { it.isEmberFolder }
-    }
+    get() = module?.emberRoot
 
 val AnActionEvent.hasEmberRoot: Boolean
     get() = emberRoot != null

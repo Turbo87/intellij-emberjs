@@ -108,7 +108,7 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
             }
         }
 
-        private fun inRepoAddons(baseDir: VirtualFile): List<VirtualFile> {
+        fun inRepoAddons(baseDir: VirtualFile): List<VirtualFile> {
             // assume the location of in-repo addons; it would be better to parse package.json
             return baseDir.findChild("lib")?.children.orEmpty().filter { it.isInRepoAddon }
         }

@@ -56,6 +56,10 @@
         <defaultLiveTemplatesProvider implementation="com.emberjs.template.EmberLiveTemplatesProvider"/>
     </extensions>
 
+    <extensions defaultExtensionNs="JavaScript">
+        <moduleReferenceContributor implementation="com.emberjs.resolver.EmberAppReferenceContributor"/>
+    </extensions>
+
     <actions>
         <action id="GenerateEmberCode" class="com.emberjs.actions.EmberGenerateCodeAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
