@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2016.2.6
+
+- Fix "Unknown Module Type" warnings (#102)
+
+
 ## v2016.2.5
 
 - Replace "Ember.js" module with framework detector (#100)
