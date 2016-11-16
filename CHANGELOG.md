@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2016.3.1
+
+- Change IntelliJ target version to v2016.3
+
+
 ## v2016.2.6
 
 - Fix "Unknown Module Type" warnings (#102)
