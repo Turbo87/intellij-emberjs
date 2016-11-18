@@ -11,9 +11,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import org.intellij.lang.annotations.Language
 import java.io.File
 
-class EmberCliProjectGenerator : NpmPackageProjectGenerator() {
+open class EmberCliProjectGenerator : NpmPackageProjectGenerator() {
 
-    override fun getName() = "Ember CLI"
+    override fun getName() = "Ember CLI App"
 
     @Language("HTML")
     override fun getDescription() = "<html>A framework for creating ambitious web applications: <a href=\"http://emberjs.com/\">http://emberjs.com/</a></html>"

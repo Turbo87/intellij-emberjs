@@ -6,6 +6,8 @@ import com.intellij.platform.ProjectTemplate
 import com.intellij.platform.ProjectTemplatesFactory
 
 class EmberCliProjectTemplatesFactory : ProjectTemplatesFactory() {
-    override fun createTemplates(group: String?, context: WizardContext?): Array<ProjectTemplate> = arrayOf(EmberCliProjectGenerator())
+    override fun createTemplates(group: String?, context: WizardContext?): Array<ProjectTemplate> =
+            arrayOf(EmberCliProjectGenerator(), EmberCliAddonProjectGenerator())
+
     override fun getGroups(): Array<String> = arrayOf(WebModuleBuilder.GROUP_NAME)
 }
