@@ -15,6 +15,9 @@ val PsiElement.originalVirtualFile: VirtualFile
 val PsiElement.module: Module?
     get() = originalVirtualFile.let { findModuleForFile(it, project) }
 
+val PsiElement.emberRoot: VirtualFile?
+    get() = module?.emberRoot
+
 val PsiElement.parents: Iterable<PsiElement>
     get() = object : Iterable<PsiElement> {
         override fun iterator(): Iterator<PsiElement> {
