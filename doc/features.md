@@ -113,6 +113,14 @@ Using `ember-cli` from the IDE
 
 Some of the `ember-cli` commands are exposed right in the IDE for quick access.
 
+### Creating a new project
+
+A new Ember CLI project can be created through `File → New → Project...` and
+then choosing `Static Web` and either `Ember CLI App` or `Ember CLI Addon`.
+
+![Project Generator](project-generator.png)
+
+
 ### Generating files
 
 The Ember.js plugin can be used to quickly generate files using the `generate`
