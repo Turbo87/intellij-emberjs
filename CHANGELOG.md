@@ -4,6 +4,12 @@ Changelog
 ===============================================================================
 
 
+## v2016.3.2
+
+- Resolve absolute imports from your own project (#103)
+- Add Ember CLI project generators (#105)
+
+
 ## v2016.3.1
 
 - Change IntelliJ target version to v2016.3
