@@ -31,6 +31,12 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
     override fun configureProject(project: Project, baseDir: VirtualFile, moduleRef: Ref<Module>) {
         val module = ModuleManager.getInstance(project).modules.singleOrNull()
         if (module != null && baseDir.isEmberFolder) {
+            setupEmber(project, module, baseDir)
+        }
+    }
+
+    companion object {
+        fun setupEmber(project: Project, module: Module, baseDir: VirtualFile) {
             val model = ModuleRootManager.getInstance(module).modifiableModel
             val entry = MarkRootActionBase.findContentEntry(model, baseDir)
             if (entry != null) {
@@ -43,9 +49,7 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
                 model.dispose()
             }
         }
-    }
 
-    companion object {
         fun setupEmber(project: Project, entry: ContentEntry, root: VirtualFile) {
             // Adjust JavaScript settings for the project
             setES6LanguageLevel(project)

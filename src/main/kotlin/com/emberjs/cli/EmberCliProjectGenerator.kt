@@ -1,14 +1,11 @@
 package com.emberjs.cli
 
 import com.emberjs.icons.EmberIcons
-import com.intellij.ide.projectView.actions.MarkRootActionBase
 import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreter
 import com.intellij.lang.javascript.boilerplate.NpmPackageProjectGenerator
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ContentEntry
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import org.intellij.lang.annotations.Language
@@ -34,18 +31,7 @@ class EmberCliProjectGenerator : NpmPackageProjectGenerator() {
     override fun customizeModule(baseDir: VirtualFile, entry: ContentEntry?) = Unit
 
     override fun generateProject(project: Project, baseDir: VirtualFile, settings: Pair<NodeJsInterpreter, String>, module: Module) {
-        val model = ModuleRootManager.getInstance(module).modifiableModel
-        val entry = MarkRootActionBase.findContentEntry(model, baseDir)
-        if (entry != null) {
-            EmberCliProjectConfigurator.setupEmber(project, entry, baseDir)
-            ApplicationManager.getApplication().runWriteAction {
-                model.commit()
-                project.save()
-            }
-        } else {
-            model.dispose()
-        }
-
+        EmberCliProjectConfigurator.setupEmber(project, module, baseDir)
         super.generateProject(project, baseDir, settings, module)
     }
 
