@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
-        classpath 'com.github.JetBrains:gradle-intellij-plugin:2749c1c'
+        classpath 'com.github.JetBrains:gradle-intellij-plugin:050a415'
     }
 }
 
@@ -35,7 +35,7 @@ intellij {
     downloadSources Boolean.valueOf(INTELLIJ_DOWNLOAD_SOURCES)
 
     pluginName = 'Ember.js'
-    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', 'com.dmarcotte.handlebars:163.7342.11']
+    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', 'com.dmarcotte.handlebars:163.7743.13']
 
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
@@ -51,8 +51,7 @@ test {
     }
 }
 
-task cleanSandboxPlugins(type: Delete) {
-    delete '.sandbox/plugins'
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.2.1'
+    distributionType = Wrapper.DistributionType.ALL
 }
-
-prepareSandbox.dependsOn cleanSandboxPlugins
