@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
-        classpath 'com.github.JetBrains:gradle-intellij-plugin:2749c1c'
+        classpath 'com.github.JetBrains:gradle-intellij-plugin:050a415'
     }
 }
 
@@ -55,9 +55,3 @@ task wrapper(type: Wrapper) {
     gradleVersion = '3.2.1'
     distributionType = Wrapper.DistributionType.ALL
 }
-
-task cleanSandboxPlugins(type: Delete) {
-    delete '.sandbox/plugins'
-}
-
-prepareSandbox.dependsOn cleanSandboxPlugins
