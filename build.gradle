@@ -52,7 +52,8 @@ test {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
+    gradleVersion = '3.2.1'
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 task cleanSandboxPlugins(type: Delete) {
