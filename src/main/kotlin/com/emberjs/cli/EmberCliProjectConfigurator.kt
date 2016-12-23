@@ -54,24 +54,11 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
             // Adjust JavaScript settings for the project
             setES6LanguageLevel(project)
 
-            // Enable JSHint
-            if (root.findChild(".jshintrc") != null) {
-                enableJSHint(project)
-            }
-
             // Add node_modules and bower_components as library folders
             setupLibraries(project, root)
 
             // Mark source and exclude directories
             setupModule(entry, root)
-        }
-
-        private fun enableJSHint(project: Project) {
-            JSHintConfiguration.getInstance(project).apply {
-                setExtendedState(true, JSHintState.Builder(extendedState.state)
-                    .setConfigFileUsed(true)
-                    .build())
-            }
         }
 
         private fun setES6LanguageLevel(project: Project) {

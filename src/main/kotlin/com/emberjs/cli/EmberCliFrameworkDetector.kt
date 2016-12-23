@@ -1,12 +1,12 @@
 package com.emberjs.cli
 
+import com.emberjs.utils.NotLibrary
 import com.intellij.framework.FrameworkType
 import com.intellij.framework.detection.DetectedFrameworkDescription
 import com.intellij.framework.detection.FileContentPattern
 import com.intellij.framework.detection.FrameworkDetectionContext
 import com.intellij.framework.detection.FrameworkDetector
 import com.intellij.ide.projectView.actions.MarkRootActionBase
-import com.intellij.lang.javascript.library.JSLibraryUtil
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.module.ModuleUtilCore
@@ -16,8 +16,6 @@ import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.patterns.ElementPattern
-import com.intellij.patterns.PatternCondition
-import com.intellij.util.ProcessingContext
 import com.intellij.util.indexing.FileContent
 
 class EmberCliFrameworkDetector : FrameworkDetector("Ember") {
@@ -28,13 +26,6 @@ class EmberCliFrameworkDetector : FrameworkDetector("Ember") {
         return FileContentPattern.fileContent()
                 .withName(".ember-cli")
                 .with(NotLibrary)
-    }
-
-    /** Exclude files in `node_modules`, `bower_components`, etc. from framework detection */
-    private object NotLibrary : PatternCondition<FileContent>("notExcluded") {
-        override fun accepts(content: FileContent, context: ProcessingContext?): Boolean {
-            return !JSLibraryUtil.isProbableLibraryFile(content.file)
-        }
     }
 
     override fun getFrameworkType(): FrameworkType = EmberFrameworkType
