@@ -18,6 +18,9 @@ val VirtualFile.parents: Iterable<VirtualFile>
         }
     }
 
+val VirtualFile.parentsAndSelf: Sequence<VirtualFile>
+    get() = sequenceOf(this) + parents
+
 val VirtualFile.isEmberFolder: Boolean
     get() = findFileByRelativePath("app/app.js") != null ||
             findFileByRelativePath(".ember-cli") != null

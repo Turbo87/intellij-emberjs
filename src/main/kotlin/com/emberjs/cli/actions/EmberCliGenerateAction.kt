@@ -6,6 +6,7 @@ import com.emberjs.cli.EmberCliFilter
 import com.emberjs.cli.EmberCliProjectGenerator
 import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
+import com.emberjs.utils.emberInRepoAddonRoot
 import com.emberjs.utils.emberRoot
 import com.emberjs.utils.hasEmberRoot
 import com.emberjs.utils.isEmberFolder
@@ -47,6 +48,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val appRoot = event.emberRoot ?: return
+        val inRepoAddonRoot = event.emberInRepoAddonRoot
 
         val model = DefaultListModel<EmberCliBlueprint>()
         val list = JBList<EmberCliBlueprint>(model).apply {
@@ -113,7 +115,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
             override fun keyPressed(e: KeyEvent?) {
                 if (e?.keyCode == KeyEvent.VK_ENTER) {
                     e?.consume()
-                    askOptions(project, appRoot, popup, list.selectedValue as EmberCliBlueprint)
+                    askOptions(project, appRoot, inRepoAddonRoot, popup, list.selectedValue as EmberCliBlueprint)
                 }
             }
         })
@@ -121,7 +123,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
         object : DoubleClickListener() {
             override fun onDoubleClick(event: MouseEvent?): Boolean {
                 if (list.selectedValue == null) return true
-                askOptions(project, appRoot, popup, list.selectedValue as EmberCliBlueprint)
+                askOptions(project, appRoot, inRepoAddonRoot, popup, list.selectedValue as EmberCliBlueprint)
                 return true
             }
         }.installOn(list)
@@ -141,7 +143,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
         }
     }
 
-    private fun askOptions(project: Project, appRoot: VirtualFile, popup: JBPopup, blueprint: EmberCliBlueprint) {
+    private fun askOptions(project: Project, appRoot: VirtualFile, inRepoAddonRoot: VirtualFile?, popup: JBPopup, blueprint: EmberCliBlueprint) {
         popup.closeOk(null)
         val dialog = object : DialogWrapper(project, true) {
             private lateinit var editor: EditorTextField
@@ -169,6 +171,9 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
                 val result: MutableList<String> = mutableListOf()
                 while (tokenizer.hasMoreTokens()) {
                     result.add(tokenizer.nextToken())
+                }
+                inRepoAddonRoot?.let {
+                    result += sequenceOf("--in-repo-addon", it.name)
                 }
                 return result.toTypedArray()
             }
