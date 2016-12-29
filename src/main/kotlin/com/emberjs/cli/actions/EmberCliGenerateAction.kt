@@ -6,6 +6,8 @@ import com.emberjs.cli.EmberCliFilter
 import com.emberjs.cli.EmberCliProjectGenerator
 import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
+import com.emberjs.utils.emberRoot
+import com.emberjs.utils.hasEmberRoot
 import com.emberjs.utils.isEmberFolder
 import com.intellij.execution.configurations.CommandLineTokenizer
 import com.intellij.icons.AllIcons
@@ -26,6 +28,7 @@ import com.intellij.openapi.ui.popup.IconButton
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.text.StringUtil
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.*
 import com.intellij.ui.components.JBList
 import com.intellij.ui.speedSearch.ListWithFilter
@@ -43,6 +46,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
+        val appRoot = event.emberRoot ?: return
 
         val model = DefaultListModel<EmberCliBlueprint>()
         val list = JBList<EmberCliBlueprint>(model).apply {
@@ -57,7 +61,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
             }
         }
 
-        updateList(list, model, project)
+        updateList(list, model, project, appRoot)
 
         val actionGroup = DefaultActionGroup()
         val refresh: AnAction = object : AnAction(JavaScriptLanguageIcons.BuildTools.Refresh) {
@@ -67,7 +71,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
 
             override fun actionPerformed(e: AnActionEvent?) {
                 EmberCliBlueprintListLoader.CacheModificationTracker.count++
-                updateList(list, model, project)
+                updateList(list, model, project, appRoot)
             }
         }
         refresh.registerCustomShortcutSet(refresh.shortcutSet, list)
@@ -109,7 +113,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
             override fun keyPressed(e: KeyEvent?) {
                 if (e?.keyCode == KeyEvent.VK_ENTER) {
                     e?.consume()
-                    askOptions(project, popup, list.selectedValue as EmberCliBlueprint)
+                    askOptions(project, appRoot, popup, list.selectedValue as EmberCliBlueprint)
                 }
             }
         })
@@ -117,7 +121,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
         object : DoubleClickListener() {
             override fun onDoubleClick(event: MouseEvent?): Boolean {
                 if (list.selectedValue == null) return true
-                askOptions(project, popup, list.selectedValue as EmberCliBlueprint)
+                askOptions(project, appRoot, popup, list.selectedValue as EmberCliBlueprint)
                 return true
             }
         }.installOn(list)
@@ -125,11 +129,11 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
         popup.showCenteredInCurrentWindow(project)
     }
 
-    private fun updateList(list: JBList<EmberCliBlueprint>, model: DefaultListModel<EmberCliBlueprint>, project: Project) {
+    private fun updateList(list: JBList<EmberCliBlueprint>, model: DefaultListModel<EmberCliBlueprint>, project: Project, appRoot: VirtualFile) {
         list.setPaintBusy(true)
         model.clear()
         ApplicationManager.getApplication().executeOnPooledThread {
-            val blueprints = EmberCliBlueprintListLoader.load(project)
+            val blueprints = EmberCliBlueprintListLoader.load(project, appRoot)
             ApplicationManager.getApplication().invokeLater {
                 blueprints.forEach { model.addElement(it) }
                 list.setPaintBusy(false)
@@ -137,7 +141,7 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
         }
     }
 
-    private fun askOptions(project: Project, popup: JBPopup, blueprint: EmberCliBlueprint) {
+    private fun askOptions(project: Project, appRoot: VirtualFile, popup: JBPopup, blueprint: EmberCliBlueprint) {
         popup.closeOk(null)
         val dialog = object : DialogWrapper(project, true) {
             private lateinit var editor: EditorTextField
@@ -171,27 +175,26 @@ class EmberCliGenerateAction : DumbAwareAction(TEXT, DESCRIPTION, ICON) {
         }
 
         if (dialog.showAndGet()) {
-            runGenerator(project, blueprint, dialog.arguments())
+            runGenerator(project, appRoot, blueprint, dialog.arguments())
         }
     }
 
-    private fun runGenerator(project: Project, blueprint: EmberCliBlueprint, arguments: Array<String>) {
+    private fun runGenerator(project: Project, appRoot: VirtualFile, blueprint: EmberCliBlueprint, arguments: Array<String>) {
         val interpreter = NodeJsInterpreterManager.getInstance(project).default
         val node = NodeJsLocalInterpreter.tryCast(interpreter) ?: return
 
         val modules: MutableList<CompletionModuleInfo> = mutableListOf()
-        val baseDir = project.baseDir
-        NodeModuleSearchUtil.findModulesWithName(modules, "ember-cli", baseDir, NodeSettings.create(node), false)
+        NodeModuleSearchUtil.findModulesWithName(modules, "ember-cli", appRoot, NodeSettings.create(node), false)
 
         val modulePath = modules.firstOrNull()?.virtualFile?.path ?: return
         val ember = EmberCliProjectGenerator.executable(modulePath)
 
-        val filter = EmberCliFilter(project, baseDir.path)
-        NpmPackageProjectGenerator.generate(node, ember, project.baseDir, project.baseDir, project, null, arrayOf(filter), "generate", blueprint.name, *arguments)
+        val filter = EmberCliFilter(project, appRoot.path)
+        NpmPackageProjectGenerator.generate(node, ember, appRoot, appRoot, project, null, arrayOf(filter), "generate", blueprint.name, *arguments)
     }
 
     override fun update(event: AnActionEvent) {
-        event.presentation.isEnabledAndVisible = event.project?.baseDir?.isEmberFolder == true
+        event.presentation.isEnabledAndVisible = event.hasEmberRoot
     }
 
     companion object {
