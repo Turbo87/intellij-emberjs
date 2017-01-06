@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2017.1.1
+
+- Change IntelliJ target version to v2017.1
+
+
 ## v2016.3.3
 
 - Add support for ESLint and improve JSHint support (#116)
