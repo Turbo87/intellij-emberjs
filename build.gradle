@@ -32,7 +32,7 @@ dependencies {
 intellij {
     type = 'IU'
     version = INTELLIJ_VERSION
-    downloadSources Boolean.valueOf(INTELLIJ_DOWNLOAD_SOURCES)
+    downloadSources System.getenv().containsKey('CI')
 
     pluginName = 'Ember.js'
     plugins = ['JavaScriptLanguage', 'CSS', 'yaml', 'com.dmarcotte.handlebars:163.7743.13']
