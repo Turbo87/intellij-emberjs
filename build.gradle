@@ -5,7 +5,10 @@ buildscript {
         javaVersion = '1.7'
         kotlinVersion = '1.0.5'
 
+        // see https://www.jetbrains.com/intellij-repository/releases/
         intellijVersion = '2016.3'
+
+        // see https://plugins.jetbrains.com/idea/plugin/6884-handlebars-mustache
         handlebarsPluginVersion = '163.7743.13'
     }
 
