@@ -1,11 +1,25 @@
 buildscript {
+    ext {
+        intellijGradlePluginSHA1 = '050a415'
+
+        javaVersion = '1.7'
+        kotlinVersion = '1.0.5'
+
+        // see https://www.jetbrains.com/intellij-repository/releases/
+        intellijVersion = '171.2014.21'
+
+        // see https://plugins.jetbrains.com/idea/plugin/6884-handlebars-mustache
+        handlebarsPluginVersion = '171.1834.8'
+    }
+
     repositories {
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
+
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
-        classpath 'com.github.JetBrains:gradle-intellij-plugin:050a415'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.github.JetBrains:gradle-intellij-plugin:$intellijGradlePluginSHA1"
     }
 }
 
@@ -17,26 +31,25 @@ apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'java'
 apply plugin: 'kotlin'
 
-sourceCompatibility = JAVA_VERSION
+sourceCompatibility = javaVersion
 
 repositories {
     jcenter()
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-runtime:$KOTLIN_VERSION"
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+    compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     testCompile "org.assertj:assertj-core:2.2.0"
 }
 
 intellij {
     type = 'IU'
-    version = INTELLIJ_VERSION
-    downloadSources Boolean.valueOf(INTELLIJ_DOWNLOAD_SOURCES)
+    version = intellijVersion
+    downloadSources System.getenv().containsKey('CI')
 
     pluginName = 'Ember.js'
-    // see https://plugins.jetbrains.com/idea/plugin/6884-handlebars-mustache
-    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', 'com.dmarcotte.handlebars:171.1834.8']
+    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', "com.dmarcotte.handlebars:$handlebarsPluginVersion"]
 
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
