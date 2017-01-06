@@ -35,7 +35,8 @@ intellij {
     downloadSources Boolean.valueOf(INTELLIJ_DOWNLOAD_SOURCES)
 
     pluginName = 'Ember.js'
-    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', 'com.dmarcotte.handlebars:163.7743.13']
+    // see https://plugins.jetbrains.com/idea/plugin/6884-handlebars-mustache
+    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', 'com.dmarcotte.handlebars:171.1834.8']
 
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
