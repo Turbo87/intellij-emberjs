@@ -1,11 +1,22 @@
 buildscript {
+    ext {
+        intellijGradlePluginSHA1 = '050a415'
+
+        javaVersion = '1.7'
+        kotlinVersion = '1.0.5'
+
+        intellijVersion = '2016.3'
+        handlebarsPluginVersion = '163.7743.13'
+    }
+
     repositories {
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
+
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
-        classpath 'com.github.JetBrains:gradle-intellij-plugin:050a415'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.github.JetBrains:gradle-intellij-plugin:$intellijGradlePluginSHA1"
     }
 }
 
@@ -17,25 +28,25 @@ apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'java'
 apply plugin: 'kotlin'
 
-sourceCompatibility = JAVA_VERSION
+sourceCompatibility = javaVersion
 
 repositories {
     jcenter()
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-runtime:$KOTLIN_VERSION"
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+    compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     testCompile "org.assertj:assertj-core:2.2.0"
 }
 
 intellij {
     type = 'IU'
-    version = INTELLIJ_VERSION
+    version = intellijVersion
     downloadSources System.getenv().containsKey('CI')
 
     pluginName = 'Ember.js'
-    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', 'com.dmarcotte.handlebars:163.7743.13']
+    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', "com.dmarcotte.handlebars:$handlebarsPluginVersion"]
 
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
