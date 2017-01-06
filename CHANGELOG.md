@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2016.3.3
+
+- Add support for ESLint and improve JSHint support (#116)
+
+
 ## v2016.3.2
 
 - Resolve absolute imports from your own project (#103)
