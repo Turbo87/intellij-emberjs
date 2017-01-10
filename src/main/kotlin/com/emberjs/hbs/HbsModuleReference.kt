@@ -20,7 +20,7 @@ open class HbsModuleReference(element: PsiElement, val moduleType: String) :
     private val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
 
     open fun matches(module: EmberName) =
-            module.type == moduleType && module.name == value
+            module.type == moduleType && module.name == value.replace('.', '/')
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         // Collect all components from the index
