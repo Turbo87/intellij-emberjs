@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2016.3.4
+
+- Use slash instead of dot for nested component autocomplete (#119)
+
+
 ## v2016.3.3
 
 - Add support for ESLint and improve JSHint support (#116)
