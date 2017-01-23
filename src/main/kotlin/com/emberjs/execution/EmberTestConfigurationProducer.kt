@@ -6,7 +6,6 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 
-
 class EmberTestConfigurationProducer(configurationFactory: ConfigurationFactory?) : RunConfigurationProducer<EmberTestConfiguration>(configurationFactory) {
 
     override fun isConfigurationFromContext(p0: EmberTestConfiguration?, p1: ConfigurationContext?): Boolean {
