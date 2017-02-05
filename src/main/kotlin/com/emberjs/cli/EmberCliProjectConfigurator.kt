@@ -40,8 +40,8 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
             val model = ModuleRootManager.getInstance(module).modifiableModel
             val entry = MarkRootActionBase.findContentEntry(model, baseDir)
             if (entry != null) {
-                setupEmber(project, entry, baseDir)
                 ApplicationManager.getApplication().runWriteAction {
+                    setupEmber(project, entry, baseDir)
                     model.commit()
                     project.save()
                 }

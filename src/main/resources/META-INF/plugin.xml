@@ -44,6 +44,8 @@
         <framework.detector implementation="com.emberjs.cli.EmberCliFrameworkDetector"/>
         <framework.detector implementation="com.emberjs.linter.JSHintFrameworkDetector"/>
         <framework.detector implementation="com.emberjs.linter.ESLintFrameworkDetector"/>
+        <directoryProjectConfigurator implementation="com.emberjs.cli.EmberCliProjectConfigurator"
+                                      order="after PlatformProjectConfigurator"/>
 
         <fileBasedIndex implementation="com.emberjs.index.EmberNameIndex"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
