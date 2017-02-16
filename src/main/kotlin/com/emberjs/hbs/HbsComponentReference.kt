@@ -5,6 +5,6 @@ import com.intellij.psi.PsiElement
 
 class HbsComponentReference(element: PsiElement) : HbsModuleReference(element, "component") {
     override fun matches(module: EmberName): Boolean {
-        return super.matches(module) || (module.type == "template" && module.name == "components/${value.replace('.', '/')}")
+        return super.matches(module) || (module.type == "template" && module.name == "components/$value")
     }
 }
