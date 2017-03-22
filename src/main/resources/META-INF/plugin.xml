@@ -42,6 +42,8 @@
 
         <applicationConfigurable instance="com.emberjs.settings.EmberApplicationConfigurable"/>
         <framework.detector implementation="com.emberjs.cli.EmberCliFrameworkDetector"/>
+        <directoryProjectConfigurator implementation="com.emberjs.cli.EmberCliProjectConfigurator"
+                                      order="after PlatformProjectConfigurator"/>
 
         <fileBasedIndex implementation="com.emberjs.index.EmberNameIndex"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>

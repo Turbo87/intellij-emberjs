@@ -43,7 +43,7 @@ open class HbsModuleReference(element: PsiElement, val moduleType: String) :
                 .filter { EmberNameIndex.hasContainingFiles(it, scope) }
 
                 // Convert search results for LookupElements
-                .map { EmberLookupElementBuilder.create(it) }
+                .map { EmberLookupElementBuilder.create(it, dots = false) }
                 .toTypedArray()
     }
 }
