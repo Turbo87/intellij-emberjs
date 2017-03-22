@@ -30,7 +30,7 @@ open class EmberCliProjectGenerator : NpmPackageProjectGenerator() {
 
     override fun customizeModule(baseDir: VirtualFile, entry: ContentEntry?) = Unit
 
-    override fun generateProject(project: Project, baseDir: VirtualFile, settings: Pair<NodeJsInterpreter, String>, module: Module) {
+    override fun generateProject(project: Project, baseDir: VirtualFile, settings: NpmPackageProjectGenerator.Settings, module: Module) {
         EmberCliProjectConfigurator.setupEmber(project, module, baseDir)
         super.generateProject(project, baseDir, settings, module)
     }
