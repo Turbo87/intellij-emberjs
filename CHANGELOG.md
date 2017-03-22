@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2017.1.2
+
+- Merge changes from latest v2016.3 releases
+
+
 ## v2017.1.1
 
 - Change IntelliJ target version to v2017.1
