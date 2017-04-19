@@ -4,6 +4,8 @@ import com.emberjs.icons.EmberIconProvider
 import com.emberjs.icons.EmberIcons
 import com.emberjs.index.EmberNameIndex
 import com.emberjs.resolver.EmberName
+import com.emberjs.utils.isInRepoAddon
+import com.emberjs.utils.parentEmberModule
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.DelegatingItemPresentation
 import com.intellij.navigation.NavigationItem
@@ -48,11 +50,25 @@ class EmberGotoClassContributor() : ChooseByNameContributor {
     private fun convert(module: EmberName, file: PsiFile): DelegatingNavigationItem {
         val presentation = DelegatingItemPresentation(file.presentation)
                 .withPresentableText(module.displayName)
-                .withLocationString(null)
+                .withLocationString(getLocation(file))
                 .withIcon(iconProvider.getIcon(module) ?: DEFAULT_ICON)
 
         return DelegatingNavigationItem(file)
                 .withPresentation(presentation)
+    }
+
+    private fun getLocation(file: PsiFile): String? {
+        val root = file.virtualFile.parentEmberModule ?: return null
+        val prefix = file.virtualFile.path.removePrefix(root.path)
+
+        return when {
+            root.isInRepoAddon -> "(${root.name} addon)"
+            prefix.startsWith("/app/") -> null
+            prefix.startsWith("/addon/") -> "(addon)"
+            prefix.startsWith("/tests/dummy/app/") -> "(dummy app)"
+            prefix.startsWith("/tests/") -> "(test)"
+            else -> null
+        }
     }
 
     companion object {
