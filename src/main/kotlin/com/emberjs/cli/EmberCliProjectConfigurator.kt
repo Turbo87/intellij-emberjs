@@ -114,6 +114,7 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
             entry.addSourceFolder("$rootUrl/tests/unit", TEST_SOURCE)
             entry.addSourceFolder("$rootUrl/tests/integration", TEST_SOURCE)
             entry.addSourceFolder("$rootUrl/tests/acceptance", TEST_SOURCE)
+            entry.addSourceFolder("$rootUrl/tests/dummy/app", TEST_SOURCE)
             entry.addExcludeFolder("$rootUrl/dist")
             entry.addExcludeFolder("$rootUrl/tmp")
 

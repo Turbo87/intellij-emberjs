@@ -39,6 +39,7 @@ data class EmberName(val type: String, val name: String) {
             val unitTestsFolder = testsFolder?.findChild("unit")
             val integrationTestsFolder = testsFolder?.findChild("integration")
             val acceptanceTestsFolder = testsFolder?.findChild("acceptance")
+            val dummyAppFolder = testsFolder?.findFileByRelativePath("dummy/app")
 
             return fromPod(appFolder, file) ?:
                     fromPod(addonFolder, file) ?:
@@ -46,6 +47,7 @@ data class EmberName(val type: String, val name: String) {
                     fromPodTest(integrationTestsFolder, file) ?:
                     fromClassic(appFolder, file) ?:
                     fromClassic(addonFolder, file) ?:
+                    fromClassic(dummyAppFolder, file) ?:
                     fromClassicTest(unitTestsFolder, file) ?:
                     fromClassicTest(integrationTestsFolder, file) ?:
                     fromAcceptanceTest(acceptanceTestsFolder, file)
