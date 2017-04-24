@@ -2,6 +2,8 @@ package com.emberjs.resolver
 
 import com.emberjs.cli.EmberCliProjectConfigurator
 import com.emberjs.utils.emberRoot
+import com.emberjs.utils.isInRepoAddon
+import com.emberjs.utils.parents
 import com.intellij.lang.javascript.DialectDetector
 import com.intellij.lang.javascript.frameworks.amd.JSModuleReference
 import com.intellij.lang.javascript.frameworks.modules.JSExactFileReference
@@ -27,19 +29,36 @@ class EmberAppReferenceContributor : JSModuleReferenceContributor {
     }
 
     override fun getCommonJSModuleReferences(unquotedRefText: String, host: PsiElement, offset: Int, provider: PsiReferenceProvider?): Array<out PsiReference> {
-        val appRoot = host.emberRoot ?: return emptyArray()
-        val appName = getAppName(appRoot) ?: return emptyArray()
-
-        val importPath = unquotedRefText.removePrefix(appName + "/")
-        if (unquotedRefText == importPath) {
-            // only match ember app imports
+        if (unquotedRefText.startsWith('.')) {
+            // only for absolute imports
             return emptyArray()
         }
 
+        val appName = unquotedRefText.substringBefore('/')
+        val importPath = unquotedRefText.removePrefix(appName + "/")
+        if (unquotedRefText == importPath) {
+            // only for imports with slashes
+            return emptyArray()
+        }
+
+        val appRoot = host.containingFile.virtualFile.parents
+                .find { it.findChild("package.json") != null && !it.isInRepoAddon }
+                ?: return emptyArray()
+
+        val modules = when {
+            getAppName(appRoot) == appName ->
+                // local import from this app/addon
+                listOf(appRoot) + EmberCliProjectConfigurator.inRepoAddons(appRoot)
+
+            else ->
+                // check node_modules
+                listOfNotNull(host.emberRoot?.findChild("node_modules")?.findChild(appName))
+        }
+
         /** Search the `/app` and `/addon` directories of the root and each in-repo-addon */
-        val roots = listOf("${appRoot.path}/app", "${appRoot.path}/addon")
-            .plus(EmberCliProjectConfigurator.inRepoAddons(appRoot).map { it.path })
-            .map { JSExactFileReference(host, TextRange.create(offset, offset + appName.length), listOf(it), null) }
+        val roots = modules
+                .flatMap { listOfNotNull(it.findChild("app"), it.findChild("addon")) }
+                .map { JSExactFileReference(host, TextRange.create(offset, offset + appName.length), listOf(it.path), null) }
 
         val refs = object : FileReferenceSet(importPath, host, offset + appName.length + 1, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
             override fun createFileReference(range: TextRange, index: Int, text: String?): FileReference {
