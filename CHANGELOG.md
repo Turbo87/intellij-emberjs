@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2017.1.3
+
+- Allow navigation to modules in `addon` and `test/dummy/app` folders (#139)
+
+
 ## v2017.1.2
 
 - Merge changes from latest v2016.3 releases
