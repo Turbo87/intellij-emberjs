@@ -17,7 +17,6 @@ class EmberModuleType : WebModuleType() {
     override fun getDescription() = DESCRIPTION
 
     override fun getNodeIcon(isOpened: Boolean): Icon = AllIcons.Nodes.Module
-    override fun getBigIcon(): Icon = EmberIcons.ICON_24
 
     companion object {
         val ID = "EMBER_MODULE"

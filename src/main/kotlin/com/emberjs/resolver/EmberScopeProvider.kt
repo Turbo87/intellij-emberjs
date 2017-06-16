@@ -45,7 +45,7 @@ class EmberAppReferenceContributor : JSModuleReferenceContributor {
             .map { JSExactFileReference(host, TextRange.create(offset, offset + appName.length), listOf("${it.path}/app"), null) }
 
         val refs = object : FileReferenceSet(importPath, host, offset + appName.length + 1, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
-            override fun createFileReference(range: TextRange?, index: Int, text: String?): FileReference = JSModuleReference(text, index, range, this, "file.js", true)
+            override fun createFileReference(range: TextRange, index: Int, text: String?): FileReference = JSModuleReference(text, index, range, this, "file.js", true)
             override fun computeDefaultContexts(): MutableCollection<PsiFileSystemItem> {
                 return roots
                     .flatMap { it.multiResolve(false).asIterable() }
