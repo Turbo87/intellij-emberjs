@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2017.2.1
+
+- Change IntelliJ target version to v2017.2
+
+
 ## v2017.1.3
 
 - Allow navigation to modules in `addon` and `test/dummy/app` folders (#139)
