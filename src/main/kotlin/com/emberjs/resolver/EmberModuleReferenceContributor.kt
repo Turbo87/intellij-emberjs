@@ -50,14 +50,12 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
                 .find { it.findChild("package.json") != null && !it.isInRepoAddon }
                 ?: return emptyArray()
 
-        val modules = when {
-            getAppName(hostPackageRoot) == packageName ->
-                // local import from this app/addon
-                listOf(hostPackageRoot) + EmberCliProjectConfigurator.inRepoAddons(hostPackageRoot)
-
-            else ->
-                // check node_modules
-                listOfNotNull(host.emberRoot?.findChild("node_modules")?.findChild(packageName))
+        val modules = if (getAppName(hostPackageRoot) == packageName) {
+            // local import from this app/addon
+            listOf(hostPackageRoot) + EmberCliProjectConfigurator.inRepoAddons(hostPackageRoot)
+        } else {
+            // check node_modules
+            listOfNotNull(host.emberRoot?.findChild("node_modules")?.findChild(packageName))
         }
 
         /** Search the `/app` and `/addon` directories of the root and each in-repo-addon */
