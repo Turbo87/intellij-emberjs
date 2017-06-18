@@ -24,11 +24,11 @@ import java.util.regex.Pattern
  * Navigating to `FooController` will browse to `/app/controllers/foo.js`
  */
 class EmberModuleReferenceContributor : JSModuleReferenceContributor {
-    override fun getAllReferences(unquotedRefText: String, host: PsiElement, offset: Int, provider: PsiReferenceProvider?): Array<out PsiReference> {
-        return getCommonJSModuleReferences(unquotedRefText, host, offset, provider)
+    override fun getCommonJSModuleReferences(unquotedRefText: String, host: PsiElement, offset: Int, provider: PsiReferenceProvider?): Array<out PsiReference> {
+        return emptyArray()
     }
 
-    override fun getCommonJSModuleReferences(unquotedRefText: String, host: PsiElement, offset: Int, provider: PsiReferenceProvider?): Array<out PsiReference> {
+    override fun getAllReferences(unquotedRefText: String, host: PsiElement, offset: Int, provider: PsiReferenceProvider?): Array<out PsiReference> {
         // return early for relative imports
         if (unquotedRefText.startsWith('.')) {
             return emptyArray()
