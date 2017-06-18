@@ -29,13 +29,17 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
     }
 
     override fun getCommonJSModuleReferences(unquotedRefText: String, host: PsiElement, offset: Int, provider: PsiReferenceProvider?): Array<out PsiReference> {
+        // return early for relative imports
         if (unquotedRefText.startsWith('.')) {
-            // only for absolute imports
             return emptyArray()
         }
 
-        val appName = unquotedRefText.substringBefore('/')
-        val importPath = unquotedRefText.removePrefix(appName + "/")
+        // e.g. `my-app/controllers/foo` -> `my-app`
+        val packageName = unquotedRefText.substringBefore('/')
+
+        // e.g. `my-app/controllers/foo` -> `controllers/foo`
+        val importPath = unquotedRefText.removePrefix("$packageName/")
+
         if (unquotedRefText == importPath) {
             // only for imports with slashes
             return emptyArray()
@@ -46,21 +50,21 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
                 ?: return emptyArray()
 
         val modules = when {
-            getAppName(appRoot) == appName ->
+            getAppName(appRoot) == packageName ->
                 // local import from this app/addon
                 listOf(appRoot) + EmberCliProjectConfigurator.inRepoAddons(appRoot)
 
             else ->
                 // check node_modules
-                listOfNotNull(host.emberRoot?.findChild("node_modules")?.findChild(appName))
+                listOfNotNull(host.emberRoot?.findChild("node_modules")?.findChild(packageName))
         }
 
         /** Search the `/app` and `/addon` directories of the root and each in-repo-addon */
         val roots = modules
                 .flatMap { listOfNotNull(it.findChild("app"), it.findChild("addon")) }
-                .map { JSExactFileReference(host, TextRange.create(offset, offset + appName.length), listOf(it.path), null) }
+                .map { JSExactFileReference(host, TextRange.create(offset, offset + packageName.length), listOf(it.path), null) }
 
-        val refs = object : FileReferenceSet(importPath, host, offset + appName.length + 1, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
+        val refs = object : FileReferenceSet(importPath, host, offset + packageName.length + 1, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
             override fun createFileReference(range: TextRange, index: Int, text: String?): FileReference {
                 return object : JSModuleReference(text, index, range, this, "file.js", true) {
                     override fun innerResolveInContext(referenceText: String, psiFileSystemItem: PsiFileSystemItem, resolveResults: MutableCollection<ResolveResult>?, b: Boolean) {
