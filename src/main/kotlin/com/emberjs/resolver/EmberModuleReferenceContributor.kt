@@ -40,11 +40,6 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
         // e.g. `my-app/controllers/foo` -> `controllers/foo`
         val importPath = unquotedRefText.removePrefix("$packageName/")
 
-        if (unquotedRefText == importPath) {
-            // only for imports with slashes
-            return emptyArray()
-        }
-
         // find root package folder of current file (ignoring package.json in in-repo-addons)
         val hostPackageRoot = host.containingFile.virtualFile?.parents
                 ?.find { it.findChild("package.json") != null && !it.isInRepoAddon }
