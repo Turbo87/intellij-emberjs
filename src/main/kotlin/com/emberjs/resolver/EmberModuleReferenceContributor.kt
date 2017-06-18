@@ -46,8 +46,8 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
         }
 
         // find root package folder of current file (ignoring package.json in in-repo-addons)
-        val hostPackageRoot = host.containingFile.virtualFile.parents
-                .find { it.findChild("package.json") != null && !it.isInRepoAddon }
+        val hostPackageRoot = host.containingFile.virtualFile?.parents
+                ?.find { it.findChild("package.json") != null && !it.isInRepoAddon }
                 ?: return emptyArray()
 
         val modules = if (getAppName(hostPackageRoot) == packageName) {
