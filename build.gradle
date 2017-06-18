@@ -44,7 +44,7 @@ dependencies {
 intellij {
     type = 'IU'
     version = intellijVersion
-    downloadSources System.getenv().containsKey('CI')
+    downloadSources !System.getenv().containsKey('CI')
 
     pluginName = 'Ember.js'
     plugins = ['JavaScriptLanguage', 'CSS', 'yaml', "com.dmarcotte.handlebars:$handlebarsPluginVersion"]
