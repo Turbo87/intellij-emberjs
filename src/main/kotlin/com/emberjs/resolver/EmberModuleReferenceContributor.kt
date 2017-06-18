@@ -60,7 +60,7 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
 
         val refs = object : FileReferenceSet(importPath, host, offset + packageName.length + 1, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
             override fun createFileReference(range: TextRange, index: Int, text: String?): FileReference {
-                return object : JSModuleReference(text, index, range, this, "file.js", true) {
+                return object : JSModuleReference(text, index, range, this, null, true) {
                     override fun innerResolveInContext(referenceText: String, psiFileSystemItem: PsiFileSystemItem, resolveResults: MutableCollection<ResolveResult>?, b: Boolean) {
                         super.innerResolveInContext(referenceText, psiFileSystemItem, resolveResults, b)
 
