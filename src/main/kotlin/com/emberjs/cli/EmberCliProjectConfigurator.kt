@@ -117,6 +117,8 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
             entry.addSourceFolder("$rootUrl/tests/dummy/app", TEST_SOURCE)
             entry.addExcludeFolder("$rootUrl/dist")
             entry.addExcludeFolder("$rootUrl/tmp")
+            entry.addExcludeFolder("$rootUrl/.bower_components.ember-try")
+            entry.addExcludeFolder("$rootUrl/.node_modules.ember-try")
 
             inRepoAddons(baseDir).forEach { entry.addSourceFolder("${it.url}/app", SOURCE) }
 
