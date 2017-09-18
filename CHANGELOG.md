@@ -4,6 +4,15 @@ Changelog
 ===============================================================================
 
 
+## v2017.3.1
+
+- Change IntelliJ target version to v2017.3
+- Resolve absolute imports for addons (#140)
+- Annotate model relationships (#148)
+- Add "addon-test-support" directory to reference search path (#150)
+- Add temporary ember-try folders as excluded folders (#157)
+
+
 ## v2017.2.1
 
 - Change IntelliJ target version to v2017.2
