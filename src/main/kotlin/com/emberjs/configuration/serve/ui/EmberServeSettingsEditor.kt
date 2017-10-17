@@ -59,14 +59,14 @@ class EmberServeSettingsEditor : SettingsEditor<EmberServeConfiguration>() {
 
     override fun resetEditorFrom(serveConfiguration: EmberServeConfiguration) {
         mappings.forEach { (first, second) ->
-            second.get(serveConfiguration.options).writeToComponent(first as JComponent)
+            first?.let { second.get(serveConfiguration.options).writeTo(it) }
         }
     }
 
     @Throws(ConfigurationException::class)
     override fun applyEditorTo(serveConfiguration: EmberServeConfiguration) {
         mappings.forEach { (first, second) ->
-            second.get(serveConfiguration.options).readFromComponent(first as JComponent)
+            first?.let { second.get(serveConfiguration.options).readFrom(it) }
         }
     }
 

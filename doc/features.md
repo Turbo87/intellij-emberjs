@@ -144,6 +144,14 @@ A new `Ember Serve` run configuration can be created through
 To configure advanced settings like the server host, proxy or ssl, expand the
 `Advanced settings` panel.
 
+### Running ember tests
+
+This plugin also adds a `Ember Test` run configuration that will run your projects tests.
+A new `Ember Test` run configuration can be created through
+`Run → Edit Configurations...`.
+
+To configure advanced settings like the server host, test filter or config file, expand the
+`Advanced settings` panel.
 
 Live Templates
 -------------------------------------------------------------------------------

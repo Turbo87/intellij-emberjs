@@ -9,9 +9,7 @@ abstract class OptionsField<T>(
         val cmdlineOptionName: String
 ) {
     abstract var value : T
-    abstract fun writeToElement(element: Element)
-    abstract fun readFromElement(element: Element)
 
-    abstract fun writeToComponent(component: JComponent)
-    abstract fun readFromComponent(component: JComponent)
+    abstract fun writeTo(component: Any)
+    abstract fun readFrom(component: Any)
 }

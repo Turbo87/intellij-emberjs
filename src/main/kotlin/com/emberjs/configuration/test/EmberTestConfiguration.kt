@@ -1,8 +1,7 @@
-package com.emberjs.configuration.serve
+package com.emberjs.configuration.test
 
-import com.emberjs.configuration.EmberCommandLineState
 import com.emberjs.configuration.EmberConfiguration
-import com.emberjs.configuration.serve.ui.EmberServeSettingsEditor
+import com.emberjs.configuration.test.ui.EmberTestSettingsEditor
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.*
@@ -13,13 +12,13 @@ import org.jdom.Element
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 
-class EmberServeConfiguration(project: Project, factory: ConfigurationFactory, name: String) : RunConfigurationBase(project, factory, name), EmberConfiguration {
-    override val options = EmberServeOptions()
-    override val command: String = "serve"
+class EmberTestConfiguration(project: Project, factory: ConfigurationFactory, name: String) : RunConfigurationBase(project, factory, name), EmberConfiguration {
+    override val options = EmberTestOptions()
+    override val command: String = "test"
 
     @NotNull
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
-        return EmberServeSettingsEditor()
+        return EmberTestSettingsEditor()
     }
 
     @Throws(RuntimeConfigurationException::class)
@@ -30,7 +29,7 @@ class EmberServeConfiguration(project: Project, factory: ConfigurationFactory, n
     @Nullable
     @Throws(ExecutionException::class)
     override fun getState(@NotNull executor: Executor, @NotNull executionEnvironment: ExecutionEnvironment): RunProfileState? {
-        return EmberCommandLineState(executionEnvironment)
+        return EmberTestCommandLineState(executionEnvironment)
     }
 
     override fun writeExternal(element: Element) {

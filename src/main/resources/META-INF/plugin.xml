@@ -68,6 +68,10 @@
         <!-- ember serve -->
         <programRunner implementation="com.emberjs.configuration.serve.EmberServeProgramRunner"/>
         <configurationType implementation="com.emberjs.configuration.serve.EmberServeConfigurationType"/>
+
+        <!-- ember test -->
+        <programRunner implementation="com.emberjs.configuration.test.EmberTestProgramRunner"/>
+        <configurationType implementation="com.emberjs.configuration.test.EmberTestConfigurationType"/>
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript">
