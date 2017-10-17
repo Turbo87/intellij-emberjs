@@ -64,6 +64,10 @@
 
         <!-- deprecated and only included for legacy reasons -->
         <moduleType id="EMBER_MODULE" implementationClass="com.emberjs.project.EmberModuleType"/>
+
+        <!-- ember serve -->
+        <programRunner implementation="com.emberjs.configuration.serve.EmberServeProgramRunner"/>
+        <configurationType implementation="com.emberjs.configuration.serve.EmberServeConfigurationType"/>
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript">
