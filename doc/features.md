@@ -129,14 +129,21 @@ command of `ember-cli`. This functionality is available as
 
 ![Blueprints Dialog](blueprints-dialog.png)
 
+
 ### Running the ember server
 
-The plugin adds a `Ember Serve` [run configuration](https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html) that allows you to launch a [development server](https://guides.emberjs.com/v2.16.0/tutorial/ember-cli/#toc_the-development-server).
-A new `Ember serve` configuration can be created through `Run → Edit Configurations...`.
+The plugin adds a `Ember Serve` 
+[run configuration](https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html)
+that allows you to launch a
+[development server](https://guides.emberjs.com/v2.16.0/tutorial/ember-cli/#toc_the-development-server).
+A new `Ember Serve` run configuration can be created through
+`Run → Edit Configurations...`.
 
 ![Ember Serve run configuration](run-configuration-serve.png)
 
-To configure advanced settings like the server host, proxy or ssl, expand the `Advanced settings` panel.
+To configure advanced settings like the server host, proxy or ssl, expand the
+`Advanced settings` panel.
+
 
 Live Templates
 -------------------------------------------------------------------------------
