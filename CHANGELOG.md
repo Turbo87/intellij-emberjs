@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2017.3.2
+
+- Add "Ember Serve" run configuration (#165)
+
+
 ## v2017.3.1
 
 - Change IntelliJ target version to v2017.3
