@@ -25,9 +25,14 @@ class EmberGetFoldingBuilder : FoldingBuilder {
 
                 // drop out early if this is not a getter
                 val methodExpression = node.methodExpression as? JSReferenceExpression ?: return
-                if (methodExpression.referenceName != "get") return
+                if (methodExpression.referenceName == "get") {
+                    visitGetter(node)
+                }
+            }
 
-                val getElement = methodExpression.referenceNameElement ?: return
+            fun visitGetter(node: JSCallExpression) {
+                val methodExpression = node.methodExpression as? JSReferenceExpression
+                val getElement = methodExpression?.referenceNameElement ?: return
 
                 // check that we only have a single argument
                 val arguments = node.arguments
