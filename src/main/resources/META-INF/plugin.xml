@@ -59,7 +59,7 @@
         <psi.referenceContributor language="JavaScript" implementation="com.emberjs.psi.EmberReferenceContributor"/>
 
         <!-- this.get() folding -->
-        <lang.foldingBuilder language="ECMAScript 6" implementationClass="com.emberjs.folding.EmberGetFoldingBuilder"/>
+        <lang.foldingBuilder language="ECMAScript 6" implementationClass="com.emberjs.folding.EmberGetSetFoldingBuilder"/>
 
         <iconProvider implementation="com.emberjs.icons.EmberIconProvider" order="first"/>
 

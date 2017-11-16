@@ -10,9 +10,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil.isJavaIdentifier
 
 /**
- * Enables folding of `this.get('foo')` to `this.foo`.
+ * Enables folding of `this.get('foo')` to `this.foo` and `this.set('foo', bar)` to `this.foo = bar`.
  */
-class EmberGetFoldingBuilder : FoldingBuilder {
+class EmberGetSetFoldingBuilder : FoldingBuilder {
     override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
         val file = node.psi as? JSFile ?: return emptyArray()
 
