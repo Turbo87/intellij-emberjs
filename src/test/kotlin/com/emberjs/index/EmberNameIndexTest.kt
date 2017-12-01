@@ -29,6 +29,7 @@ class EmberNameIndexTest : LightPlatformCodeInsightFixtureTestCase() {
     fun testExample() = doTest(
             "controller:application",
             "controller:user/index",
+            "controller:user/new",
             "route:index",
             "helper-test:format-number",
             "acceptance-test:user-page")
