@@ -31,7 +31,7 @@ class EmberCliGenerateTask(project: Project, val workDir: VirtualFile, val templ
         indicator.isIndeterminate = true
 
         indicator.log("Preparing ember command ...")
-        val cli = EmberCli("generate", template, name)
+        val cli = EmberCli(project, "generate", template, name)
                 .apply { workDirectory = workDir.path }
 
                 LocalHistory.getInstance().startAction(title).use {

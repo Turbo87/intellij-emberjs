@@ -1,11 +1,14 @@
 package com.emberjs.cli
 
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreterManager
+import com.intellij.javascript.nodejs.interpreter.local.NodeJsLocalInterpreter
+import com.intellij.openapi.project.Project
 import org.apache.commons.lang.SystemUtils
 import java.io.BufferedReader
 import java.util.concurrent.TimeUnit
 
-class EmberCli(vararg val parameters: String) {
+class EmberCli(val project: Project, vararg val parameters: String) {
 
     var workDirectory: String? = null
 
@@ -14,8 +17,13 @@ class EmberCli(vararg val parameters: String) {
             SystemUtils.IS_OS_WINDOWS -> ".cmd"
             else -> ""
         }
+
+        val interpreter = NodeJsInterpreterManager.getInstance(project).default as? NodeJsLocalInterpreter
+        val node = interpreter?.interpreterSystemDependentPath ?: "node"
+
         val workDir = workDirectory
-        return GeneralCommandLine("$workDir/node_modules/.bin/ember$suffix").apply {
+        return GeneralCommandLine(node).apply {
+            addParameter("$workDir/node_modules/.bin/ember$suffix")
             addParameters(*parameters)
             withWorkDirectory(workDir)
         }
