@@ -12,7 +12,7 @@ class EmberCommandLineState(environment: ExecutionEnvironment) : CommandLineStat
         val configuration = (environment.runProfile as EmberConfiguration)
         val argList = configuration.options.toCommandLineOptions()
 
-        val cmd = EmberCli(configuration.command, *argList)
+        val cmd = EmberCli(environment.project, configuration.command, *argList)
                 .apply { workDirectory = environment.project.basePath }
                 .commandLine()
                 .apply {
