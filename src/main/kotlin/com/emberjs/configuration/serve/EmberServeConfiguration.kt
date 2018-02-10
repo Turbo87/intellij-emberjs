@@ -33,16 +33,16 @@ class EmberServeConfiguration(project: Project, factory: ConfigurationFactory, n
         return EmberCommandLineState(executionEnvironment)
     }
 
-    override fun writeExternal(element: Element?) {
+    override fun writeExternal(element: Element) {
         super.writeExternal(element)
-        element?.let {
+        element.let {
             options.fields().forEach { optionsField -> optionsField.writeToElement(element)}
         }
     }
 
-    override fun readExternal(element: Element?) {
+    override fun readExternal(element: Element) {
         super.readExternal(element)
-        element?.let {
+        element.let {
             options.fields().forEach { optionsField -> optionsField.readFromElement(element) }
         }
     }
