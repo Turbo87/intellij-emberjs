@@ -4,6 +4,13 @@ Changelog
 ===============================================================================
 
 
+## v2018.1.1
+
+- Add TypeScript support (#175)
+- Use node interpreter path from the project settings (#178)
+- Change IntelliJ target version to v2018.1 (#185)
+
+
 ## v2017.3.2
 
 - Add "Ember Serve" run configuration (#165)
