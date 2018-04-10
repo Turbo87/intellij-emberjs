@@ -13,7 +13,7 @@ val PsiElement.originalVirtualFile: VirtualFile?
     get() = containingFile.originalFile.virtualFile
 
 val PsiElement.module: Module?
-    get() = originalVirtualFile.let { findModuleForFile(it!!, project) }
+    get() = originalVirtualFile?.let { findModuleForFile(it, project) }
 
 val PsiElement.emberRoot: VirtualFile?
     get() = module?.emberRoot
