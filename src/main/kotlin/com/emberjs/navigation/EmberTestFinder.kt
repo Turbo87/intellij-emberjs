@@ -16,7 +16,7 @@ class EmberTestFinder : TestFinder {
 
     override fun findTestsForClass(element: PsiElement): Collection<PsiElement> {
         val project = element.project
-        val file = element.originalVirtualFile
+        val file = element.originalVirtualFile ?: return emptyList()
 
         val name = EmberName.from(file) ?: return emptyList()
 
@@ -35,7 +35,7 @@ class EmberTestFinder : TestFinder {
 
     override fun findClassesForTest(element: PsiElement): Collection<PsiElement> {
         val project = element.project
-        val file = element.originalVirtualFile
+        val file = element.originalVirtualFile ?: return emptyList()
 
         val name = EmberName.from(file) ?: return emptyList()
 
@@ -52,7 +52,7 @@ class EmberTestFinder : TestFinder {
     }
 
     override fun isTest(element: PsiElement): Boolean {
-        val file = element.originalVirtualFile
+        val file = element.originalVirtualFile ?: return false
         return EmberName.from(file)?.let { it.isTest } ?: false
     }
 }

@@ -30,7 +30,7 @@ object EmberPatterns {
                 if (o !is PsiElement)
                     return false
 
-                val file = o.originalVirtualFile
+                val file = o.originalVirtualFile ?: return false
 
                 val module = EmberName.from(file) ?: return false
                 return module.type in types
