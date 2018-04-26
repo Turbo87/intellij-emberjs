@@ -24,8 +24,8 @@ val VirtualFile.isEmberFolder: Boolean
 
 val VirtualFile.isInRepoAddon: Boolean
     get() = findFileByRelativePath("package.json") != null &&
-            parent.name == "lib" &&
-            parent.parent.isEmberFolder
+            parent?.name == "lib" &&
+            parent?.parent?.isEmberFolder == true
 
 /**
  * Searches all parent paths until it finds a path containing a `package.json` file.
