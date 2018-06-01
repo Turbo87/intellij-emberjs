@@ -36,6 +36,10 @@
     <depends optional="true" config-file="handlebars.xml">com.dmarcotte.handlebars</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <configurationType implementation="com.emberjs.execution.EmberTestConfigurationType"/>
+        <programRunner implementation="com.emberjs.execution.EmberTestProgramRunner"/>
+        <runConfigurationProducer implementation="com.emberjs.execution.EmberTestRunConfigurationProducer"/>
+
         <directoryProjectGenerator implementation="com.emberjs.cli.EmberCliProjectGenerator"/>
         <directoryProjectGenerator implementation="com.emberjs.cli.EmberCliAddonProjectGenerator"/>
         <projectTemplatesFactory implementation="com.emberjs.cli.EmberCliProjectTemplatesFactory"/>
