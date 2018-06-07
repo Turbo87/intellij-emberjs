@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2018.2.1
+
+- Change IntelliJ target version to v2018.2 (#206)
+
+
 ## v2018.1.2
 
 - Fix "NullPointerException" (#193)
