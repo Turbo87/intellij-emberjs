@@ -4,6 +4,12 @@ Changelog
 ===============================================================================
 
 
+## v2018.2.2
+
+- Add support for ember test run configuration (#166)
+- Run `ember` binary directly (#210)
+
+
 ## v2018.2.1
 
 - Change IntelliJ target version to v2018.2 (#206)
