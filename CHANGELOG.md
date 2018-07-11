@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2018.2.3
+
+- Fix `NoClassDefFoundError: org/apache/commons/lang3/SystemUtils` error (#217)
+
+
 ## v2018.2.2
 
 - Add support for ember test run configuration (#166)
