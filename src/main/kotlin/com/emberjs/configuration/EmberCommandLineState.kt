@@ -2,6 +2,7 @@ package com.emberjs.configuration
 
 import com.emberjs.cli.EmberCli
 import com.emberjs.utils.emberRoot
+import com.emberjs.utils.parentModule
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.process.KillableColoredProcessHandler
 import com.intellij.execution.process.ProcessHandler
@@ -14,7 +15,10 @@ open class EmberCommandLineState(environment: ExecutionEnvironment) : CommandLin
         val configuration = (environment.runProfile as EmberConfiguration)
         val argList = configuration.options.toCommandLineOptions()
 
-        val workingDirectory = environment.dataContext?.getData(LangDataKeys.MODULE)?.emberRoot?.path ?:
+        val workingDirectory =
+                // if module configured, use that as workDirectory
+                configuration.module?.moduleFile?.parentModule?.path ?:
+                environment.dataContext?.getData(LangDataKeys.MODULE)?.emberRoot?.path ?:
                 environment.project.basePath
 
         val cmd = EmberCli(environment.project, configuration.command, *argList)

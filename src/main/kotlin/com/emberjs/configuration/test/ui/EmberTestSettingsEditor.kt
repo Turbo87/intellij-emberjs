@@ -5,6 +5,8 @@ import com.emberjs.configuration.test.EmberTestOptions
 import com.emberjs.configuration.test.FilterType
 import com.emberjs.configuration.test.LaunchType
 import com.emberjs.configuration.utils.PublicStringAddEditDeleteListPanel
+import com.emberjs.project.EmberModuleType
+import com.intellij.application.options.ModulesComboBox
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.ui.Messages
@@ -22,6 +24,7 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
     private var advancedSettingsWrapper: JPanel? = null
     private var launcherPanel: JPanel? = null
     private var launcherWrapperPanel: JPanel? = null
+    private var emberTestFilterPanel: JPanel? = null
 
     private var testPortTextField: EditorTextField? = null
     private var environmentComboBox: JComboBox<String>? = null
@@ -50,6 +53,8 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
 
     private var launcherButtonGroup: ButtonGroup? = null
     private var filterButtonGroup: ButtonGroup? = null
+
+    private var myModulesComboBox: ModulesComboBox? = null
 
     val bundle: ResourceBundle = ResourceBundle.getBundle("com.emberjs.locale.EmberTestConfigurationEditor")
     val launchers: MutableList<String> = mutableListOf()
@@ -94,16 +99,23 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
         handleLaunchRadio(launchType)
         handleFilterRadio(filterType)
 
-        launchTypeToRadioButton.forEach({ (first, second) ->
+        launchTypeToRadioButton.forEach { (first, second) ->
             second!!.isSelected = first.value == launchType.toString()
-        })
-        filterTypeToRadioButton.forEach({ (first, second) ->
+        }
+        filterTypeToRadioButton.forEach { (first, second) ->
             second!!.isSelected = first.value == filterType.toString()
-        })
+        }
 
         mappings
                 .filter { it.first != null }
                 .forEach { (first, second) -> first?.let { second.get(configuration.options).writeTo(it) } }
+
+        myModulesComboBox?.fillModules(configuration.project, EmberModuleType.instance)
+        val module = configuration.module
+        when (module) {
+            null -> myModulesComboBox?.selectedModule = myModulesComboBox?.model?.getElementAt(0)
+            else -> myModulesComboBox?.selectedModule = module
+        }
     }
 
     @Throws(ConfigurationException::class)
@@ -111,6 +123,8 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
         mappings
                 .filter { it.first != null }
                 .forEach { (first, second) -> first?.let { second.get(configuration.options).readFrom(it) } }
+
+        configuration.module = myModulesComboBox?.selectedModule
     }
 
     @NotNull
@@ -120,6 +134,8 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
             setContentComponent(advancedSettings as JComponent)
             setOn(false)
         }
+
+        emberTestFilterPanel?.border = IdeBorderFactory.createTitledBorder(bundle.getString("configuration.title"), false)
 
         // somehow the ButtonGroup aren't bound :(
         launcherButtonGroup = ButtonGroup().apply {
@@ -172,14 +188,14 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
             }
         }
 
-        launchTypeToRadioButton.forEach({ (first, second) ->
+        launchTypeToRadioButton.forEach { (first, second) ->
             second!!.actionCommand = first.value
             second.addActionListener { handleLaunchRadio(first) }
-        })
-        filterTypeToRadioButton.forEach({ (first, second) ->
+        }
+        filterTypeToRadioButton.forEach { (first, second) ->
             second!!.actionCommand = first.value
             second.addActionListener { handleFilterRadio(first) }
-        })
+        }
 
         launcherPanel!!.add(launchAddEditDeleteListPanel)
         mappings.add(launchAddEditDeleteListPanel to EmberTestOptions::launch)
