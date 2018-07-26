@@ -6,17 +6,25 @@ import com.emberjs.index.EmberNameIndex
 import com.emberjs.resolver.EmberName
 import com.emberjs.utils.isInRepoAddon
 import com.emberjs.utils.parentEmberModule
-import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.DelegatingItemPresentation
+import com.intellij.navigation.GotoClassContributor
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.util.indexing.FindSymbolParameters.searchScopeFor
 
-class EmberGotoClassContributor() : ChooseByNameContributor {
-
+class EmberGotoClassContributor : GotoClassContributor {
     private val iconProvider by lazy { EmberIconProvider() }
+
+    override fun getQualifiedName(item: NavigationItem?): String? {
+        if (item is DelegatingNavigationItem) {
+            return item.presentation?.presentableText?.replace("-", qualifiedNameSeparator)
+        }
+        return null
+    }
+
+    override fun getQualifiedNameSeparator() = " "
 
     /**
      * Get all entries from the module index and extract the `displayName` property.
