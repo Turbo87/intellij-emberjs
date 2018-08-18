@@ -2,18 +2,25 @@ package com.emberjs.configuration.serve.ui
 
 import com.emberjs.configuration.serve.EmberServeConfiguration
 import com.emberjs.configuration.serve.EmberServeOptions
-import com.intellij.openapi.options.ConfigurationException
+import com.emberjs.project.EmberModuleType
+import com.intellij.application.options.ModulesComboBox
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.HideableDecorator
+import com.intellij.ui.IdeBorderFactory
 import org.jetbrains.annotations.NotNull
-import javax.swing.*
+import java.util.*
+import javax.swing.JCheckBox
+import javax.swing.JComboBox
+import javax.swing.JComponent
+import javax.swing.JPanel
 
 class EmberServeSettingsEditor : SettingsEditor<EmberServeConfiguration>() {
     private var myPanel: JPanel? = null
     private var advancedSettings: JPanel? = null
     private var advancedSettingsWrapper: JPanel? = null
+    private var emberServePanel: JPanel? = null
 
     private var portTextField: EditorTextField? = null
     private var hostTextField: EditorTextField? = null
@@ -34,6 +41,10 @@ class EmberServeSettingsEditor : SettingsEditor<EmberServeConfiguration>() {
     private var secureProxyCheckBox: JCheckBox? = null
     private var transparentProxyCheckBox: JCheckBox? = null
     private var sslCheckBox: JCheckBox? = null
+
+    private var myModulesComboBox: ModulesComboBox? = null
+
+    private val bundle: ResourceBundle = ResourceBundle.getBundle("com.emberjs.locale.EmberServeConfigurationEditor")
 
     private val mappings = listOf(
             portTextField to EmberServeOptions::port,
@@ -57,27 +68,32 @@ class EmberServeSettingsEditor : SettingsEditor<EmberServeConfiguration>() {
             sslCertTextField to EmberServeOptions::sslCert
     )
 
-    override fun resetEditorFrom(serveConfiguration: EmberServeConfiguration) {
+    override fun resetEditorFrom(configuration: EmberServeConfiguration) {
         mappings.forEach { (first, second) ->
-            first?.let { second.get(serveConfiguration.options).writeTo(it) }
+            first?.let { second.get(configuration.options).writeTo(it) }
+        }
+
+        myModulesComboBox?.fillModules(configuration.project, EmberModuleType.instance)
+        val module = configuration.module
+        when (module) {
+            null -> myModulesComboBox?.selectedModule = myModulesComboBox?.model?.getElementAt(0)
+            else -> myModulesComboBox?.selectedModule = module
         }
     }
 
-    @Throws(ConfigurationException::class)
-    override fun applyEditorTo(serveConfiguration: EmberServeConfiguration) {
+    override fun applyEditorTo(configuration: EmberServeConfiguration) {
         mappings.forEach { (first, second) ->
-            first?.let { second.get(serveConfiguration.options).readFrom(it) }
+            first?.let { second.get(configuration.options).readFrom(it) }
         }
-    }
-
-    override fun getSnapshot(): EmberServeConfiguration {
-        return super.getSnapshot()
+        configuration.module = myModulesComboBox?.selectedModule
     }
 
     @NotNull
     override fun createEditor(): JComponent {
+        emberServePanel?.border = IdeBorderFactory.createTitledBorder(bundle.getString("configuration.title"), false)
+
         // Create the collapsible component for advances settings
-        HideableDecorator(advancedSettingsWrapper, "Advanced settings", false).apply {
+        HideableDecorator(advancedSettingsWrapper, bundle.getString("advanced"), false).apply {
             setContentComponent(advancedSettings as JComponent)
             setOn(false)
         }
