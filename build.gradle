@@ -4,10 +4,10 @@ buildscript {
         kotlinVersion = '1.2.71'
 
         // see https://www.jetbrains.com/intellij-repository/releases/
-        intellijVersion = '182.3569.1'
+        intellijVersion = '183.2635.13'
 
         // see https://plugins.jetbrains.com/idea/plugin/6884-handlebars-mustache
-        handlebarsPluginVersion = '182.3458.1'
+        handlebarsPluginVersion = '183.2407.4'
     }
 
     repositories {

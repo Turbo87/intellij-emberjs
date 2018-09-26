@@ -9,7 +9,7 @@ import com.intellij.util.ProcessingContext
 class HbsBuiltinHelperCompletionProvider(vararg helpers: String) : CompletionProvider<CompletionParameters>() {
     val lookupElements = helpers.map { LookupElementBuilder.create(it) }
 
-    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         result.addAllElements(lookupElements)
     }
 }
