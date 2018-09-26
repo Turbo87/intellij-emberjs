@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project
 import org.jdom.Element
 
 abstract class EmberConfigurationBase(project: Project, factory: ConfigurationFactory, name: String) :
-        RunConfigurationBase(project, factory, name),
+        RunConfigurationBase<Any>(project, factory, name),
         EmberConfiguration {
     override var module: Module? = null
 
