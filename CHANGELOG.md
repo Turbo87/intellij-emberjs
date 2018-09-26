@@ -4,6 +4,12 @@ Changelog
 ===============================================================================
 
 
+## v2018.2.4
+
+- Fix class navigation (#220)
+- Add option to specify a custom module to run the run configuration in (#218)
+
+
 ## v2018.2.3
 
 - Fix `NoClassDefFoundError: org/apache/commons/lang3/SystemUtils` error (#217)
