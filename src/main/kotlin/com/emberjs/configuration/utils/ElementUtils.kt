@@ -46,5 +46,49 @@ class ElementUtils {
                     }
                     ?.let { it.parent.removeContent(it) }
         }
+
+        /**
+         * ENV uses the following structure:
+         * <envs>
+         *   <env name="FOO" value="BAR" />
+         * </envs>
+         */
+        fun readEnv(element: Element): Map<String, String>? {
+            val env = mutableMapOf<String, String>()
+            val envs = element.children
+                    .find { it.name === "envs" } ?: return null
+
+            envs.let {
+                it.children
+                        .filter { it.name === "env" }
+                        .forEach {
+                            env[it.getAttributeValue("name")] = it.getAttributeValue("value")
+                        }
+            }
+
+            return env;
+        }
+
+        fun removeEnv(element: Element) {
+            element.children
+                    .find { it.name === "envs" }
+                    ?.let { it.parentElement.removeContent(it) }
+        }
+
+        fun writeEnv(element: Element, map: Map<String, String>) {
+            val envs = org.jdom.Element("envs")
+
+            // do nothing if map is empty
+            if (map.size == 0) return
+
+            map.forEach {
+                val env = org.jdom.Element("env")
+                env.setAttribute("name", it.key)
+                env.setAttribute("value", it.value)
+                envs.addContent(env)
+            }
+
+            element.addContent(envs)
+        }
     }
 }

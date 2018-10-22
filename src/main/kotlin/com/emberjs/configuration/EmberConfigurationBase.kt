@@ -13,6 +13,7 @@ abstract class EmberConfigurationBase(project: Project, factory: ConfigurationFa
         EmberConfiguration {
     override var module: Module? = null
     override var nodeInterpreter: String? = null
+    override var env: Map<String, String>? = null
 
     override fun writeExternal(element: Element) {
         super.writeExternal(element)
@@ -30,6 +31,11 @@ abstract class EmberConfigurationBase(project: Project, factory: ConfigurationFa
             is String -> ElementUtils.writeString(element, "node-interpreter", nodeInterpreter!!)
             else -> ElementUtils.removeField(element, "node-interpreter")
         }
+
+        when (env) {
+            is Map -> ElementUtils.writeEnv(element, env!!)
+            else -> ElementUtils.removeEnv(element)
+        }
     }
 
     override fun readExternal(element: Element) {
@@ -44,6 +50,7 @@ abstract class EmberConfigurationBase(project: Project, factory: ConfigurationFa
         ElementUtils.readString(element, "node-interpreter")?.let { elementNodeInterpreter ->
             nodeInterpreter = elementNodeInterpreter
         }
+        ElementUtils.readEnv(element)?.let { env = it }
     }
 
 }

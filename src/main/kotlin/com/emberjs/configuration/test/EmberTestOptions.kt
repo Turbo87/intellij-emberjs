@@ -60,17 +60,17 @@ class EmberTestOptions : EmberOptions {
                 .filter {
                     // allow any fields that aren't LAUNCH, FILTER, MODULE
                     !arrayOf("LAUNCH", "FILTER", "MODULE").contains(it.field) ||
-                    // allow any LAUNCH if LAUNCH_OPTION is CUSTOM
-                    it.field == "LAUNCH" && launchOption.value == LaunchType.CUSTOM.value ||
-                    // allow any FILTER if FILTER_OPTION is FILTER
-                    it.field =="FILTER" && filterOption.value == FilterType.FILTER.value ||
-                    // allow any MODULE if FILTER_OPTION is MODULE
-                    it.field =="MODULE" && filterOption.value == FilterType.MODULE.value
+                            // allow any LAUNCH if LAUNCH_OPTION is CUSTOM
+                            it.field == "LAUNCH" && launchOption.value == LaunchType.CUSTOM.value ||
+                            // allow any FILTER if FILTER_OPTION is FILTER
+                            it.field == "FILTER" && filterOption.value == FilterType.FILTER.value ||
+                            // allow any MODULE if FILTER_OPTION is MODULE
+                            it.field == "MODULE" && filterOption.value == FilterType.MODULE.value
                 }
                 .filter { optionsField ->
                     optionsField.cmdlineOptionName.isNotEmpty() &&
-                    optionsField.value != optionsField.default &&
-                    optionsField.value.toString().isNotEmpty()
+                            optionsField.value != optionsField.default &&
+                            optionsField.value.toString().isNotEmpty()
                 }
                 .map { "--${it.cmdlineOptionName}=${it.value}" }
                 .toTypedArray()

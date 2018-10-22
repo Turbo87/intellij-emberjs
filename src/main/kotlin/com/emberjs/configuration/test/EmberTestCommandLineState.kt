@@ -9,8 +9,8 @@ import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
-import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.autotest.ToggleAutoTestAction
+import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil.createAndAttachConsole
 
 class EmberTestCommandLineState(environment: ExecutionEnvironment) : EmberCommandLineState(environment) {
