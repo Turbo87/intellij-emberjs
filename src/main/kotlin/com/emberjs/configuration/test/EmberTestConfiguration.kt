@@ -17,7 +17,7 @@ class EmberTestConfiguration(project: Project, factory: ConfigurationFactory, na
 
     @NotNull
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
-        return EmberTestSettingsEditor()
+        return EmberTestSettingsEditor(project)
     }
 
     @Nullable

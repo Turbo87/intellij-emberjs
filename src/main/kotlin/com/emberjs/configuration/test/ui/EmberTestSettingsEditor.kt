@@ -7,8 +7,11 @@ import com.emberjs.configuration.test.LaunchType
 import com.emberjs.configuration.utils.PublicStringAddEditDeleteListPanel
 import com.emberjs.project.EmberModuleType
 import com.intellij.application.options.ModulesComboBox
+import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreterField
+import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreterRef
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SettingsEditor
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.EditorTextField
@@ -18,7 +21,9 @@ import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.swing.*
 
-class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
+class EmberTestSettingsEditor(
+        val project: Project
+) : SettingsEditor<EmberTestConfiguration>() {
     private var myPanel: JPanel? = null
     private var advancedSettings: JPanel? = null
     private var advancedSettingsWrapper: JPanel? = null
@@ -55,6 +60,8 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
     private var filterButtonGroup: ButtonGroup? = null
 
     private var myModulesComboBox: ModulesComboBox? = null
+    private var myNodeSettingsPanel: JPanel? = null
+    private var myNodeInterpreterField: NodeJsInterpreterField? = null
 
     val bundle: ResourceBundle = ResourceBundle.getBundle("com.emberjs.locale.EmberTestConfigurationEditor")
     val launchers: MutableList<String> = mutableListOf()
@@ -116,6 +123,11 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
             null -> myModulesComboBox?.selectedModule = myModulesComboBox?.model?.getElementAt(0)
             else -> myModulesComboBox?.selectedModule = module
         }
+
+        myNodeInterpreterField?.interpreterRef = when (configuration.nodeInterpreter) {
+            is String -> NodeJsInterpreterRef.create(configuration.nodeInterpreter)
+            else -> NodeJsInterpreterRef.createProjectRef()
+        }
     }
 
     @Throws(ConfigurationException::class)
@@ -125,6 +137,7 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
                 .forEach { (first, second) -> first?.let { second.get(configuration.options).readFrom(it) } }
 
         configuration.module = myModulesComboBox?.selectedModule
+        configuration.nodeInterpreter = myNodeInterpreterField?.interpreterRef?.referenceName
     }
 
     @NotNull
@@ -201,6 +214,12 @@ class EmberTestSettingsEditor : SettingsEditor<EmberTestConfiguration>() {
         mappings.add(launchAddEditDeleteListPanel to EmberTestOptions::launch)
 
         launcherWrapperPanel!!.border = IdeBorderFactory.createTitledBorder(bundle.getString("launchers"), false)
+
+        // Add interpreter field to editor
+        myNodeInterpreterField = NodeJsInterpreterField(project, false)
+                .apply { interpreterRef = NodeJsInterpreterRef.createProjectRef() }
+        myNodeSettingsPanel?.layout = BoxLayout(myNodeSettingsPanel, BoxLayout.PAGE_AXIS)
+        myNodeSettingsPanel?.add(myNodeInterpreterField)
 
         return myPanel as JComponent
     }

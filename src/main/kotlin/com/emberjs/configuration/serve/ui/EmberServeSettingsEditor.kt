@@ -4,19 +4,21 @@ import com.emberjs.configuration.serve.EmberServeConfiguration
 import com.emberjs.configuration.serve.EmberServeOptions
 import com.emberjs.project.EmberModuleType
 import com.intellij.application.options.ModulesComboBox
+import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreterField
+import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreterRef
 import com.intellij.openapi.options.SettingsEditor
+import com.intellij.openapi.project.Project
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.HideableDecorator
 import com.intellij.ui.IdeBorderFactory
 import org.jetbrains.annotations.NotNull
 import java.util.*
-import javax.swing.JCheckBox
-import javax.swing.JComboBox
-import javax.swing.JComponent
-import javax.swing.JPanel
+import javax.swing.*
 
-class EmberServeSettingsEditor : SettingsEditor<EmberServeConfiguration>() {
+class EmberServeSettingsEditor(
+        val project: Project
+) : SettingsEditor<EmberServeConfiguration>() {
     private var myPanel: JPanel? = null
     private var advancedSettings: JPanel? = null
     private var advancedSettingsWrapper: JPanel? = null
@@ -43,6 +45,8 @@ class EmberServeSettingsEditor : SettingsEditor<EmberServeConfiguration>() {
     private var sslCheckBox: JCheckBox? = null
 
     private var myModulesComboBox: ModulesComboBox? = null
+    private var myNodeSettingsPanel: JPanel? = null
+    private var myNodeInterpreterField: NodeJsInterpreterField? = null
 
     private val bundle: ResourceBundle = ResourceBundle.getBundle("com.emberjs.locale.EmberServeConfigurationEditor")
 
@@ -79,6 +83,11 @@ class EmberServeSettingsEditor : SettingsEditor<EmberServeConfiguration>() {
             null -> myModulesComboBox?.selectedModule = myModulesComboBox?.model?.getElementAt(0)
             else -> myModulesComboBox?.selectedModule = module
         }
+
+        myNodeInterpreterField?.interpreterRef = when (configuration.nodeInterpreter) {
+            is String -> NodeJsInterpreterRef.create(configuration.nodeInterpreter)
+            else -> NodeJsInterpreterRef.createProjectRef()
+        }
     }
 
     override fun applyEditorTo(configuration: EmberServeConfiguration) {
@@ -86,6 +95,7 @@ class EmberServeSettingsEditor : SettingsEditor<EmberServeConfiguration>() {
             first?.let { second.get(configuration.options).readFrom(it) }
         }
         configuration.module = myModulesComboBox?.selectedModule
+        configuration.nodeInterpreter = myNodeInterpreterField?.interpreterRef?.referenceName
     }
 
     @NotNull
@@ -97,6 +107,12 @@ class EmberServeSettingsEditor : SettingsEditor<EmberServeConfiguration>() {
             setContentComponent(advancedSettings as JComponent)
             setOn(false)
         }
+
+        // Add interpreter field to editor
+        myNodeInterpreterField = NodeJsInterpreterField(project, false)
+                .apply { interpreterRef = NodeJsInterpreterRef.createProjectRef() }
+        myNodeSettingsPanel?.layout = BoxLayout(myNodeSettingsPanel, BoxLayout.PAGE_AXIS)
+        myNodeSettingsPanel?.add(myNodeInterpreterField)
 
         val comboBoxModel = CollectionComboBoxModel<String>().apply {
             add("development")

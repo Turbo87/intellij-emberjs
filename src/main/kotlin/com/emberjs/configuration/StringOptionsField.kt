@@ -17,7 +17,7 @@ class StringOptionsField(
 
     override fun writeTo(component: Any) {
         when (component) {
-            is Element -> ElementUtils.writeString(component, this.field, this.value)
+            is Element -> ElementUtils.writeString(component, value = this.value, name = this.field)
             is EditorTextField -> component.apply {
                 text = value
                 setPlaceholder(default)
@@ -37,7 +37,7 @@ class StringOptionsField(
 
     override fun readFrom(component: Any) {
         when (component) {
-            is Element -> value = ElementUtils.readString(component, this.field) ?: this.default
+            is Element -> value = ElementUtils.readString(component, name = this.field) ?: this.default
             is EditorTextField -> value = component.text
             is JComboBox<*> -> value = component.selectedItem.toString()
             is PublicStringAddEditDeleteListPanel -> value = component.listItems.joinToString(",")
