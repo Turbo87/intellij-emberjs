@@ -58,27 +58,37 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
                 .flatMap { listOfNotNull(it.findChild("app"), it.findChild("addon"), it.findChild("addon-test-support")) }
                 .map { JSExactFileReference(host, TextRange.create(offset, offset + packageName.length), listOf(it.path), null) }
 
-        val refs = object : FileReferenceSet(importPath, host, offset + packageName.length + 1, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
-            override fun createFileReference(range: TextRange, index: Int, text: String?): FileReference {
-                return object : JSModuleReference(text, index, range, this, null, true) {
-                    override fun innerResolveInContext(referenceText: String, psiFileSystemItem: PsiFileSystemItem, resolveResults: MutableCollection<ResolveResult>?, b: Boolean) {
-                        super.innerResolveInContext(referenceText, psiFileSystemItem, resolveResults, b)
+        val refs : FileReferenceSet
+        val startInElement = offset + packageName.length + 1
 
-                        // don't suggest the current file, e.g. when navigating from /app to /addon
-                        resolveResults?.removeAll { it.element?.containingFile == host.containingFile }
+        try {
+            refs = object : FileReferenceSet(importPath, host, startInElement, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
+                override fun createFileReference(range: TextRange, index: Int, text: String?): FileReference {
+                    return object : JSModuleReference(text, index, range, this, null, true) {
+                        override fun innerResolveInContext(referenceText: String, psiFileSystemItem: PsiFileSystemItem, resolveResults: MutableCollection<ResolveResult>?, b: Boolean) {
+                            super.innerResolveInContext(referenceText, psiFileSystemItem, resolveResults, b)
+
+                            // don't suggest the current file, e.g. when navigating from /app to /addon
+                            resolveResults?.removeAll { it.element?.containingFile == host.containingFile }
+                        }
+
+                        override fun isAllowFolders() = false
                     }
+                }
 
-                    override fun isAllowFolders() = false
+                override fun computeDefaultContexts(): MutableCollection<PsiFileSystemItem> {
+                    return roots
+                            .flatMap { it.multiResolve(false).asIterable() }
+                            .map { it.element }
+                            .filterIsInstance(PsiFileSystemItem::class.java)
+                            .toMutableList()
                 }
             }
-
-            override fun computeDefaultContexts(): MutableCollection<PsiFileSystemItem> {
-                return roots
-                    .flatMap { it.multiResolve(false).asIterable() }
-                    .map { it.element }
-                    .filterIsInstance(PsiFileSystemItem::class.java)
-                    .toMutableList()
-            }
+        } catch (e: StringIndexOutOfBoundsException) {
+            // TODO: this sometimes happens if startInElement is >= importPath.length but we don't exactly know why.
+            println("Error in EmberModuleReferenceContributor for importPath: \"$importPath\" (starting at $startInElement). " +
+                    "This is a known issue and can be ignored. See https://github.com/Turbo87/intellij-emberjs/issues/176")
+            return arrayOf()
         }
 
         return (roots + refs.allReferences).toTypedArray()
