@@ -38,7 +38,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    testCompile "org.assertj:assertj-core:3.11.1"
+    testCompile "org.assertj:assertj-core:3.12.1"
 }
 
 intellij {
