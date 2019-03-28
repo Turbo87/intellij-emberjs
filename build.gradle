@@ -1,13 +1,13 @@
 buildscript {
     ext {
         javaVersion = '1.8'
-        kotlinVersion = '1.2.71'
+        kotlinVersion = '1.3.21'
 
         // see https://www.jetbrains.com/intellij-repository/releases/
-        intellijVersion = '183.4886.37'
+        intellijVersion = '191.6183.87'
 
         // see https://plugins.jetbrains.com/idea/plugin/6884-handlebars-mustache
-        handlebarsPluginVersion = '183.4139.35'
+        handlebarsPluginVersion = '191.6014.8'
     }
 
     repositories {
@@ -36,7 +36,6 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     testCompile "org.assertj:assertj-core:3.11.1"
 }
