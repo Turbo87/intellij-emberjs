@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2019.1.1
+
+- Change IntelliJ target version to v2019.1 (#251)
+
+
 ## v2018.3.2
 
 - Fix random StringIndexOutOfBounds exceptions (#244)
