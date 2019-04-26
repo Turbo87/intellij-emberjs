@@ -21,7 +21,7 @@ class EmberServeConfiguration(project: Project, factory: ConfigurationFactory, n
 
     @NotNull
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
-        return EmberServeSettingsEditor()
+        return EmberServeSettingsEditor(project)
     }
 
     @Nullable

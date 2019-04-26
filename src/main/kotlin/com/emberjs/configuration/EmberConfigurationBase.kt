@@ -12,6 +12,7 @@ abstract class EmberConfigurationBase(project: Project, factory: ConfigurationFa
         RunConfigurationBase<Any>(project, factory, name),
         EmberConfiguration {
     override var module: Module? = null
+    override var nodeInterpreter: String? = null
 
     override fun writeExternal(element: Element) {
         super.writeExternal(element)
@@ -21,8 +22,13 @@ abstract class EmberConfigurationBase(project: Project, factory: ConfigurationFa
 
         val moduleName = module?.name
         when (moduleName) {
-            is String -> ElementUtils.writeString(element, "NAME", moduleName, "module")
-            else -> ElementUtils.removeField(element, "NAME", "module")
+            is String -> ElementUtils.writeString(element, "module", moduleName, "NAME")
+            else -> ElementUtils.removeField(element, "module", "NAME")
+        }
+
+        when (nodeInterpreter) {
+            is String -> ElementUtils.writeString(element, "node-interpreter", nodeInterpreter!!)
+            else -> ElementUtils.removeField(element, "node-interpreter")
         }
     }
 
@@ -32,8 +38,11 @@ abstract class EmberConfigurationBase(project: Project, factory: ConfigurationFa
             options.fields().forEach { optionsField -> optionsField.readFrom(element) }
         }
 
-        ElementUtils.readString(element, "NAME", "module")?.let { moduleString ->
+        ElementUtils.readString(element, "module", "NAME")?.let { moduleString ->
             module = ModuleManager.getInstance(project).modules.find { it.name == moduleString }
+        }
+        ElementUtils.readString(element, "node-interpreter")?.let { elementNodeInterpreter ->
+            nodeInterpreter = elementNodeInterpreter
         }
     }
 

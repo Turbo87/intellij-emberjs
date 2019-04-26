@@ -6,4 +6,5 @@ interface EmberConfiguration {
     val command: String
     val options: EmberOptions
     var module: Module?
+    var nodeInterpreter: String?
 }

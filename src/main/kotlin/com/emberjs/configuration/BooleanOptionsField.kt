@@ -14,14 +14,14 @@ class BooleanOptionsField(
     override fun writeTo(component: Any) {
         when (component) {
             is JCheckBox -> component.isSelected = value
-            is Element -> ElementUtils.writeBool(component, this.field, this.value)
+            is Element -> ElementUtils.writeBool(component, value = this.value, name = this.field)
         }
     }
 
     override fun readFrom(component: Any) {
         when (component) {
             is JCheckBox -> value = component.isSelected
-            is Element -> this.value = ElementUtils.readBool(component, this.field) ?: this.default
+            is Element -> this.value = ElementUtils.readBool(component, name = this.field) ?: this.default
         }
     }
 }

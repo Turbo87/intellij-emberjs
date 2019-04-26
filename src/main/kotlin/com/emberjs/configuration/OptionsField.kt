@@ -1,8 +1,5 @@
 package com.emberjs.configuration
 
-import org.jdom.Element
-import javax.swing.JComponent
-
 abstract class OptionsField<T>(
         val default: T,
         val field: String,

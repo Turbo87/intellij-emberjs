@@ -7,27 +7,43 @@ import org.jdom.Element
 
 class ElementUtils {
     companion object {
-        fun writeString(element: Element, name: String, value: String, elementName: String = "option") {
+        fun writeString(element: Element, elementName: String = "option", value: Any, name: String? = null) {
             val opt = org.jdom.Element(elementName)
-            opt.setAttribute("name", name)
-            opt.setAttribute("value", value)
+            if (name != null) {
+                opt.setAttribute("name", name)
+            }
+            opt.setAttribute("value", value.toString())
             element.addContent(opt)
         }
 
-        fun readString(element: Element, name: String, elementName: String = "option"): String? =
-                element.children
-                        .find { it.name == elementName && it.getAttributeValue("name") == name }
-                        ?.getAttributeValue("value")
+        fun readString(element: Element, elementName: String = "option", name: String? = null): String? {
+            return element.children
+                    .find {
+                        var matches = it.name == elementName
+                        if (name != null) {
+                            matches = matches && it.getAttributeValue("name") == name
+                        }
+                        matches
+                    }
+                    ?.getAttributeValue("value")
 
-        fun writeBool(element: Element, name: String, value: Boolean, elementName: String = "option") {
-            writeString(element, name, value.toString(), elementName)
         }
 
-        fun readBool(element: Element, name: String, elementName: String = "option") = readString(element, name, elementName)?.toBoolean()
+        fun writeBool(element: Element, elementName: String = "option", value: Boolean, name: String? = null) {
+            writeString(element, elementName, value.toString(), name)
+        }
 
-        fun removeField(element: Element, name: String, elementName: String = "option") {
+        fun readBool(element: Element, elementName: String = "option", name: String? = null) = readString(element, elementName, name)?.toBoolean()
+
+        fun removeField(element: Element, elementName: String = "option", name: String? = null) {
             element.children
-                    .find { it.name == elementName && it.getAttributeValue("name") == name }
+                    .find {
+                        var matches = it.name == elementName
+                        if (name != null) {
+                            matches = matches && it.getAttributeValue("name") == name
+                        }
+                        matches
+                    }
                     ?.let { it.parent.removeContent(it) }
         }
     }
