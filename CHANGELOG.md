@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2019.1.2
+
+- Allow users to configure node interpreter (#254)
+
+
 ## v2019.1.1
 
 - Change IntelliJ target version to v2019.1 (#251)
