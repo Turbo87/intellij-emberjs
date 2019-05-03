@@ -7,6 +7,7 @@ import com.emberjs.configuration.test.LaunchType
 import com.emberjs.configuration.utils.PublicStringAddEditDeleteListPanel
 import com.emberjs.project.EmberModuleType
 import com.intellij.application.options.ModulesComboBox
+import com.intellij.execution.configuration.EnvironmentVariablesTextFieldWithBrowseButton
 import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreterField
 import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreterRef
 import com.intellij.openapi.options.ConfigurationException
@@ -62,6 +63,7 @@ class EmberTestSettingsEditor(
     private var myModulesComboBox: ModulesComboBox? = null
     private var myNodeSettingsPanel: JPanel? = null
     private var myNodeInterpreterField: NodeJsInterpreterField? = null
+    private var myEnvVars: EnvironmentVariablesTextFieldWithBrowseButton? = null
 
     val bundle: ResourceBundle = ResourceBundle.getBundle("com.emberjs.locale.EmberTestConfigurationEditor")
     val launchers: MutableList<String> = mutableListOf()
@@ -128,6 +130,10 @@ class EmberTestSettingsEditor(
             is String -> NodeJsInterpreterRef.create(configuration.nodeInterpreter)
             else -> NodeJsInterpreterRef.createProjectRef()
         }
+
+        configuration.env?.let {
+            myEnvVars?.envs = it
+        }
     }
 
     @Throws(ConfigurationException::class)
@@ -138,6 +144,7 @@ class EmberTestSettingsEditor(
 
         configuration.module = myModulesComboBox?.selectedModule
         configuration.nodeInterpreter = myNodeInterpreterField?.interpreterRef?.referenceName
+        configuration.env = myEnvVars?.envs
     }
 
     @NotNull

@@ -16,15 +16,16 @@ open class EmberCommandLineState(environment: ExecutionEnvironment) : CommandLin
         val argList = configuration.options.toCommandLineOptions()
 
         val workingDirectory =
-                // if module configured, use that as workDirectory
-                configuration.module?.moduleFile?.parentModule?.path ?:
-                environment.dataContext?.getData(LangDataKeys.MODULE)?.emberRoot?.path ?:
-                environment.project.basePath
+        // if module configured, use that as workDirectory
+                configuration.module?.moduleFile?.parentModule?.path
+                        ?: environment.dataContext?.getData(LangDataKeys.MODULE)?.emberRoot?.path
+                        ?: environment.project.basePath
 
         val cmd = EmberCli(environment.project, configuration.command, *argList)
                 .apply {
                     workDirectory = workingDirectory
                     nodeInterpreter = configuration.nodeInterpreter
+                    env = configuration.env
                 }
                 .commandLine()
                 .apply {

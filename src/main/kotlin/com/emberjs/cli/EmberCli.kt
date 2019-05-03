@@ -11,6 +11,7 @@ class EmberCli(val project: Project, vararg val parameters: String) {
 
     var workDirectory: String? = null
     var nodeInterpreter: String? = null
+    var env: Map<String, String>? = null
 
     private fun nodeCommandLine(): GeneralCommandLine {
         val interpreterRef = NodeJsInterpreterRef.create(nodeInterpreter)
@@ -39,6 +40,9 @@ class EmberCli(val project: Project, vararg val parameters: String) {
         }
 
         return commandLine.also {
+            if (env != null) {
+                it.withEnvironment(env)
+            }
             it.addParameters(*parameters)
             it.withWorkDirectory(workDirectory)
         }
