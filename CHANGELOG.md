@@ -4,6 +4,12 @@ Changelog
 ===============================================================================
 
 
+## v2019.2.1
+
+- Change IntelliJ target version to v2019.2 EAP (#268)
+- Expose field to configure run configuration environment (#257)
+
+
 ## v2019.1.2
 
 - Allow users to configure node interpreter (#254)
