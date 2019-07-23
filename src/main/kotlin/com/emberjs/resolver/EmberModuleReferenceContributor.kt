@@ -65,11 +65,11 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
             refs = object : FileReferenceSet(importPath, host, startInElement, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
                 override fun createFileReference(range: TextRange, index: Int, text: String?): FileReference {
                     return object : JSModuleReference(text, index, range, this, null, true) {
-                        override fun innerResolveInContext(referenceText: String, psiFileSystemItem: PsiFileSystemItem, resolveResults: MutableCollection<ResolveResult>?, b: Boolean) {
-                            super.innerResolveInContext(referenceText, psiFileSystemItem, resolveResults, b)
+                        override fun innerResolveInContext(referenceText: String, psiFileSystemItem: PsiFileSystemItem, resolveResults: MutableCollection<ResolveResult>, caseSensitive: Boolean) {
+                            super.innerResolveInContext(referenceText, psiFileSystemItem, resolveResults, caseSensitive)
 
                             // don't suggest the current file, e.g. when navigating from /app to /addon
-                            resolveResults?.removeAll { it.element?.containingFile == host.containingFile }
+                            resolveResults.removeAll { it.element?.containingFile == host.containingFile }
                         }
 
                         override fun isAllowFolders() = false
