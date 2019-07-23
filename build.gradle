@@ -5,10 +5,10 @@ buildscript {
 
         // see https://www.jetbrains.com/intellij-repository/releases/
         // and https://www.jetbrains.com/intellij-repository/snapshots/
-        intellijVersion = '2019.1.3'
+        intellijVersion = '192.5728.74-EAP-SNAPSHOT'
 
         // see https://plugins.jetbrains.com/plugin/6884-handlebars-mustache/versions
-        handlebarsPluginVersion = '191.6014.8'
+        handlebarsPluginVersion = '192.5728.12'
     }
 
     repositories {
