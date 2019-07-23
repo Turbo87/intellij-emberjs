@@ -106,11 +106,11 @@ class EmberNameTest {
             for ((path, expectedName) in tests) {
                 assertThat(EmberName.from(root, root.find(path))?.fullName)
                         .describedAs(path)
-                        .isEqualTo(expectedName)
+                        .apply { if (expectedName == null) isNull() else isEqualTo(expectedName) }
 
                 assertThat(EmberName.from(root.find(path))?.fullName)
                         .describedAs(path)
-                        .isEqualTo(expectedName)
+                        .apply { if (expectedName == null) isNull() else isEqualTo(expectedName) }
             }
         }
     }
