@@ -1,10 +1,10 @@
 package com.emberjs.translations
 
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import java.nio.file.Paths
 
-class EmberI18nFoldingBuilderTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberI18nFoldingBuilderTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String? {
         val resource = ClassLoader.getSystemResource("com/emberjs/translations/fixtures")
