@@ -1,12 +1,12 @@
 package com.emberjs.translations
 
 import com.dmarcotte.handlebars.file.HbFileType
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import org.assertj.core.api.Assertions.assertThat
 import java.nio.file.Paths
 
-class EmberTranslationHbsReferenceTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberTranslationHbsReferenceTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String? {
         val resource = ClassLoader.getSystemResource("com/emberjs/translations/fixtures")

@@ -6,10 +6,10 @@ import com.emberjs.hbs.HbsPatterns.SIMPLE_MUSTACHE_NAME_ID
 import com.emberjs.hbs.HbsPatterns.SUB_EXPR_NAME_ID
 import com.intellij.patterns.PsiElementPattern
 import com.intellij.psi.PsiElement
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.assertj.core.api.Assertions.assertThat
 
-class HbsPatternsTest : LightPlatformCodeInsightFixtureTestCase() {
+class HbsPatternsTest : BasePlatformTestCase() {
     fun testSimpleMustache() = with(SIMPLE_MUSTACHE_NAME_ID) {
         test("{{foo<caret>}}")
         test("{{fo<caret>o}}")

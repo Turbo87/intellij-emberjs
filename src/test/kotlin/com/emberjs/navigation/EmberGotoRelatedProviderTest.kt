@@ -3,12 +3,12 @@ package com.emberjs.navigation
 import com.emberjs.EmberTestFixtures.FIXTURES_PATH
 import com.emberjs.index.EmberNameIndex
 import com.emberjs.utils.use
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
 
-class EmberGotoRelatedProviderTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberGotoRelatedProviderTest : BasePlatformTestCase() {
 
     val provider = EmberGotoRelatedProvider()
 

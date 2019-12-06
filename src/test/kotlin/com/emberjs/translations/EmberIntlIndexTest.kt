@@ -1,12 +1,12 @@
 package com.emberjs.translations
 
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import java.nio.file.Paths
 
-class EmberIntlIndexTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberIntlIndexTest : BasePlatformTestCase() {
 
     fun testSimple() = doTest("foo", mapOf("en" to "bar baz", "de" to "Bar Baz"))
     fun testPlaceholder() = doTest("long-string", mapOf("en" to "Something veeeeery long with a {placeholder}"))

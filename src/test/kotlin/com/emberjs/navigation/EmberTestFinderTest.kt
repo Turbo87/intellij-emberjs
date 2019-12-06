@@ -5,13 +5,13 @@ import com.emberjs.index.EmberNameIndex
 import com.emberjs.resolver.EmberName
 import com.emberjs.utils.use
 import com.intellij.psi.PsiManager
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
 
-class EmberTestFinderTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberTestFinderTest : BasePlatformTestCase() {
 
     val finder = EmberTestFinder()
 

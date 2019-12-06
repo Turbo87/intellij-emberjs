@@ -1,12 +1,12 @@
 package com.emberjs.translations
 
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import java.nio.file.Paths
 
-class EmberI18nIndexTest : LightPlatformCodeInsightFixtureTestCase() {
+class EmberI18nIndexTest : BasePlatformTestCase() {
 
     fun testSimpleKey() = doTest("foo", mapOf("en" to "bar baz", "de" to "Bar Baz"))
     fun testDottedKey() = doTest("user.edit.title", mapOf("en" to "Edit User", "de" to "Benutzer editieren"))
