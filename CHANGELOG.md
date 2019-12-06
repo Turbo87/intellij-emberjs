@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2019.3.1
+
+- Change IntelliJ target version to v2019.3 (#286)
+
+
 ## v2019.2.1
 
 - Change IntelliJ target version to v2019.2 EAP (#268)
