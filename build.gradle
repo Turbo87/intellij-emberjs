@@ -52,8 +52,7 @@ intellij {
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
     publishPlugin {
-        username "$JETBRAINS_USERNAME"
-        password "$JETBRAINS_PASSWORD"
+        token = System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken")
     }
 }
 
