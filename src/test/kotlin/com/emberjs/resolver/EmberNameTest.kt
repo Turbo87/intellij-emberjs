@@ -30,6 +30,26 @@ class EmberNameTest {
         assertThat(name.isTest).isFalse()
     }
 
+    @Test fun testAngleBracketsName() {
+        assertThat(EmberName.from("component:table")?.angleBracketsName)
+                .isEqualTo("Table")
+        assertThat(EmberName.from("component:-table")?.angleBracketsName)
+                .isEqualTo("-Table")
+        assertThat(EmberName.from("component:table-row")?.angleBracketsName)
+                .isEqualTo("TableRow")
+        assertThat(EmberName.from("component:table/row")?.angleBracketsName)
+                .isEqualTo("Table::Row")
+
+        assertThat(EmberName.from("template:components/table")?.angleBracketsName)
+                .isEqualTo("Table")
+        assertThat(EmberName.from("template:components/-table")?.angleBracketsName)
+                .isEqualTo("-Table")
+        assertThat(EmberName.from("template:components/table-row")?.angleBracketsName)
+                .isEqualTo("TableRow")
+        assertThat(EmberName.from("template:components/table/row")?.angleBracketsName)
+                .isEqualTo("Table::Row")
+    }
+
     @Test fun testContollerTest() {
         val name = EmberName.from("controller-test:application")!!
         assertThat(name.type).isEqualTo("controller-test")

@@ -19,10 +19,32 @@ data class EmberName(val type: String, val name: String) {
         }
     }
 
+    // adapted from https://github.com/ember-codemods/ember-angle-brackets-codemod/blob/v3.0.1/transforms/angle-brackets/transform.js#L36-L62
+    val angleBracketsName by lazy {
+        assert(type == "component" || isComponentTemplate)
+
+        val baseName = if (isComponentTemplate) name.removePrefix("components/") else name
+
+        baseName.replace(SIMPLE_DASHERIZE_REGEXP) {
+            assert(it.range.first - it.range.last == 0)
+
+            if (it.value == "/") return@replace "::";
+
+            if (it.range.first == 0 || !ALPHA.matches(baseName.subSequence(it.range.start - 1, it.range.start))) {
+                return@replace it.value.toUpperCase()
+            }
+
+            if (it.value == "-") "" else it.value.toLowerCase()
+        }
+    }
+
     val isTest: Boolean = type.endsWith("-test")
     val isComponentTemplate = type == "template" && name.startsWith("components/")
 
     companion object {
+        private val SIMPLE_DASHERIZE_REGEXP = Regex("[a-z]|/|-");
+        private val ALPHA = Regex("[A-Za-z0-9]")
+
         fun from(fullName: String): EmberName? {
             val parts = fullName.split(":")
             return when {
