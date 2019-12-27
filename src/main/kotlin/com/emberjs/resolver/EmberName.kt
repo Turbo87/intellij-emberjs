@@ -12,7 +12,7 @@ data class EmberName(val type: String, val name: String) {
     val fullName by lazy { "$type:$name" }
 
     val displayName by lazy {
-        if (type == "template" && name.startsWith("components/")) {
+        if (isComponentTemplate) {
             "${name.removePrefix("components/").replace('/', '.')} component-template"
         } else {
             "${name.replace('/', '.')} $type"
@@ -20,6 +20,7 @@ data class EmberName(val type: String, val name: String) {
     }
 
     val isTest: Boolean = type.endsWith("-test")
+    val isComponentTemplate = type == "template" && name.startsWith("components/")
 
     companion object {
         fun from(fullName: String): EmberName? {
