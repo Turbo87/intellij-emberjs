@@ -4,6 +4,12 @@ Changelog
 ===============================================================================
 
 
+## v2019.3.2
+
+- Angle bracket autocomplete and goto references (#293)
+- Fix path to `ember-cli` executable (#291)
+
+
 ## v2019.3.1
 
 - Change IntelliJ target version to v2019.3 (#286)
