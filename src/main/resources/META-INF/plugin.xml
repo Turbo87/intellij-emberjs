@@ -40,7 +40,9 @@
         <directoryProjectGenerator implementation="com.emberjs.cli.EmberCliAddonProjectGenerator"/>
         <projectTemplatesFactory implementation="com.emberjs.cli.EmberCliProjectTemplatesFactory"/>
 
-        <applicationConfigurable instance="com.emberjs.settings.EmberApplicationConfigurable"/>
+        <applicationConfigurable
+                id="configurable.emberjs"
+                instance="com.emberjs.settings.EmberApplicationConfigurable"/>
         <framework.detector implementation="com.emberjs.cli.EmberCliFrameworkDetector"/>
         <directoryProjectConfigurator implementation="com.emberjs.cli.EmberCliProjectConfigurator"
                                       order="after PlatformProjectConfigurator"/>
@@ -75,6 +77,30 @@
         <!-- ember test -->
         <programRunner implementation="com.emberjs.configuration.test.EmberTestProgramRunner"/>
         <configurationType implementation="com.emberjs.configuration.test.EmberTestConfigurationType"/>
+
+        <!-- TemplateLint -->
+        <projectConfigurable id="configurable.emberjs.hbs.lint"
+                             parentId="configurable.emberjs"
+                             instance="TemplateLintConfigurable"
+                             key="hbs.lint.configurable.name"
+                             bundle="com.emberjs.locale.TemplateLintBundle"
+                             order="last"/>
+        <localInspection language="Handlebars"
+                         bundle="com.emberjs.locale.TemplateLintBundle"
+                         key="hbs.lint.inspection"
+                         groupKey="hbs.inspections.code.quality.tools.group"
+                         groupPath="Handlebars"
+                         enabledByDefault="false"
+                         level="ERROR"
+                         implementationClass="TemplateLintInspection"
+                         unfair="true"/>
+        <directoryProjectConfigurator implementation="TemplateLintEnabler"/>
+        <externalAnnotator language="Handlebars" implementationClass="TemplateLintExternalAnnotator"/>
+        <projectService serviceImplementation="TemplateLintConfiguration"/>
+        <projectService serviceImplementation="TemplateLintConfigFileChangeTracker"/>
+        <projectService serviceImplementation="TemplateLintUnsavedConfigFileManager"/>
+        <lang.substitutor language="JavaScript" implementationClass="TemplateLintConfigLangSubstitutor"/>
+        <fileType name="JavaScript" fileNames=".template-lintrc.js"/>
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript">
