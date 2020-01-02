@@ -1,5 +1,6 @@
 package com.emberjs
 
+import com.emberjs.EmberXmlElementDescriptor.Companion.forTag
 import com.intellij.psi.impl.source.html.HtmlFileImpl
 import com.intellij.psi.impl.source.xml.XmlElementDescriptorProvider
 import com.intellij.psi.xml.XmlTag
@@ -13,6 +14,6 @@ class EmberXmlElementDescriptorProvider : XmlElementDescriptorProvider {
         val language = containingFile.contentElementType?.language ?: return null
         if (language.id !== "Handlebars") return null
 
-        return EmberXmlElementDescriptor(tag)
+        return forTag(tag)
     }
 }
