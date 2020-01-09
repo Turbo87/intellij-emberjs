@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2019.3.3
+
+- Fix "Attribute not allowed here" warnings (#295)
+
+
 ## v2019.3.2
 
 - Angle bracket autocomplete and goto references (#293)
