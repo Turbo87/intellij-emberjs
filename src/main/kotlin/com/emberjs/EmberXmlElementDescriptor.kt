@@ -12,34 +12,40 @@ import com.intellij.xml.XmlAttributeDescriptor
 import com.intellij.xml.XmlElementDescriptor
 import com.intellij.xml.XmlElementsGroup
 import com.intellij.xml.XmlNSDescriptor
+import com.intellij.xml.impl.schema.AnyXmlAttributeDescriptor
 
-class EmberXmlElementDescriptor(private val tag: XmlTag) : XmlElementDescriptor {
+class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration: PsiElement) : XmlElementDescriptor {
     val project = tag.project
-    private val scope = ProjectScope.getAllScope(project)
 
-    private val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
+    companion object {
+        fun forTag(tag: XmlTag?): EmberXmlElementDescriptor? {
+            if (tag == null) return null
 
-    override fun getDeclaration(): PsiElement {
-        val componentTemplate = EmberNameIndex.getFilteredKeys(scope) { it.isComponentTemplate && it.angleBracketsName == tag.name }
-                // Filter out components that are not related to this project
-                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                .map { psiManager.findFile(it) }
-                .filterNotNull()
-                .firstOrNull()
+            val project = tag.project
+            val scope = ProjectScope.getAllScope(project)
+            val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
 
-        if (componentTemplate != null) return componentTemplate
+            val componentTemplate = // Filter out components that are not related to this project
+                    EmberNameIndex.getFilteredKeys(scope) { it.isComponentTemplate && it.angleBracketsName == tag.name }
+                            // Filter out components that are not related to this project
+                            .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
+                            .mapNotNull { psiManager.findFile(it) }
+                            .firstOrNull()
 
-        val component = EmberNameIndex.getFilteredKeys(scope) { it.type == "component" && it.angleBracketsName == tag.name }
-                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                .map { psiManager.findFile(it) }
-                .filterNotNull()
-                .firstOrNull()
+            if (componentTemplate != null) return EmberXmlElementDescriptor(tag, componentTemplate)
 
-        if (component != null) return component
+            val component = EmberNameIndex.getFilteredKeys(scope) { it.type == "component" && it.angleBracketsName == tag.name }
+                    .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
+                    .mapNotNull { psiManager.findFile(it) }
+                    .firstOrNull()
 
-        return tag
+            if (component != null) return EmberXmlElementDescriptor(tag, component)
+
+            return null
+        }
     }
 
+    override fun getDeclaration(): PsiElement = declaration
     override fun getName(context: PsiElement?): String = (context as? XmlTag)?.name ?: name
     override fun getName(): String = tag.localName
     override fun init(element: PsiElement?) {}
@@ -61,7 +67,9 @@ class EmberXmlElementDescriptor(private val tag: XmlTag) : XmlElementDescriptor 
         return result.toTypedArray()
     }
 
-    override fun getAttributeDescriptor(attributeName: String?, context: XmlTag?): XmlAttributeDescriptor? = null
+    override fun getAttributeDescriptor(attributeName: String?, context: XmlTag?): XmlAttributeDescriptor? {
+        return AnyXmlAttributeDescriptor(attributeName)
+    }
     override fun getAttributeDescriptor(attribute: XmlAttribute?): XmlAttributeDescriptor?
             = getAttributeDescriptor(attribute?.name, attribute?.parent)
 
