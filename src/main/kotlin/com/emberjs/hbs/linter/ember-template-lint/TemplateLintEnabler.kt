@@ -40,22 +40,28 @@ class TemplateLintEnabler : DirectoryProjectConfigurator {
                     ContainerUtil.map(FilenameIndex.getVirtualFilesByName(project, "package.json", GlobalSearchScope.projectScope(project))) { packageJsonFile: VirtualFile? -> PackageJsonData.getOrCreate(packageJsonFile!!) }
 
             packageJsonFiles.forEach {
-                if (it.isDependencyOfAnyType(TemplateLintUtil.PACKAGE_NAME)) {
-                    LOG.debug("${TemplateLintUtil.PACKAGE_NAME} is dependency, enabling it")
-                    templateLintEnabled(project, true)
-                    notifyEnabled(project)
-                }
+                if (enableIfDependency(it, project, TemplateLintUtil.PACKAGE_NAME)) return
+                if (enableIfDependency(it, project, TemplateLintUtil.CLI_PACKAGE_NAME)) return
             }
+        }
+
+        fun enableIfDependency(pkg: PackageJsonData, project: Project, dependency: String): Boolean {
+            if (!pkg.isDependencyOfAnyType(dependency)) return false
+
+            LOG.debug("$dependency is dependency, enabling it")
+            templateLintEnabled(project, true)
+            notifyEnabled(project, dependency)
+            return true
         }
 
         fun templateLintEnabled(project: Project, enabled: Boolean) {
             getInstance(project, TemplateLintConfiguration::class.java).isEnabled = enabled
         }
 
-        fun notifyEnabled(project: Project) {
+        fun notifyEnabled(project: Project, dependency: String) {
             val message = JSBundle.message("js.linter.guesser.linter.enabled.because.of.package.json.section",
                     "TemplateLint",
-                    TemplateLintUtil.PACKAGE_NAME)
+                    dependency)
 
             JSLinterUtil.NOTIFICATION_GROUP.createNotification(message, MessageType.INFO).addAction(object : NotificationAction("Disable TemplateLint") {
                 override fun actionPerformed(e: AnActionEvent, notification: Notification) {

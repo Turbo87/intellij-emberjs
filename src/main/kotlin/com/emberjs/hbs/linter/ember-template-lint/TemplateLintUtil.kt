@@ -6,6 +6,7 @@ import com.intellij.util.SmartList
 class TemplateLintUtil {
     companion object {
         const val PACKAGE_NAME = "ember-template-lint"
+        const val CLI_PACKAGE_NAME = "ember-cli-template-lint"
         const val CONFIG_FILE_NAME = ".template-lintrc.js"
 
         fun findWorkingDirectory(fileToLint: VirtualFile): VirtualFile? {
