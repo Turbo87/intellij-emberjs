@@ -14,6 +14,8 @@ object EmberIcons {
     val ROUTE_16 = IconLoader.getIcon("/com/emberjs/icons/route16.png")
     val SERVICE_16 = IconLoader.getIcon("/com/emberjs/icons/service16.png")
 
+    val TEMPLATE_LINT_16 = IconLoader.getIcon("/com/emberjs/icons/template-lint16.png")
+
     val FILE_TYPE_ICONS = mapOf(
             "adapter" to ADAPTER_16,
             "component" to COMPONENT_16,
