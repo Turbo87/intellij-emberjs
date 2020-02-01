@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2019.3.4
+
+- Add `ember-template-lint` integration (#296)
+
+
 ## v2019.3.3
 
 - Fix "Attribute not allowed here" warnings (#295)
