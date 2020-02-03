@@ -22,7 +22,7 @@ buildscript {
 }
 
 plugins {
-    id "org.jetbrains.intellij" version "0.4.15"
+    id "org.jetbrains.intellij" version "0.4.16"
     id "com.zoltu.git-versioning" version "2.0.28"
 }
 
