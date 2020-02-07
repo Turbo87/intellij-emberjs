@@ -48,6 +48,10 @@ class TemplateLintResultParser {
             val issues = obj.getJSONArray(obj.keys().next() as String)
             for (i in 0 until issues.length()) {
                 val issue = issues.getJSONObject(i)
+
+                // we skip fatal errors
+                if (issue.has("fatal") && issue.getBoolean("fatal")) continue
+
                 errorList.add(parseItem(issue))
             }
 
