@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2020.1.1
+
+- Ignore `ember-template-lint` parsing errors (#301)
+
+
 ## v2019.3.5
 
 - Ignore `ember-template-lint` parsing errors (#301)
