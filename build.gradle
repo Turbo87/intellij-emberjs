@@ -47,7 +47,13 @@ intellij {
     downloadSources !System.getenv().containsKey('CI')
 
     pluginName = 'Ember.js'
-    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', "com.dmarcotte.handlebars:$handlebarsPluginVersion"]
+    plugins = [
+        'JavaScriptLanguage',
+        'CSS',
+        'platform-images',
+        'yaml',
+        "com.dmarcotte.handlebars:$handlebarsPluginVersion",
+    ]
 
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
