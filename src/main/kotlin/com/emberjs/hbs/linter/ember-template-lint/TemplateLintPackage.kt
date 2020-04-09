@@ -21,7 +21,7 @@ class TemplateLintPackage(
     @Throws(ExecutionException::class)
     fun addMainEntryJsFile(commandLine: GeneralCommandLine, interpreter: NodeJsInterpreter) {
         if (myPkg is YarnPnpNodePackage) {
-            myPkg.addYarnRunToCommandLine(commandLine, myProject, interpreter)
+            myPkg.addYarnRunToCommandLine(commandLine, myProject, interpreter, TemplateLintUtil.PACKAGE_NAME)
         } else {
             val file = myPkg.findBinFile(TemplateLintUtil.PACKAGE_NAME, "dist${File.separator}cli.js")
                     ?: throw ExecutionException("Please specify TemplateLint package correctly: ${TemplateLintUtil.PACKAGE_NAME} binary not found")

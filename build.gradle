@@ -5,10 +5,10 @@ buildscript {
 
         // see https://www.jetbrains.com/intellij-repository/releases/
         // and https://www.jetbrains.com/intellij-repository/snapshots/
-        intellijVersion = '193.5233.102'
+        intellijVersion = '2020.1'
 
         // see https://plugins.jetbrains.com/plugin/6884-handlebars-mustache/versions
-        handlebarsPluginVersion = '193.5233.116'
+        handlebarsPluginVersion = '201.6668.121'
     }
 
     repositories {
@@ -47,7 +47,13 @@ intellij {
     downloadSources !System.getenv().containsKey('CI')
 
     pluginName = 'Ember.js'
-    plugins = ['JavaScriptLanguage', 'CSS', 'yaml', "com.dmarcotte.handlebars:$handlebarsPluginVersion"]
+    plugins = [
+        'JavaScriptLanguage',
+        'CSS',
+        'platform-images',
+        'yaml',
+        "com.dmarcotte.handlebars:$handlebarsPluginVersion",
+    ]
 
     sandboxDirectory = project.rootDir.canonicalPath + "/.sandbox"
 
