@@ -6,7 +6,7 @@ Changelog
 
 ## v2020.1.1
 
-- Ignore `ember-template-lint` parsing errors (#301)
+- Change IntelliJ target version to v2020.1 (#310)
 
 
 ## v2019.3.5
