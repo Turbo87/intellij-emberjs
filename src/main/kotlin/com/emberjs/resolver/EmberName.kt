@@ -2,7 +2,6 @@ package com.emberjs.resolver
 
 import com.emberjs.EmberFileType
 import com.emberjs.utils.parentEmberModule
-import com.emberjs.utils.parentModule
 import com.emberjs.utils.parents
 import com.intellij.openapi.vfs.VfsUtilCore.isAncestor
 import com.intellij.openapi.vfs.VirtualFile
@@ -28,7 +27,7 @@ data class EmberName(val type: String, val name: String) {
         baseName.replace(SIMPLE_DASHERIZE_REGEXP) {
             assert(it.range.first - it.range.last == 0)
 
-            if (it.value == "/") return@replace "::";
+            if (it.value == "/") return@replace "::"
 
             if (it.range.first == 0 || !ALPHA.matches(baseName.subSequence(it.range.start - 1, it.range.start))) {
                 return@replace it.value.toUpperCase()
@@ -42,7 +41,7 @@ data class EmberName(val type: String, val name: String) {
     val isComponentTemplate = type == "template" && name.startsWith("components/")
 
     companion object {
-        private val SIMPLE_DASHERIZE_REGEXP = Regex("[a-z]|/|-");
+        private val SIMPLE_DASHERIZE_REGEXP = Regex("[a-z]|/|-")
         private val ALPHA = Regex("[A-Za-z0-9]")
 
         fun from(fullName: String): EmberName? {
@@ -90,6 +89,11 @@ data class EmberName(val type: String, val name: String) {
                         .joinToString("/")
 
                 val name = "$path/${file.nameWithoutExtension}".removePrefix("/")
+
+                // detect flat and nested component layout (where hbs file lies in the components/ folder)
+                if (type == EmberFileType.COMPONENT && file.extension == "hbs") {
+                    return EmberName(EmberFileType.TEMPLATE.name.toLowerCase(), "components/$name")
+                }
 
                 EmberName(type.name.toLowerCase(), name)
             }

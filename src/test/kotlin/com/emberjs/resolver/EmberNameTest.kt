@@ -96,7 +96,11 @@ class EmberNameTest {
             "tests/unit/session/service-test.js" to "service-test:session",
             "tests/unit/user/adapter-test.js" to "adapter-test:user",
             "tests/unit/user/model-test.js" to "model-test:user",
-            "app/templates/components/blog-post.handlebars" to "template:components/blog-post"
+            "app/templates/components/blog-post.handlebars" to "template:components/blog-post",
+            "app/components/flat-structured-component.js" to "component:flat-structured-component",
+            "app/components/flat-structured-component.hbs" to "template:components/flat-structured-component",
+            "app/components/test-component-nested/index.js" to "component:test-component-nested/index",
+            "app/components/test-component-nested/index.hbs" to "template:components/test-component-nested/index"
     ))
 
     @Test fun testAptible() = doTest(APTIBLE, mapOf(
