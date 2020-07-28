@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2020.2.1
+
+- Change IntelliJ target version to v2020.2 (#320)
+
+
 ## v2020.1.2
 
 - Add support for component template colocation (#316)
