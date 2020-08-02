@@ -11,7 +11,9 @@ data class EmberName(val type: String, val name: String) {
     val fullName by lazy { "$type:$name" }
 
     val displayName by lazy {
-        if (isComponentTemplate) {
+        if (isComponentStyles) {
+            "${name.removePrefix("components/").replace('/', '.')} component-styles"
+        } else if (isComponentTemplate) {
             "${name.removePrefix("components/").replace('/', '.')} component-template"
         } else {
             "${name.replace('/', '.')} $type"
@@ -38,6 +40,7 @@ data class EmberName(val type: String, val name: String) {
     }
 
     val isTest: Boolean = type.endsWith("-test")
+    val isComponentStyles = type == "styles" && name.startsWith("components/")
     val isComponentTemplate = type == "template" && name.startsWith("components/")
 
     companion object {
@@ -63,22 +66,29 @@ data class EmberName(val type: String, val name: String) {
             val acceptanceTestsFolder = testsFolder?.findChild("acceptance")
             val dummyAppFolder = testsFolder?.findFileByRelativePath("dummy/app")
 
-            return fromPod(appFolder, file) ?:
-                    fromPod(addonFolder, file) ?:
-                    fromPodTest(unitTestsFolder, file) ?:
-                    fromPodTest(integrationTestsFolder, file) ?:
-                    fromClassic(appFolder, file) ?:
-                    fromClassic(addonFolder, file) ?:
-                    fromClassic(dummyAppFolder, file) ?:
-                    fromClassicTest(unitTestsFolder, file) ?:
-                    fromClassicTest(integrationTestsFolder, file) ?:
-                    fromAcceptanceTest(acceptanceTestsFolder, file)
+            return fromPod(appFolder, file) ?: fromPod(addonFolder, file) ?: fromPodTest(unitTestsFolder, file)
+            ?: fromPodTest(integrationTestsFolder, file) ?: fromClassic(appFolder, file)
+            ?: fromClassic(addonFolder, file) ?: fromClassic(dummyAppFolder, file)
+            ?: fromClassicTest(unitTestsFolder, file) ?: fromClassicTest(integrationTestsFolder, file)
+            ?: fromAcceptanceTest(acceptanceTestsFolder, file)
         }
 
         fun fromClassic(appFolder: VirtualFile?, file: VirtualFile): EmberName? {
             appFolder ?: return null
 
             val typeFolder = file.parents.find { it.parent == appFolder } ?: return null
+
+            if (typeFolder.name == "styles") {
+                val path = file.parents
+                        .takeWhile { it != typeFolder }
+                        .map { it.name }
+                        .reversed()
+                        .joinToString("/")
+
+                val name = "$path/${file.nameWithoutExtension}".removePrefix("/")
+
+                return EmberName("styles", name.removeSuffix(".module"))
+            }
 
             return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
 
@@ -91,8 +101,13 @@ data class EmberName(val type: String, val name: String) {
                 val name = "$path/${file.nameWithoutExtension}".removePrefix("/")
 
                 // detect flat and nested component layout (where hbs file lies in the components/ folder)
-                if (type == EmberFileType.COMPONENT && file.extension == "hbs") {
-                    return EmberName(EmberFileType.TEMPLATE.name.toLowerCase(), "components/$name")
+                if (type == EmberFileType.COMPONENT) {
+                    if (file.extension == "hbs") {
+                        return EmberName(EmberFileType.TEMPLATE.name.toLowerCase(), "components/$name")
+                    }
+                    if (file.extension == "css" || file.extension == "scss") {
+                        return EmberName("styles", "components/${name.removeSuffix(".module")}")
+                    }
                 }
 
                 EmberName(type.name.toLowerCase(), name)
@@ -145,6 +160,14 @@ data class EmberName(val type: String, val name: String) {
 
             if (!isAncestor(appFolder, file, true))
                 return null
+
+            if (file.nameWithoutExtension.removeSuffix(".module") == "styles") {
+                return file.parents.takeWhile { it != appFolder }
+                        .map { it.name }
+                        .reversed()
+                        .joinToString("/")
+                        .let { EmberName("styles", it) }
+            }
 
             return EmberFileType.FILE_NAMES[file.name]?.let { type ->
 

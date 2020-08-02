@@ -62,8 +62,20 @@ class EmberGotoRelatedProviderTest : BasePlatformTestCase() {
             "app/user/model.js" to listOf("app/user/adapter.js"),
             "app/pet/serializer.js" to listOf("app/pet/model.js"),
             "app/session/service.js" to listOf(),
-            "app/components/flat-structured-component.js" to listOf("app/components/flat-structured-component.hbs"),
-            "app/components/flat-structured-component.hbs" to listOf("app/components/flat-structured-component.js"),
+            "app/components/flat-structured-component.js" to listOf(
+                    "app/components/flat-structured-component.scss",
+                    "app/components/flat-structured-component.module.css",
+                    "app/components/flat-structured-component.module.scss",
+                    "app/components/flat-structured-component.css",
+                    "app/components/flat-structured-component.hbs"
+            ),
+            "app/components/flat-structured-component.hbs" to listOf(
+                    "app/components/flat-structured-component.scss",
+                    "app/components/flat-structured-component.module.css",
+                    "app/components/flat-structured-component.module.scss",
+                    "app/components/flat-structured-component.css",
+                    "app/components/flat-structured-component.js"
+            ),
             "app/components/test-component-nested/index.js" to listOf("app/components/test-component-nested/index.hbs"),
             "app/components/test-component-nested/index.hbs" to listOf("app/components/test-component-nested/index.js")
     ))

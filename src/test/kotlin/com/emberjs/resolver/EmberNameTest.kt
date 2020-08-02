@@ -90,6 +90,10 @@ class EmberNameTest {
             "app/application/template.hbs" to "template:application",
             "app/user/adapter.js" to "adapter:user",
             "app/user/model.js" to "model:user",
+            "app/user/styles.css" to "styles:user",
+            "app/user/styles.scss" to "styles:user",
+            "app/user/styles.module.css" to "styles:user",
+            "app/user/styles.module.scss" to "styles:user",
             "foo/controller.js" to null,
             "tests/unit/pet/model-test.js" to "model-test:pet",
             "tests/unit/pet/serializer-test.js" to "serializer-test:pet",
@@ -99,6 +103,12 @@ class EmberNameTest {
             "app/templates/components/blog-post.handlebars" to "template:components/blog-post",
             "app/components/flat-structured-component.js" to "component:flat-structured-component",
             "app/components/flat-structured-component.hbs" to "template:components/flat-structured-component",
+            "app/components/flat-structured-component.scss" to "styles:components/flat-structured-component",
+            "app/components/flat-structured-component.css" to "styles:components/flat-structured-component",
+            "app/components/flat-structured-component.module.scss" to "styles:components/flat-structured-component",
+            "app/components/flat-structured-component.module.css" to "styles:components/flat-structured-component",
+            "app/styles/some-route.css" to "styles:some-route",
+            "app/styles/components/some-component.css" to "styles:components/some-component",
             "app/components/test-component-nested/index.js" to "component:test-component-nested/index",
             "app/components/test-component-nested/index.hbs" to "template:components/test-component-nested/index"
     ))
