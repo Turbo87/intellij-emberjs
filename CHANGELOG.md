@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2020.2.2
+
+- Add support for CSS modules in "Goto Related" dialog (#321)
+
+
 ## v2020.2.1
 
 - Change IntelliJ target version to v2020.2 (#320)
