@@ -31,7 +31,7 @@ class TemplateLintResultParser {
                 else -> null
             }
 
-            return JSLinterError(line, column, text, rule, highlightSeverity)
+            return JSLinterError(line, column + 1, text, rule, highlightSeverity)
         }
     }
 
