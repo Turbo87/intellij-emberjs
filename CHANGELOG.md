@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2020.2.3
+
+- Fix off-by-one issue in the ember-template-lint annotator (#327)
+
+
 ## v2020.2.2
 
 - Add support for CSS modules in "Goto Related" dialog (#321)
