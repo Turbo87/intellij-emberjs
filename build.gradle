@@ -38,7 +38,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    testCompile "org.assertj:assertj-core:3.17.2"
+    testCompile "org.assertj:assertj-core:3.18.0"
 }
 
 intellij {
