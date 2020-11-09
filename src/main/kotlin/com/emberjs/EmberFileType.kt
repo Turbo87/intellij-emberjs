@@ -5,6 +5,7 @@ enum class EmberFileType(val fileExtension: String = "js") {
     COMPONENT(),
     CONTROLLER(),
     HELPER(),
+    MODIFIER(),
     INITIALIZER(),
     MIXIN(),
     MODEL(),

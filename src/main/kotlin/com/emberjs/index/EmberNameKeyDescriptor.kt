@@ -12,7 +12,7 @@ class EmberNameKeyDescriptor : KeyDescriptor<EmberName> {
     override fun isEqual(val1: EmberName?, val2: EmberName?) = (val1 == val2)
 
     override fun save(storage: DataOutput, value: EmberName) {
-        IOUtil.writeUTF(storage, value.fullName)
+        IOUtil.writeUTF(storage, value.storageKey)
     }
 
     override fun read(storage: DataInput): EmberName? {

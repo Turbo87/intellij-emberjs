@@ -5,7 +5,7 @@ buildscript {
 
         // see https://www.jetbrains.com/intellij-repository/releases/
         // and https://www.jetbrains.com/intellij-repository/snapshots/
-        intellijVersion = '202.6397.59-EAP-SNAPSHOT'
+        intellijVersion = '202.7660.26'
 
         // see https://plugins.jetbrains.com/plugin/6884-handlebars-mustache/versions
         handlebarsPluginVersion = '202.6397.21'
@@ -46,7 +46,7 @@ intellij {
     version = intellijVersion
     downloadSources !System.getenv().containsKey('CI')
 
-    pluginName = 'Ember.js'
+    pluginName = 'EmberExperimental.js'
     plugins = [
         'JavaScriptLanguage',
         'CSS',
@@ -60,7 +60,11 @@ intellij {
     publishPlugin {
         token = System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken")
     }
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }
+
 
 test {
     testLogging {
@@ -72,3 +76,4 @@ wrapper {
     gradleVersion = '5.5.1'
     distributionType = Wrapper.DistributionType.ALL
 }
+

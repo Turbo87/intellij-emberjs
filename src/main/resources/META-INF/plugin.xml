@@ -1,8 +1,8 @@
 <idea-plugin version="2">
-    <id>com.emberjs</id>
-    <name>Ember.js</name>
-    <version>1.0</version>
-    <vendor url="https://github.com/turbo87/">Tobias Bieniek</vendor>
+    <id>com.emberjs.experimental</id>
+    <name>Ember Experimental.js</name>
+    <version>2.0</version>
+    <vendor url="https://github.com/patricklx/">Patrick Pircher</vendor>
 
     <description><![CDATA[
       This plugin provides basic <a href="http://emberjs.com/">Ember.js</a> support to all JetBrains IDEs that support JavaScript.
@@ -17,11 +17,14 @@
         <li>Generate Ember.js files via <code>ember generate</code></li>
         <li>Basic reference resolving and completion for e.g. <code>DS.belongsTo('user')</code></li>
         <li>Live Templates</li>
+        <li>Handlebars references</li>
+        <li>Handlebars autocompletions</li>
+        <li>Handlebars parameter hints for helpers/modifiers and components</li>
       </ul>
     ]]></description>
 
     <change-notes><![CDATA[
-      see <a href="https://github.com/Turbo87/intellij-emberjs/blob/master/CHANGELOG.md">https://github.com/Turbo87/intellij-emberjs/</a>
+      see <a href="https://github.com/patricklx/intellij-emberjs-experimental/blob/master/CHANGELOG.md">https://github.com/patricklx/intellij-emberjs-experimental/</a>
     ]]>
     </change-notes>
 
@@ -47,9 +50,11 @@
         <directoryProjectConfigurator implementation="com.emberjs.cli.EmberCliProjectConfigurator"
                                       order="after PlatformProjectConfigurator"/>
 
-        <fileBasedIndex implementation="com.emberjs.index.EmberNameIndex"/>
+        <fileBasedIndex  implementation="com.emberjs.index.EmberNameIndex"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
         <gotoRelatedProvider implementation="com.emberjs.navigation.EmberGotoRelatedProvider"/>
+        <codeInsight.parameterInfo language="Handlebars" implementationClass="com.emberjs.hbs.HbsParameterInfoHandler"/>
+        <codeInsight.parameterNameHints language="Handlebars" implementationClass="com.emberjs.hbs.HbsParameterNameHints"/>
         <annotator language="ECMAScript 6" implementationClass="com.emberjs.psi.EmberInjectionAnnotator"/>
         <annotator language="ECMAScript 6" implementationClass="com.emberjs.psi.EmberRelationshipAnnotator"/>
 
@@ -106,7 +111,6 @@
     <extensions defaultExtensionNs="JavaScript">
         <moduleReferenceContributor implementation="com.emberjs.resolver.EmberModuleReferenceContributor"/>
     </extensions>
-
     <actions>
         <action id="GenerateEmberCode" class="com.emberjs.actions.EmberGenerateCodeAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>

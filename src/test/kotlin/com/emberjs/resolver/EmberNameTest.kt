@@ -4,6 +4,7 @@ import com.emberjs.EmberTestFixtures.APTIBLE
 import com.emberjs.EmberTestFixtures.CRATES_IO
 import com.emberjs.EmberTestFixtures.EXAMPLE
 import com.emberjs.utils.find
+import com.emberjs.utils.parentEmberModule
 import com.emberjs.utils.use
 import com.intellij.openapi.vfs.VirtualFile
 import org.assertj.core.api.Assertions.assertThat
@@ -110,7 +111,8 @@ class EmberNameTest {
             "app/styles/some-route.css" to "styles:some-route",
             "app/styles/components/some-component.css" to "styles:components/some-component",
             "app/components/test-component-nested/index.js" to "component:test-component-nested/index",
-            "app/components/test-component-nested/index.hbs" to "template:components/test-component-nested/index"
+            "app/components/test-component-nested/index.hbs" to "template:components/test-component-nested/index",
+            "node_modules/my-components/addon/components/button/component.js" to "component:button"
     ))
 
     @Test fun testAptible() = doTest(APTIBLE, mapOf(
@@ -138,7 +140,7 @@ class EmberNameTest {
     private fun doTest(root: VirtualFile, tests: Map<String, String?>) {
         SoftAssertions().use {
             for ((path, expectedName) in tests) {
-                assertThat(EmberName.from(root, root.find(path))?.fullName)
+                assertThat(EmberName.from(root.find(path).parentEmberModule!!, root.find(path))?.fullName)
                         .describedAs(path)
                         .apply { if (expectedName == null) isNull() else isEqualTo(expectedName) }
 
