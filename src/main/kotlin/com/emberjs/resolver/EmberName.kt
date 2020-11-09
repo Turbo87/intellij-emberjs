@@ -73,6 +73,44 @@ data class EmberName(val type: String, val name: String) {
             ?: fromAcceptanceTest(acceptanceTestsFolder, file)
         }
 
+        private fun getImportPath(type: EmberFileType, file: VirtualFile): String? {
+            // e.g. private helpers for component
+            if (type == EmberFileType.COMPONENT && file.path.contains("helpers/")) {
+                return null
+            }
+            var path: String
+            if (file.path.contains("node_modules")) {
+                path = file.parents
+                        .takeWhile { it.name != "node_modules" }
+                        .map { it.name }
+                        .reversed()
+                        .joinToString("/")
+            } else {
+                path = file.parents
+                        .takeWhile { it != file.parentEmberModule }
+                        .map { it.name }
+                        .reversed()
+                        .joinToString("/")
+            }
+
+            path = path.replace("/app/", "/")
+            path = path.replace("/addon/", "/")
+            var name = file.nameWithoutExtension.removePrefix("/")
+
+            // detect flat and nested component layout (where hbs file lies in the components/ folder)
+            if (file.extension == "css" || file.extension == "scss") {
+                return "$path/$name"
+            }
+            // if component.js/ts or component.d.ts exists
+            if (file.nameWithoutExtension == "component" || file.name == "component.d.ts") {
+                name = ""
+            }
+            if (file.nameWithoutExtension == "template") {
+                name = ""
+            }
+            return "$path/$name".removeSuffix("/")
+        }
+
         fun fromClassic(appFolder: VirtualFile?, file: VirtualFile): EmberName? {
             appFolder ?: return null
 
@@ -92,25 +130,32 @@ data class EmberName(val type: String, val name: String) {
 
             return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
 
-                val path = file.parents
-                        .takeWhile { it != typeFolder }
-                        .map { it.name }
+                // e.g. private helpers for component
+                if (type == EmberFileType.COMPONENT && file.path.contains("helpers/")) {
+                    return null
+                }
+                val path = this.getImportPath(type, file)
+
+                if (path == null) {
+                    return null
+                }
+                // detect flat and nested component layout (where hbs file lies in the components/ folder)
+
+                val pathFromTypeRoot = path.split("/")
+                        .reversed()
+                        .takeWhile { it != typeFolder.name  }
                         .reversed()
                         .joinToString("/")
 
-                val name = "$path/${file.nameWithoutExtension}".removePrefix("/")
-
-                // detect flat and nested component layout (where hbs file lies in the components/ folder)
                 if (type == EmberFileType.COMPONENT) {
                     if (file.extension == "hbs") {
-                        return EmberName(EmberFileType.TEMPLATE.name.toLowerCase(), "components/$name")
+                        return EmberName(EmberFileType.TEMPLATE.name.toLowerCase(), "components/$pathFromTypeRoot")
                     }
                     if (file.extension == "css" || file.extension == "scss") {
-                        return EmberName("styles", "components/${name.removeSuffix(".module")}")
+                        return EmberName("styles", "components/${pathFromTypeRoot.removeSuffix(".module")}")
                     }
                 }
-
-                EmberName(type.name.toLowerCase(), name)
+                return EmberName(type.name.toLowerCase(), pathFromTypeRoot)
             }
         }
 
