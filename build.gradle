@@ -1,7 +1,7 @@
 buildscript {
     ext {
         javaVersion = '1.8'
-        kotlinVersion = '1.3.72'
+        kotlinVersion = '1.4.10'
 
         // see https://www.jetbrains.com/intellij-repository/releases/
         // and https://www.jetbrains.com/intellij-repository/snapshots/
