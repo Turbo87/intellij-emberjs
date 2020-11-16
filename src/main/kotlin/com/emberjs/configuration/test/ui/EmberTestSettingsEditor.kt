@@ -1,5 +1,6 @@
 package com.emberjs.configuration.test.ui
 
+import com.emberjs.configuration.StringOptionsField
 import com.emberjs.configuration.test.EmberTestConfiguration
 import com.emberjs.configuration.test.EmberTestOptions
 import com.emberjs.configuration.test.FilterType
@@ -21,6 +22,7 @@ import com.intellij.ui.IdeBorderFactory
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.swing.*
+import kotlin.reflect.KProperty1
 
 class EmberTestSettingsEditor(
         val project: Project
@@ -68,7 +70,7 @@ class EmberTestSettingsEditor(
     val bundle: ResourceBundle = ResourceBundle.getBundle("com.emberjs.locale.EmberTestConfigurationEditor")
     val launchers: MutableList<String> = mutableListOf()
 
-    private val mappings = mutableListOf(
+    private val mappings = mutableListOf<Pair<Any?, KProperty1<EmberTestOptions, StringOptionsField>>>(
             testPortTextField to EmberTestOptions::testPort,
             environmentComboBox to EmberTestOptions::environment,
             hostTextField to EmberTestOptions::host,
