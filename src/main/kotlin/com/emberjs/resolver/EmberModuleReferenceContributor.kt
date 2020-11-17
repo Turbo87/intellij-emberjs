@@ -4,16 +4,23 @@ import com.emberjs.cli.EmberCliProjectConfigurator
 import com.emberjs.utils.emberRoot
 import com.emberjs.utils.isInRepoAddon
 import com.emberjs.utils.parents
+import com.intellij.lang.ecmascript6.psi.ES6ExportDefaultAssignment
+import com.intellij.lang.ecmascript6.resolve.ES6PsiUtil
 import com.intellij.lang.javascript.DialectDetector
 import com.intellij.lang.javascript.frameworks.amd.JSModuleReference
 import com.intellij.lang.javascript.frameworks.modules.JSExactFileReference
+import com.intellij.lang.javascript.psi.JSFile
+import com.intellij.lang.javascript.psi.impl.JSPsiImplUtils
 import com.intellij.lang.javascript.psi.resolve.JSModuleReferenceContributor
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.PsiFileImpl
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceSet
+import org.jetbrains.annotations.NotNull
 import java.util.regex.Pattern
+
 
 /**
  * Resolves absolute imports from the ember application root, e.g.
@@ -91,7 +98,7 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
             return arrayOf()
         }
 
-        return (roots + refs.allReferences).toTypedArray()
+        return (roots + refs.allReferences).toTypedArray().map { ClassOrFileReference(it.element, null) }.toTypedArray()
     }
 
     override fun isApplicable(host: PsiElement): Boolean = DialectDetector.isES6(host)

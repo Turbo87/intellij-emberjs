@@ -39,6 +39,28 @@ data class EmberName(val type: String, val name: String) {
         }
     }
 
+
+    val path by lazy {
+        assert(type == "component" || isComponentTemplate)
+
+        name
+    }
+
+    val tagName by lazy {
+        assert(type == "component" || isComponentTemplate)
+
+        val baseName = name.split('/').last()
+        baseName.replace(SIMPLE_DASHERIZE_REGEXP) {
+            assert(it.range.first - it.range.last == 0)
+
+            if (it.range.first == 0 || !ALPHA.matches(baseName.subSequence(it.range.start - 1, it.range.start))) {
+                return@replace it.value.toUpperCase()
+            }
+
+            if (it.value == "-") "" else it.value.toLowerCase()
+        }
+    }
+
     val isTest: Boolean = type.endsWith("-test")
     val isComponentStyles = type == "styles" && name.startsWith("components/")
     val isComponentTemplate = type == "template" && name.startsWith("components/")
@@ -92,25 +114,48 @@ data class EmberName(val type: String, val name: String) {
 
             return EmberFileType.FOLDER_NAMES[typeFolder.name]?.let { type ->
 
-                val path = file.parents
-                        .takeWhile { it != typeFolder }
-                        .map { it.name }
-                        .reversed()
-                        .joinToString("/")
+                // e.g. private helpers for component
+                if (file.path.contains("/helpers")) {
+                    return null
+                }
+                var path = ""
+                if (file.path.contains("node_modules")) {
+                    path = file.parents
+                            .takeWhile { it.name != "node_modules" }
+                            .map { it.name }
+                            .reversed()
+                            .joinToString("/")
+                } else {
+                    path = file.parents
+                            .takeWhile { it != file.parentEmberModule }
+                            .map { it.name }
+                            .reversed()
+                            .joinToString("/")
+                }
 
-                val name = "$path/${file.nameWithoutExtension}".removePrefix("/")
+                path = path.replace("/app/", "/")
+                path = path.replace("/addon/", "/")
+
+                var name = file.nameWithoutExtension
 
                 // detect flat and nested component layout (where hbs file lies in the components/ folder)
                 if (type == EmberFileType.COMPONENT) {
-                    if (file.extension == "hbs") {
-                        return EmberName(EmberFileType.TEMPLATE.name.toLowerCase(), "components/$name")
+                    // if component.d.ts exists
+                    if (file.name.endsWith("component") || file.name.endsWith("component.d.ts")) {
+                        name = ""
+                    }
+                    if (file.name.endsWith("template.hbs")) {
+                        name = ""
                     }
                     if (file.extension == "css" || file.extension == "scss") {
                         return EmberName("styles", "components/${name.removeSuffix(".module")}")
                     }
                 }
-
-                EmberName(type.name.toLowerCase(), name)
+                var importPath = path + "/" + name
+                if (importPath.startsWith("app/")) {
+                    importPath = importPath.replace("app/", "~/")
+                }
+                EmberName(type.name.toLowerCase(), importPath.removeSuffix("/"))
             }
         }
 

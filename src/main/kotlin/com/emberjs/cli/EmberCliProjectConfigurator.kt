@@ -30,6 +30,7 @@ import org.jetbrains.jps.model.module.JpsModuleSourceRootType
 class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
     override fun configureProject(project: Project, baseDir: VirtualFile, moduleRef: Ref<Module>) {
         val module = ModuleManager.getInstance(project).modules.singleOrNull()
+        System.out.println("configureProject: $module ${baseDir.isEmberFolder}")
         if (module != null && baseDir.isEmberFolder) {
             setupEmber(project, module, baseDir)
         }
@@ -39,6 +40,7 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
         fun setupEmber(project: Project, module: Module, baseDir: VirtualFile) {
             val model = ModuleRootManager.getInstance(module).modifiableModel
             val entry = MarkRootActionBase.findContentEntry(model, baseDir)
+            System.out.println("setupEmber $entry $baseDir $model")
             if (entry != null) {
                 ApplicationManager.getApplication().runWriteAction {
                     setupEmber(project, entry, baseDir)
@@ -73,10 +75,12 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
         }
 
         private fun setupLibrary(name: String, project: Project, root: VirtualFile, create: Boolean) {
+            System.out.println("setupLibrary: $name $create ${root.findChild(name)}")
             val folder = root.findChild(name) ?: return
 
             JSLibraryManager.getInstance(project).apply {
                 val libName = "$name ${root.name}"
+                System.out.println("checking: $libName $create")
 
                 val library = getLibraryByName(libName)
                 if (create && library == null) {
@@ -90,8 +94,10 @@ class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
                     removeLibrary(library)
                 }
 
-                if (create)
+                if (create) {
+                    System.out.println("lib associateWithProject: " + libName)
                     libraryMappings.associateWithProject(libName)
+                }
                 else
                     libraryMappings.disassociateWithProject(libName)
 
