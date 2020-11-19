@@ -12,10 +12,15 @@ import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.search.SearchScope
 import javax.swing.Icon
 
-class EmberAttrDec(private val description: String, private val reference: PsiReference) : PsiElement {
+class EmberAttrDec(private val description: String, private val ref: PsiReference?, private val references: Array<PsiReference>?) : PsiElement {
     private val userDataMap = HashMap<Any, Any>()
+    private val reference: PsiReference
     override fun <T> getUserData(key: Key<T>): T? {
         return this.userDataMap[key] as T?
+    }
+
+    init {
+        this.reference = ref ?: references!!.first()!!
     }
 
     override fun <T> putUserData(key: Key<T>, value: T?) {
@@ -182,12 +187,12 @@ class EmberAttrDec(private val description: String, private val reference: PsiRe
         TODO("Not yet implemented")
     }
 
-    override fun getReference(): PsiReference? {
+    override fun getReference(): PsiReference {
         return this.reference
     }
 
     override fun getReferences(): Array<PsiReference> {
-        return arrayOf(this.reference)
+        return this.references ?: emptyArray()
     }
 
     override fun <T : Any?> getCopyableUserData(key: Key<T>?): T? {

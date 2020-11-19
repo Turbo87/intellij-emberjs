@@ -26,12 +26,13 @@ val VirtualFile.parents: Iterable<VirtualFile>
 val cache = HashMap<String, Boolean>()
 
 val VirtualFile.isEmberAddonFolder: Boolean
+
     get() {
         if (cache.contains(this.path)) return cache.getOrDefault(this.path, false)
         val packageJsonFile = findFileByRelativePath("package.json") ?: return false
         var text = ""
         try {
-            text = VfsUtilCore.loadText(packageJsonFile)
+            text = String(packageJsonFile.contentsToByteArray())
         } catch (var3: IOException) {
             return false
         }

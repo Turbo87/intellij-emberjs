@@ -9,17 +9,28 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlElement
 import com.intellij.xml.XmlAttributeDescriptor
 
-class EmberAttributeDescriptor(private val data: HashMap<String, Any>) : XmlAttributeDescriptor {
+class EmberAttributeDescriptor(private val data: HashMap<String, Any?>) : XmlAttributeDescriptor {
     private val attrName: String
     private val description: String
-    private val declaration: PsiElement
+    private val declaration: PsiElement?
     private val isRequired: Boolean
     private val values: List<String>
     init {
         this.attrName = "@" + (this.data["value"] as String?)!!
         this.description = this.data.getOrDefault("description", "") as String
-        this.declaration = EmberAttrDec(this.description, this.data["reference"] as PsiReference)
-        val ref = this.data["reference"] as PsiReference?
+        val reference = this.data.getOrDefault("reference", null) as PsiReference?
+        val references = (this.data.getOrDefault("references", null) as ArrayList<PsiReference>?)?.toTypedArray()
+        if (reference != null || references != null || references!!.isNotEmpty()) {
+            this.declaration = EmberAttrDec(
+                    this.description,
+                    reference,
+                    references
+            )
+        } else {
+            this.declaration = null
+        }
+
+        val ref = this.data.getOrDefault("reference", null) as PsiReference?
         if (ref != null) {
             val type = PsiTreeUtil.collectElementsOfType(ref.element, TypeScriptPropertySignatureImpl::class.java).firstOrNull()
             val types = type?.children?.find { it is TypeScriptUnionOrIntersectionType }?.children

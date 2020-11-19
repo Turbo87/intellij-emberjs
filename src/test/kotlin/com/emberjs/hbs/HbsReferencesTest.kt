@@ -2,6 +2,8 @@ package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.file.HbFileType
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
+import com.dmarcotte.handlebars.psi.HbParam
+import com.dmarcotte.handlebars.psi.impl.HbHashImpl
 import com.dmarcotte.handlebars.psi.impl.HbPathImpl
 import com.intellij.lang.ecmascript6.psi.JSClassExpression
 import com.intellij.lang.javascript.psi.JSField
@@ -235,4 +237,39 @@ class HbsReferencesTest : BasePlatformTestCase() {
                         .filter { it.isNotEmpty() }.map { it.first().resolve() }
                 assert(resolvedA.first() is PsiElement && resolvedA[1] is JSField)
         }
+
+    fun testHashHelper() {
+        val hbs = """
+            {{#let (hash name='Sarah' title=office) as |item|}}
+                {{item.name}}
+            {{/each}} 
+        """.trimIndent()
+        myFixture.configureByText("template.hbs", hbs)
+        val element = PsiTreeUtil.collectElements(myFixture.file, { it.elementType == HbTokenTypes.ID })
+        val resolvedA = element.find { it.parent.text == "item.name" }!!.parent.children.map { it.references }
+                .filter { it.isNotEmpty() }.map { it.first().resolve() }
+        assert(resolvedA.first() is PsiElement && resolvedA[1]?.parent is HbParam)
+    }
+
+    fun testBlockToYieldHashRef() {
+        val hbsWithYield = """
+            {{#let (hash name='Sarah' title=office) as |item|}}
+                {{yield item}}
+            {{/each}} 
+        """.trimIndent()
+        val hbs = """
+            <MyComponent as |item|>
+                {{item.name}}
+            </MyComponent>
+        """.trimIndent()
+        myFixture.addFileToProject("app/components/my-component/template.hbs", hbsWithYield)
+        myFixture.addFileToProject("app/routes/index/template.hbs", hbs)
+        myFixture.addFileToProject("package.json", "{}")
+        myFixture.addFileToProject(".ember-cli", "")
+        myFixture.configureByFile("app/routes/index/template.hbs")
+        val element = PsiTreeUtil.collectElements(myFixture.file, { it.elementType == HbTokenTypes.ID })
+        val resolvedA = element.find { it.parent.text == "item.name" }!!.parent.children.map { it.references }
+                .filter { it.isNotEmpty() }.map { it.first().resolve() }
+        assert(resolvedA.first() is HbParam && resolvedA[1]?.parent is HbHashImpl)
+    }
 }

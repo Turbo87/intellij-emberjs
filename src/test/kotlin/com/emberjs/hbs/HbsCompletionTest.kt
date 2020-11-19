@@ -2,11 +2,14 @@ package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.file.HbFileType
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
+import com.dmarcotte.handlebars.psi.HbParam
+import com.dmarcotte.handlebars.psi.impl.HbHashImpl
 import com.dmarcotte.handlebars.psi.impl.HbPathImpl
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.lang.ecmascript6.psi.JSClassExpression
 import com.intellij.lang.javascript.psi.JSField
 import com.intellij.lang.javascript.psi.ecma6.TypeScriptPropertySignature
+import com.intellij.project.stateStore
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentsWithSelf
@@ -202,5 +205,29 @@ class HbsCompletionTest : BasePlatformTestCase() {
         myFixture.complete(CompletionType.BASIC)
         completions = myFixture.lookupElementStrings!!
         assert(completions.containsAll(listOf("a", "x", "y")))
+    }
+
+    fun testBlockToYieldCompletion() {
+        val hbsWithYield = """
+            {{#let (hash name='Sarah' title=office) as |item|}}
+                {{yield item}}
+            {{/each}} 
+        """.trimIndent()
+        val hbs = """
+            <MyComponent as |item|>
+                {{item.}}
+            </MyComponent>
+        """.trimIndent()
+        myFixture.addFileToProject("app/components/my-component/template.hbs", hbsWithYield)
+        myFixture.addFileToProject("app/routes/index/template.hbs", hbs)
+        myFixture.addFileToProject("package.json", "{}")
+        myFixture.addFileToProject(".ember-cli", "")
+        myFixture.configureByFile("app/routes/index/template.hbs")
+        val element = PsiTreeUtil.collectElements(myFixture.file, { it.elementType == HbTokenTypes.ID })
+        val resolvedA = element.findLast { it.parent.text == "item" }!!.parent.parent.parent.nextSibling
+        myFixture.editor.caretModel.moveToOffset(resolvedA.endOffset)
+        myFixture.complete(CompletionType.BASIC)
+        val completions = myFixture.lookupElementStrings!!
+        assert(completions.containsAll(listOf("name", "title")))
     }
 }

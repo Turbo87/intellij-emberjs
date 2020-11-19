@@ -1,17 +1,32 @@
 package com.emberjs.resolver
 
 import com.intellij.lang.ecmascript6.psi.impl.ES6ClassExpressionImpl
-import com.intellij.lang.ecmascript6.psi.impl.ES6ClassImpl
 import com.intellij.lang.ecmascript6.resolve.ES6PsiUtil
+import com.intellij.lang.javascript.psi.JSCallExpression
+import com.intellij.lang.javascript.psi.JSFunction
+import com.intellij.lang.javascript.psi.impl.JSArgumentListImpl
 import com.intellij.lang.javascript.psi.impl.JSReferenceExpressionImpl
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.annotations.NotNull
 
-class ClassOrFileReference(element: @NotNull PsiElement, target: PsiElement?) : PsiReferenceBase<PsiElement>(element) {
+class ClassOrFileReference(element: PsiElement, target: PsiElement?) : PsiReferenceBase<PsiElement>(element) {
     private val refElement: PsiElement?
+
+    fun resolveHelper(element: PsiElement?): PsiElement? {
+        if (element is PsiReference && element.resolve() != null) {
+            return resolveHelper(element.resolve()!!)
+        }
+        if (element is JSCallExpression && element.text.startsWith("helper(")) {
+            val res = ((element.children[1] as JSArgumentListImpl).arguments[0] as PsiReference).resolve()!!
+            return resolveHelper(res)
+        }
+        if (element is JSFunction) {
+            return element
+        }
+        return null
+    }
 
     init {
         val psiExp = ES6PsiUtil.findDefaultExport(target ?: this.element)
@@ -20,6 +35,10 @@ class ClassOrFileReference(element: @NotNull PsiElement, target: PsiElement?) : 
             if (cls == null) {
                 val ref = PsiTreeUtil.findChildOfType(psiExp, JSReferenceExpressionImpl::class.java)
                 cls = ref?.resolve()
+            }
+            // for helpers
+            if (cls == null) {
+                cls = resolveHelper(psiExp.children[0])
             }
             this.refElement = cls as PsiElement?
         } else {
