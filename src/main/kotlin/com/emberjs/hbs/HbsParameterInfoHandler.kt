@@ -4,6 +4,7 @@ import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.HbParam
 import com.emberjs.utils.followReferences
 import com.emberjs.utils.resolveHelper
+import com.emberjs.utils.resolveModifier
 import com.intellij.codeInsight.hints.InlayInfo
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.lang.javascript.psi.JSFunction
@@ -56,7 +57,9 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSFunction> {
 
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): JSFunction? {
         val psiElement = context.file.findElementAt(context.offset)
-        return findHelperFunction(psiElement)
+        val func = findHelperFunction(psiElement)
+        context.itemsToShow = func?.parameters
+        return func
     }
 
     override fun showParameterInfo(element: PsiElement, context: CreateParameterInfoContext) {
@@ -79,8 +82,16 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSFunction> {
 
     override fun updateUI(p: JSFunction?, context: ParameterInfoUIContext) {
         var text = ""
-        val array = p?.parameters?.firstOrNull()
-        val hash = p?.parameters?.lastOrNull()
+        if (p == null) {
+            return
+        }
+        val modifier = resolveModifier(p.containingFile)
+        if (modifier != null) {
+            val param = p.parameters.lastOrNull()
+            param?.jsType
+        }
+        val array = p.parameters.firstOrNull()
+        val hash = p.parameters.lastOrNull()
         if (array != null) {
             val names = array.children.getOrNull(0)?.children?.map { it.text }
             val type = array.jsType

@@ -52,7 +52,7 @@ fun findDefaultExportClass(file: PsiFile): JSClass? {
     var cls: Any? = exp?.children?.find { it is JSClass }
     cls = cls ?: exp?.children?.find { it is JSFunction }
     if (cls == null) {
-        val ref = exp?.children?.find { it is JSReferenceExpression }
+        val ref: JSReferenceExpression? = exp?.children?.find { it is JSReferenceExpression } as JSReferenceExpression?
         cls = ref?.resolve()
         if (cls is JSClass) {
             return cls
