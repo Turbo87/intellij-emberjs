@@ -2,6 +2,7 @@ package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.HbParam
+import com.emberjs.utils.followReferences
 import com.emberjs.utils.resolveHelper
 import com.intellij.codeInsight.hints.InlayInfo
 import com.intellij.codeInsight.lookup.LookupElement
@@ -10,10 +11,10 @@ import com.intellij.lang.javascript.psi.JSParameterListElement
 import com.intellij.lang.javascript.psi.types.JSTupleType
 import com.intellij.lang.parameterInfo.*
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parents
-import com.intellij.refactoring.suggested.startOffset
-import org.jetbrains.annotations.NotNull
+
 
 class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSFunction> {
     override fun couldShowInLookup(): Boolean {
@@ -29,7 +30,7 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSFunction> {
                         ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_BLOCK }
         if (helperElement == null) {
             return null
-        }
+    }
 
         val file = helperElement.children.getOrNull(1)?.children?.getOrNull(0)?.references?.getOrNull(0)?.resolve()?.containingFile
         if (file == null) {
@@ -39,20 +40,18 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSFunction> {
     }
 
     private fun findHelperFunction(psiElement: PsiElement?): JSFunction? {
-        val helperElement = psiElement?.parents
+        val helperBlock = psiElement?.parents
                 ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_SEXPR }
                 ?:
                 psiElement?.parents
                         ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_BLOCK }
-        if (helperElement == null) {
+        if (helperBlock == null) {
             return null
         }
+        val helperElement = helperBlock.children.getOrNull(1)?.children?.getOrNull(0)
 
-        val file = helperElement.children.getOrNull(1)?.children?.getOrNull(0)?.references?.getOrNull(0)?.resolve()?.containingFile
-        if (file == null) {
-            return null
-        }
-        return resolveHelper(file)
+        val file = followReferences(helperElement)
+        return if (file is PsiFile) resolveHelper(file) else if (file is JSFunction) file else null
     }
 
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): JSFunction? {

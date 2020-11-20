@@ -73,6 +73,10 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
         val refs : FileReferenceSet
         val startInElement = offset + packageName.length + 1
 
+        if (importPath == "") {
+            return roots.toTypedArray()
+        }
+
         try {
             refs = object : FileReferenceSet(importPath, host, startInElement, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
                 override fun createFileReference(range: TextRange, index: Int, text: String?): FileReference {
@@ -103,7 +107,13 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
             return arrayOf()
         }
 
-        return (roots + refs.allReferences).toTypedArray().map { ClassOrFileReference(it.element, null) }.toTypedArray()
+        // filter out invalid references
+        // reference default export if available, otherwise file
+        return roots.map { it as PsiReference }.toTypedArray() + refs.allReferences
+                .map { it.resolve() }
+                .filterNotNull()
+                .map { ClassOrFileReference(it) as PsiReference }
+                .toTypedArray()
     }
 
     override fun isApplicable(host: PsiElement): Boolean = DialectDetector.isES6(host)

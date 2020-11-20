@@ -91,7 +91,7 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
             val component = EmberNameIndex.getFilteredKeys(scope) { it.type == "component" && it.tagName == tag.name }
                     .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
                     .mapNotNull { psiManager.findFile(it) }
-                    .map { ClassOrFileReference(it, null).resolve() }
+                    .map { ClassOrFileReference(it).resolve() }
                     .firstOrNull()
 
             if (component != null) return EmberXmlElementDescriptor(tag, component)

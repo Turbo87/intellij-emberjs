@@ -4,6 +4,7 @@ import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.HbParam
 import com.dmarcotte.handlebars.psi.impl.HbBlockWrapperImpl
 import com.dmarcotte.handlebars.psi.impl.HbPathImpl
+import com.emberjs.utils.followReferences
 import com.emberjs.utils.parents
 import com.emberjs.utils.resolveHelper
 import com.intellij.codeInsight.completion.*
@@ -81,8 +82,15 @@ class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
     }
 
     fun addHelperCompletions(element: PsiElement, result: CompletionResultSet) {
-        val file = element.children[0].references[0].resolve()?.containingFile ?: return
-        val func = resolveHelper(file)
+        val file = followReferences(element.children[0])
+        var func: JSFunction? = null
+        if (file is JSFunction) {
+            func = file
+        }
+        if (file is PsiFile) {
+            func = resolveHelper(file)
+        }
+
         if (func != null) {
             val hash = func.parameterList?.parameters?.last()
             resolveJsType(hash?.jsType ?: hash?.inferredType, result, "=")

@@ -1,5 +1,6 @@
 package com.emberjs.utils
 
+import com.emberjs.hbs.HbsModuleReference
 import com.intellij.lang.ecmascript6.psi.ES6ImportExportDeclaration
 import com.intellij.lang.ecmascript6.psi.JSClassExpression
 import com.intellij.lang.ecmascript6.resolve.ES6PsiUtil
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.NotNull
 fun resolveHelper(file: PsiFile): JSFunction? {
     var exp = ES6PsiUtil.findDefaultExport(file)
     val exportImport = PsiTreeUtil.findChildOfType(file, ES6ImportExportDeclaration::class.java)
-    if (exportImport != null) {
+    if (exportImport != null && exportImport.children.find { it.text == "default" } != null) {
         exp = ES6PsiUtil.resolveDefaultExport(exportImport).firstOrNull() as JSElement? ?: exp
     }
 
@@ -76,4 +77,24 @@ fun findComponentArgsType(tsFile: PsiFile): TypeScriptObjectType? {
         jsObject = type.children[0] as TypeScriptObjectType
     }
     return jsObject
+}
+
+
+fun resolveReference(reference: PsiReference?): PsiElement? {
+    var element = reference?.resolve()
+    if (element == null && reference is HbsModuleReference) {
+        element = reference.multiResolve(false).firstOrNull()?.element
+    }
+    return element
+}
+
+fun followReferences(element: PsiElement?): PsiElement? {
+
+    if (element?.reference != null) {
+        return followReferences(resolveReference(element.reference))
+    }
+    if (element?.references != null && element.references.isNotEmpty()) {
+        return followReferences(resolveReference(element.references.first()))
+    }
+    return element
 }

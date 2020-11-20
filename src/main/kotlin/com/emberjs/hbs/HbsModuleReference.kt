@@ -4,13 +4,18 @@ import com.emberjs.index.EmberNameIndex
 import com.emberjs.lookup.EmberLookupElementBuilder
 import com.emberjs.resolver.ClassOrFileReference
 import com.emberjs.resolver.EmberName
+import com.intellij.lang.Language
+import com.intellij.lang.ecmascript6.resolve.ES6PsiUtil
+import com.intellij.lang.javascript.psi.JSObjectLiteralExpression
+import com.intellij.lang.javascript.psi.JSRecordType
+import com.intellij.lang.javascript.psi.types.primitives.JSObjectType
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.*
 import com.intellij.psi.PsiElementResolveResult.createResults
-import com.intellij.psi.PsiManager
-import com.intellij.psi.PsiPolyVariantReferenceBase
-import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.ProjectScope
+import netscape.javascript.JSObject
+import java.io.File
 
 open class HbsModuleReference(element: PsiElement, val moduleType: String) :
         PsiPolyVariantReferenceBase<PsiElement>(element, TextRange(0, element.textLength), true) {
@@ -25,6 +30,7 @@ open class HbsModuleReference(element: PsiElement, val moduleType: String) :
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         // Collect all components from the index
+
         return EmberNameIndex.getFilteredKeys(scope) { matches(it) }
 
                 // Filter out components that are not related to this project
@@ -33,11 +39,14 @@ open class HbsModuleReference(element: PsiElement, val moduleType: String) :
                 // Convert search results for LookupElements
                 .map { psiManager.findFile(it) }
                 .filterNotNull()
-                .map { ClassOrFileReference(it, null).resolve() }
+                .map { ClassOrFileReference(it).resolve() }
                 .let(::createResults)
     }
 
     override fun getVariants(): Array<out Any?> {
+
+
+
         // Collect all components from the index
         return EmberNameIndex.getFilteredKeys(scope) { it.type == moduleType }
 
