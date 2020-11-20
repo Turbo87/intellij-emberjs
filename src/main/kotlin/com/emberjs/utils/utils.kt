@@ -6,10 +6,7 @@ import com.intellij.lang.javascript.psi.JSCallExpression
 import com.intellij.lang.javascript.psi.JSElement
 import com.intellij.lang.javascript.psi.JSFunction
 import com.intellij.lang.javascript.psi.JSReferenceExpression
-import com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
-import com.intellij.lang.javascript.psi.ecma6.TypeScriptInterface
-import com.intellij.lang.javascript.psi.ecma6.TypeScriptObjectType
-import com.intellij.lang.javascript.psi.ecma6.TypeScriptSingleType
+import com.intellij.lang.javascript.psi.ecma6.*
 import com.intellij.lang.javascript.psi.ecmal4.JSClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -34,6 +31,10 @@ fun resolveHelper(file: PsiFile): JSFunction? {
     return null
 }
 
+fun findHelperParams(file: PsiFile) {
+    resolveHelper(file)
+}
+
 
 fun findDefaultExportClass(file: PsiFile): JSClass? {
     val exp = ES6PsiUtil.findDefaultExport(file)
@@ -47,7 +48,7 @@ fun findDefaultExportClass(file: PsiFile): JSClass? {
         cls = PsiTreeUtil.findChildOfType(ref?.resolve(), JSClass::class.java)
         return cls
     }
-    return cls
+    return cls as JSClass
 }
 
 
@@ -59,6 +60,9 @@ fun findComponentArgsType(tsFile: PsiFile): TypeScriptObjectType? {
         val res = (type.children[0] as PsiReference).resolve()
         if (res is TypeScriptInterface) {
             jsObject = res.body
+        }
+        if (res is TypeScriptTypeAlias) {
+            jsObject = res.children.find { it is TypeScriptObjectType } as TypeScriptObjectType
         }
         if (res is TypeScriptObjectType) {
             jsObject = res

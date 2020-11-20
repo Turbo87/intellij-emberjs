@@ -62,7 +62,7 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
 
         /** Search the `/app` and `/addon` directories of the root and each in-repo-addon */
         val roots = modules
-                .flatMap { listOfNotNull(it.findChild("app"), it.findChild("addon"), it.findChild("addon-test-support")) }
+                .flatMap { listOfNotNull(it.findChild("addon"), it.findChild("app"), it.findChild("addon-test-support")) }
                 .map { JSExactFileReference(host, TextRange.create(offset, offset + packageName.length), listOf(it.path), null) }
 
         val refs : FileReferenceSet

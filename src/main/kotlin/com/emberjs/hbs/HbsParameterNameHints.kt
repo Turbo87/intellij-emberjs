@@ -12,6 +12,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parents
 import com.intellij.refactoring.suggested.endOffset
+import com.intellij.refactoring.suggested.startOffset
 import java.util.*
 
 
@@ -33,13 +34,15 @@ class HbsParameterNameHints : InlayParameterHintsProvider  {
                 val array = func?.parameters?.first()
                 val names = array?.children?.getOrNull(0)?.children?.map { it.text }
                 val type = array?.jsType
+                val index = helperElement.parent.children.filter { it is HbParam }.indexOfFirst { it.text == psiElement.text }
                 if (type is JSTupleType) {
-                    val index = helperElement.parent.children.filter { it is HbParam }.indexOfFirst { it.text == psiElement.text }
                     val indexType = type.getTypeByIndex(index)
                     val name = names?.get(index) ?: "unknown"
                     if (indexType != null) {
-                        return mutableListOf(InlayInfo(name+':'+indexType.typeText, psiElement.endOffset))
+                        return mutableListOf(InlayInfo("$name:", psiElement.startOffset))
                     }
+                } else {
+                    return mutableListOf(InlayInfo("param[$index]", psiElement.startOffset))
                 }
             }
             return emptyList<InlayInfo>().toMutableList()

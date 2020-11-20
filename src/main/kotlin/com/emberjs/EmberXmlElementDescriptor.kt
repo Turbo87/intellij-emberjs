@@ -20,6 +20,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.impl.file.PsiDirectoryImpl
 import com.intellij.psi.impl.source.html.dtd.HtmlNSDescriptorImpl
+import com.intellij.psi.impl.source.xml.XmlAttributeImpl
 import com.intellij.psi.impl.source.xml.XmlDescriptorUtil
 import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.util.PsiTreeUtil
@@ -155,7 +156,7 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
         var f: PsiFile? = null
         // if it references a block param
         if (this.declaration.containingFile == this.tag.containingFile) {
-            f = resolve(this.declaration)?.containingFile
+            f = resolve((this.declaration as XmlAttributeImpl).descriptor?.declaration?.reference?.resolve())?.containingFile
         }
         val file = f ?: this.declaration.containingFile
         var name = file.name.split(".").first()
@@ -193,6 +194,9 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
             }
         }
 
+        if (name == "template") {
+            name = "component"
+        }
         val hasSplattributes = template?.text?.contains("...attributes") ?: false
         val fullPathToTs = path.replace("app/", "addon/") + "/$name.ts"
         val fullPathToDts = path.replace("app/", "addon/") + "/$name.d.ts"

@@ -24,8 +24,8 @@ class EmberHbsDocumentationProvider : DocumentationProvider, ExternalDocumentati
     override fun getUrlFor(element: PsiElement?, originalElement: PsiElement?): MutableList<String>? {
         val ref = element?.references?.firstOrNull()
         // if reference does not resolve then its an internal component/helper
-        if (ref != null && ref.resolve() == null && ref is HbsModuleReference) {
-            val name = ref.value
+        if (element != null && ref == null) {
+            val name = element.text
             return arrayOf("https://api.emberjs.com/ember/release/classes/Ember.Templates.helpers/methods/$name?anchor=$name").toMutableList()
         }
         return null
@@ -42,11 +42,14 @@ class EmberHbsDocumentationProvider : DocumentationProvider, ExternalDocumentati
     }
 
     override fun fetchExternalDocumentation(project: Project?, element: PsiElement?, docUrls: MutableList<String>?, onHover: Boolean): String? {
-        if (docUrls == null || docUrls.size == 0) {
+        if (docUrls == null || docUrls.size == 0 || element == null) {
             return null
         }
-        val ref = element?.references?.firstOrNull()
-        val name = (ref as HbsModuleReference).value
+        val ref = element.references.firstOrNull()
+        if (ref != null) {
+            return null
+        }
+        val name = element.text
         val htmlString = this.download(docUrls.first())
         return Jsoup.parse(htmlString).select("[data-anchor='$name']")?.parents()?.first()?.toString()
     }
