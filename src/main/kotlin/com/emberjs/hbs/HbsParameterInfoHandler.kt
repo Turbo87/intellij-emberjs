@@ -14,14 +14,15 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parents
+import org.jetbrains.annotations.NotNull
 
 
-class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter?> {
+class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterListElement?> {
     override fun couldShowInLookup(): Boolean {
         return true
     }
 
-    override fun getParametersForLookup(item: LookupElement?, context: ParameterInfoContext?): Array<JSParameter>? {
+    override fun getParametersForLookup(item: LookupElement?, context: ParameterInfoContext?): Array<JSParameterListElement>? {
         val psiElement = context?.file?.findElementAt(context.offset)
         val helperElement = psiElement?.parents
                 ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_SEXPR }
@@ -36,7 +37,7 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter?> {
         if (file == null) {
             return null
         }
-        return resolveHelper(file)?.parameterVariables
+        return resolveHelper(file)?.parameters
     }
 
     private fun findHelperFunction(psiElement: PsiElement?): JSFunction? {
@@ -60,10 +61,10 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter?> {
         if (func != null) {
             val modifier = resolveModifier(func.containingFile)
             if (modifier != null) {
-                context.itemsToShow = modifier.parameterVariables.toList().takeLast(1).toTypedArray()
+                context.itemsToShow = modifier.parameters.toList().takeLast(1).toTypedArray()
                 return modifier
             } else {
-                context.itemsToShow = func.parameterVariables
+                context.itemsToShow = func.parameters
             }
 
             return psiElement
@@ -89,7 +90,7 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter?> {
         context.setCurrentParameter(currentParam)
     }
 
-    override fun updateUI(p: JSParameter?, context: ParameterInfoUIContext) {
+    override fun updateUI(p: JSParameterListElement?, context: ParameterInfoUIContext) {
         var text = ""
         if (p == null) {
             return
