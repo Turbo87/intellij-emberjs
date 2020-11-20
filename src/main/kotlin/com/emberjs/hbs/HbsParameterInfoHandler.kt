@@ -60,7 +60,7 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter> {
         return if (file is PsiFile) resolveHelper(file) else if (file is JSFunction) file else null
     }
 
-    override fun findElementForParameterInfo(context: CreateParameterInfoContext): JSFunction? {
+    override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val psiElement = context.file.findElementAt(context.offset)
         val func = findHelperFunction(psiElement)
         if (func != null) {
@@ -72,7 +72,7 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter> {
                 context.itemsToShow = func.parameters
             }
 
-            return func
+            return psiElement
         }
         return null
     }
