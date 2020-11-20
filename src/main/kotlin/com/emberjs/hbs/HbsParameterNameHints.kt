@@ -28,21 +28,23 @@ class HbsParameterNameHints : InlayParameterHintsProvider  {
             if (helperElement == null) {
                 return emptyList<InlayInfo>().toMutableList()
             }
-            val file = helperElement.children.getOrNull(0)?.references?.getOrNull(0)?.resolve()?.containingFile
+            val index = helperElement.children.filter { it is HbParam }.indexOfFirst { it.text == psiElement.text }
+            if (index <= 0) {
+                // if its the helper itself
+                return emptyList<InlayInfo>().toMutableList()
+            }
+
+            val file = helperElement.children.getOrNull(1)?.children?.getOrNull(0)?.references?.getOrNull(0)?.resolve()?.containingFile
             if (file != null) {
                 val func = resolveHelper(file)
                 val array = func?.parameters?.first()
                 val names = array?.children?.getOrNull(0)?.children?.map { it.text }
                 val type = array?.jsType
-                val index = helperElement.parent.children.filter { it is HbParam }.indexOfFirst { it.text == psiElement.text }
                 if (type is JSTupleType) {
-                    val indexType = type.getTypeByIndex(index)
-                    val name = names?.get(index) ?: "unknown"
-                    if (indexType != null) {
-                        return mutableListOf(InlayInfo("$name:", psiElement.startOffset))
-                    }
+                    val name = names?.getOrNull(index-1) ?: "unknown"
+                    return mutableListOf(InlayInfo(name, psiElement.startOffset))
                 } else {
-                    return mutableListOf(InlayInfo("param[$index]", psiElement.startOffset))
+                    return mutableListOf(InlayInfo("[$index]", psiElement.startOffset))
                 }
             }
             return emptyList<InlayInfo>().toMutableList()

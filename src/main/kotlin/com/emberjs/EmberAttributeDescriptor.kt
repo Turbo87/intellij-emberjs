@@ -35,7 +35,7 @@ class EmberAttributeDescriptor(private val data: HashMap<String, Any?>) : XmlAtt
             val type = PsiTreeUtil.collectElementsOfType(ref.element, TypeScriptPropertySignatureImpl::class.java).firstOrNull()
             val types = type?.children?.find { it is TypeScriptUnionOrIntersectionType }?.children
             val typesStr = types?.map { it.text } ?: arrayListOf<String>()
-            this.isRequired = !(typesStr.contains("undefined") || typesStr.contains("null"))
+            this.isRequired = typesStr.isEmpty() || !(typesStr.contains("undefined") || typesStr.contains("null") || typesStr.contains("*"))
             if (types != null && types.all { it is TypeScriptStringLiteralTypeImpl }) {
                 this.values = typesStr
             } else {

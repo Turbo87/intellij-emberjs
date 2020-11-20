@@ -2,6 +2,7 @@ package com.emberjs.resolver
 
 import com.emberjs.cli.EmberCliProjectConfigurator
 import com.emberjs.utils.emberRoot
+import com.emberjs.utils.isEmberAddonFolder
 import com.emberjs.utils.isInRepoAddon
 import com.emberjs.utils.parents
 import com.intellij.lang.ecmascript6.psi.ES6ExportDefaultAssignment
@@ -62,9 +63,13 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
 
         /** Search the `/app` and `/addon` directories of the root and each in-repo-addon */
         val roots = modules
+                .filter { it.isEmberAddonFolder }
                 .flatMap { listOfNotNull(it.findChild("addon"), it.findChild("app"), it.findChild("addon-test-support")) }
                 .map { JSExactFileReference(host, TextRange.create(offset, offset + packageName.length), listOf(it.path), null) }
 
+        if (roots.isEmpty()) {
+            return emptyArray()
+        }
         val refs : FileReferenceSet
         val startInElement = offset + packageName.length + 1
 

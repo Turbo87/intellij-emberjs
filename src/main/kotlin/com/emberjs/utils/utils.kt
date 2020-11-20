@@ -1,20 +1,24 @@
 package com.emberjs.utils
 
+import com.intellij.lang.ecmascript6.psi.ES6ImportExportDeclaration
 import com.intellij.lang.ecmascript6.psi.JSClassExpression
 import com.intellij.lang.ecmascript6.resolve.ES6PsiUtil
-import com.intellij.lang.javascript.psi.JSCallExpression
-import com.intellij.lang.javascript.psi.JSElement
-import com.intellij.lang.javascript.psi.JSFunction
-import com.intellij.lang.javascript.psi.JSReferenceExpression
+import com.intellij.lang.javascript.psi.*
 import com.intellij.lang.javascript.psi.ecma6.*
 import com.intellij.lang.javascript.psi.ecmal4.JSClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
+import org.jetbrains.annotations.NotNull
 
 fun resolveHelper(file: PsiFile): JSFunction? {
-    val exp = ES6PsiUtil.findDefaultExport(file)
+    var exp = ES6PsiUtil.findDefaultExport(file)
+    val exportImport = PsiTreeUtil.findChildOfType(file, ES6ImportExportDeclaration::class.java)
+    if (exportImport != null) {
+        exp = ES6PsiUtil.resolveDefaultExport(exportImport).firstOrNull() as JSElement? ?: exp
+    }
+
     // find class (helpers with class)
     var cls: JSElement? = PsiTreeUtil.findChildOfType(exp, JSClassExpression::class.java)
     // find function (for helpers)
@@ -31,8 +35,8 @@ fun resolveHelper(file: PsiFile): JSFunction? {
     return null
 }
 
-fun findHelperParams(file: PsiFile) {
-    resolveHelper(file)
+fun findHelperParams(file: PsiFile): Array<JSParameterListElement>? {
+    return resolveHelper(file)?.parameters
 }
 
 
