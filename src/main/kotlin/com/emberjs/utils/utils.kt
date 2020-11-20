@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull
 
 fun resolveModifier(file: PsiFile): JSFunction? {
     val func = resolveHelper(file)
-    val installer: JSFunction? = PsiTreeUtil.collectElements(func.parent, { it is JSFunction && it.name == "installModifier"}).firstOrNull();
+    val installer: JSFunction? = PsiTreeUtil.collectElements(func?.parent, { it is JSFunction && it.name == "installModifier"}).firstOrNull() as JSFunction?
     return installer
 }
 
