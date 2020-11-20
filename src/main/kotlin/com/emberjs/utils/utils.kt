@@ -13,6 +13,12 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.annotations.NotNull
 
+fun resolveModifier(file: PsiFile): JSFunction? {
+    val func = resolveHelper(file)
+    val installer: JSFunction? = PsiTreeUtil.collectElements(func.parent, { it is JSFunction && it.name == "installModifier"}).firstOrNull();
+    return installer
+}
+
 fun resolveHelper(file: PsiFile): JSFunction? {
     var exp = ES6PsiUtil.findDefaultExport(file)
     val exportImport = PsiTreeUtil.findChildOfType(file, ES6ImportExportDeclaration::class.java)
@@ -43,9 +49,10 @@ fun findHelperParams(file: PsiFile): Array<JSParameterListElement>? {
 
 fun findDefaultExportClass(file: PsiFile): JSClass? {
     val exp = ES6PsiUtil.findDefaultExport(file)
-    var cls: Any? = PsiTreeUtil.findChildOfType(exp, JSClass::class.java)
+    var cls: Any? = exp?.children?.find { it is JSClass }
+    cls = cls ?: exp?.children?.find { it is JSFunction }
     if (cls == null) {
-        val ref = PsiTreeUtil.findChildOfType(exp, JSReferenceExpression::class.java)
+        val ref = exp?.children?.find { it is JSReferenceExpression }
         cls = ref?.resolve()
         if (cls is JSClass) {
             return cls
