@@ -5,29 +5,23 @@ import com.dmarcotte.handlebars.psi.HbParam
 import com.emberjs.utils.followReferences
 import com.emberjs.utils.resolveHelper
 import com.emberjs.utils.resolveModifier
-import com.intellij.codeInsight.hints.InlayInfo
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.lang.javascript.psi.JSFunction
-import com.intellij.lang.javascript.psi.JSParameter
-import com.intellij.lang.javascript.psi.JSParameterListElement
-import com.intellij.lang.javascript.psi.JSRecordType
+import com.intellij.lang.javascript.psi.*
 import com.intellij.lang.javascript.psi.types.JSArrayType
-import com.intellij.lang.javascript.psi.types.JSSimpleRecordTypeImpl
 import com.intellij.lang.javascript.psi.types.JSTupleType
 import com.intellij.lang.parameterInfo.*
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parents
-import com.intellij.util.containers.toArray
 
 
-class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter> {
+class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter?> {
     override fun couldShowInLookup(): Boolean {
         return true
     }
 
-    override fun getParametersForLookup(item: LookupElement?, context: ParameterInfoContext?): Array<JSParameterListElement>? {
+    override fun getParametersForLookup(item: LookupElement?, context: ParameterInfoContext?): Array<JSParameter>? {
         val psiElement = context?.file?.findElementAt(context.offset)
         val helperElement = psiElement?.parents
                 ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_SEXPR }
@@ -42,7 +36,7 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter> {
         if (file == null) {
             return null
         }
-        return resolveHelper(file)?.parameters
+        return resolveHelper(file)?.parameterVariables
     }
 
     private fun findHelperFunction(psiElement: PsiElement?): JSFunction? {
@@ -66,10 +60,10 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter> {
         if (func != null) {
             val modifier = resolveModifier(func.containingFile)
             if (modifier != null) {
-                context.itemsToShow = modifier.parameters.toList().takeLast(1).toTypedArray()
+                context.itemsToShow = modifier.parameterVariables.toList().takeLast(1).toTypedArray()
                 return modifier
             } else {
-                context.itemsToShow = func.parameters
+                context.itemsToShow = func.parameterVariables
             }
 
             return psiElement
@@ -100,19 +94,19 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameter> {
         if (p == null) {
             return
         }
-        if (p.jsType is JSArrayType || p.jsType is JSTupleType) {
+        if (p.inferredType is JSArrayType || p.inferredType is JSTupleType) {
             val array = p
             val names = array.children.getOrNull(0)?.children?.map { it.text }
             val type = array.jsType
             if (type is JSTupleType) {
                 text += names.mapIndexed { index, s -> "$s:${type.getTypeByIndex(index) ?: "unknown"}" }
             } else {
-                text += "params:" + (array.jsType?.resolvedTypeText ?: "*")
+                text += "params:" + (array.inferredType?.resolvedTypeText ?: "*")
             }
         }
 
-        if (p.jsType is JSRecordType) {
-            val type = p.jsType
+        if (p.inferredType is JSRecordType) {
+            val type = p.inferredType
             if (type != null) {
                 text += type.resolvedTypeText
             }
