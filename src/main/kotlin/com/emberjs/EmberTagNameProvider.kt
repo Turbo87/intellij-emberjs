@@ -145,7 +145,7 @@ class EmberTagNameProvider : XmlTagNameProvider {
 
 fun toLookupElement(name: EmberName, priority: Double = 90.0): LookupElement {
     val lookupElement = LookupElementBuilder
-            .create(name.tagName)
+            .create(name.angleBracketsName)
             .withTailText(" from ${name.path}")
             .withTypeText("component")
             .withIcon(EmberIconProvider.getIcon("component"))

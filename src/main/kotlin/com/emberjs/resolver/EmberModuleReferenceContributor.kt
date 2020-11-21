@@ -109,10 +109,8 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
 
         // filter out invalid references
         // reference default export if available, otherwise file
-        return roots.map { it as PsiReference }.toTypedArray() + refs.allReferences
-                .map { it.resolve() }
-                .filterNotNull()
-                .map { ClassOrFileReference(it) as PsiReference }
+        return (roots + refs.allReferences)
+                .filter { it.resolve() != null }
                 .toTypedArray()
     }
 

@@ -25,7 +25,7 @@ import kotlin.collections.set
 
 class RenamePropertyProcessor : RenamePsiElementProcessor() {
     override fun canProcessElement(element: PsiElement): Boolean {
-        val mustacheId = element.elementType == HbTokenTypes.ID && element.parent.children.indexOf(element) == 0
+        val mustacheId = element.elementType == HbTokenTypes.ID && element.prevSibling.elementType != HbTokenTypes.SEP
         val htmlBlockParam = element is XMLAttribute && element.text.matches(Regex("\\|.*\\|"))
         // todo: support html block param rename
         return mustacheId
