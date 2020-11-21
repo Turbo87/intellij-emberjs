@@ -150,6 +150,5 @@ fun toLookupElement(name: EmberName, priority: Double = 90.0): LookupElement {
             .withTypeText("component")
             .withIcon(EmberIconProvider.getIcon("component"))
             .withCaseSensitivity(true)
-    lookupElement.putUserData(PathKey, name.path)
     return PrioritizedLookupElement.withPriority(lookupElement, priority)
 }
