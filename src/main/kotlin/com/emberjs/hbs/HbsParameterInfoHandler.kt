@@ -17,12 +17,12 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parents
 
 
-class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterListElement?> {
+class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, Any?> {
     override fun couldShowInLookup(): Boolean {
         return true
     }
 
-    override fun getParametersForLookup(item: LookupElement?, context: ParameterInfoContext?): Array<JSParameterListElement>? {
+    override fun getParametersForLookup(item: LookupElement?, context: ParameterInfoContext?): Array<*>? {
         val psiElement = context?.file?.findElementAt(context.offset)
         val helper = findFirstHbsParamFromParam(psiElement)
 
@@ -90,27 +90,35 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterList
         context.setCurrentParameter(currentParam)
     }
 
-    override fun updateUI(p: JSParameterListElement?, context: ParameterInfoUIContext) {
+    override fun updateUI(p: Any?, context: ParameterInfoUIContext) {
         var text = ""
         if (p == null) {
             return
         }
-        if (p.inferredType is JSArrayType || p.inferredType is JSTupleType) {
-            val array = p
-            val type = array.inferredType
+        var type: JSType? = null
+        var arrayName: String? = null
+        if (p is JSParameterListElement) {
+            arrayName = p.name
+            type = p.inferredType
+        }
+        if (p is JSRecordType.PropertySignature) {
+            arrayName = p.memberName
+            type = p.jsType
+        }
+        if (type is JSArrayType || type is JSTupleType) {
             if (type is JSTupleType) {
-                val names = if (p.inferredType is JSTupleType) (p.inferredType as JSTupleType).names else emptyList()
+                val names = type.sourceElement?.children?.map { it.text } ?: emptyList<String>()
                 text += names.mapIndexed { index, s -> "$s:${type.getTypeByIndex(index) ?: "unknown"}" }
             } else {
                 val arrayType = type as JSArrayType
-                text += array.name + ":" + (arrayType.type?.resolvedTypeText ?: "*")
+                text += arrayName + ":" + (arrayType.type?.resolvedTypeText ?: "*")
             }
         }
 
-        if (p.inferredType is JSRecordType) {
-            val type = p.inferredType as JSRecordType
+        if (type is JSRecordType) {
             text += type.properties.map { it.memberName + ":" + it.jsType?.resolvedTypeText + "=" }.joinToString(",")
         }
+
 
         if (text == "") {
             return
