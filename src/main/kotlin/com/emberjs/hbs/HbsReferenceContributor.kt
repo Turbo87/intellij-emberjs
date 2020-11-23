@@ -21,6 +21,8 @@ class HbsReferenceContributor : PsiReferenceContributor() {
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { filter(it) { HbsComponentReference(it) } }
             register(HbsPatterns.BLOCK_MUSTACHE_NAME) { filter(it) { HbsComponentReference(it) } }
             register(HbsPatterns.MUSTACHE_ID) { toLocalReference(it) }
+            register(HbsPatterns.IMPORT_NAMES) { toLocalReference(it) }
+            register(HbsPatterns.IMPORT_PATH) { toLocalReference(it) }
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { filter(it) { HbsModuleReference(it, "helper") } }
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { filter(it) { HbsModuleReference(it, "modifier") } }
             register(HbsPatterns.SUB_EXPR_NAME) { filter(it) { HbsModuleReference(it, "helper") } }

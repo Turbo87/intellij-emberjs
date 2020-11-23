@@ -143,6 +143,11 @@ fun handleEmberHelpers(element: PsiElement): HbsLocalReference? {
     return null
 }
 
+fun referenceImports(name: String) {
+    val imports = PsiTreeUtil.collectElements(element.containingFile, { it.elementType == HbTokenTypes.OPEN && it.parent.text == "{{import"}).map { it.parent }
+    imports.find { it.children[2].text.split(",").contains(name) }
+}
+
 fun toLocalReference(element: PsiElement): PsiReference? {
     val name = element.text.replace("IntellijIdeaRulezzz", "")
     var sibling = PsiTreeUtil.findSiblingBackward(element, HbTokenTypes.ID, null)
@@ -161,6 +166,12 @@ fun toLocalReference(element: PsiElement): PsiReference? {
             return HbsLocalReference(element, resolveToJs(file, listOf()))
         }
     }
+
+    if (element.parents.find { it is HbOpenBlockMustache && it.text.startsWith("{{import")}) {
+
+    }
+
+    val importRef = referenceImports(element)
 
     val ref = handleEmberHelpers(element)
     if (ref != null) {
