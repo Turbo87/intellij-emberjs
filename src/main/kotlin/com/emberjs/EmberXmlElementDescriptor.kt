@@ -41,30 +41,30 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
 
         fun fromLocalBlock(tag: XmlTag): PsiElement? {
             val name = tag.name.split(".").first()
-            // find blocks with attribute |name|
+            // find html blocks with attribute |name|
             val angleBracketBlock: XmlTag? = tag.parentsWithSelf
                     .find {
                         it is XmlTag && it.attributes.find {
                             it.text.startsWith("|") && it.text.replace("|", "").split(" ").contains(name)
                         } != null
                     } as XmlTag?
+
             if (angleBracketBlock != null) {
                 return angleBracketBlock.attributes.find {
                     it.text.startsWith("|") && it.text.replace("|", "").split(" ").contains(name)
                 }
             }
 
-            // find mustache block |params|
+            // find mustache block |params| which has tag as a child
             val hbsView = tag.containingFile.viewProvider.getPsi(Language.findLanguageByID("Handlebars")!!)
             val hbBlockRef = PsiTreeUtil.collectElements(hbsView, { it is HbOpenBlockMustacheImpl })
-                    .filter { it.children[0].text.contains(Regex("\\|.*$name.*\\|")) }
+                    .filter { it.text.contains(Regex("\\|.*$name.*\\|")) }
+                    .map { it.parent }
                     .find { block ->
-                        val htmlContent = PsiTreeUtil.collectElements(block, { it.elementType == HbTokenTypes.CONTENT && it.text.contains(name) })
-                        val htmlParts = htmlContent.map { hbsView.findElementAt(it.textOffset) }
-                        htmlParts.find { part -> PsiTreeUtil.collectElements(part) { it == tag }.isNotEmpty() } != null
+                        block.textRange.contains(tag.textRange)
                     }
 
-            return hbBlockRef?.parent?.children?.find { it.elementType == HbTokenTypes.ID && it.text == name}
+            return hbBlockRef?.children?.firstOrNull()?.children?.find { it.elementType == HbTokenTypes.ID && it.text == name}
         }
 
         fun forTag(tag: XmlTag?): EmberXmlElementDescriptor? {
@@ -150,7 +150,10 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
         return element
     }
 
-
+    /**
+     * finds yields and data mustache `@xxx`
+     * also check .ts/d.ts files for Component<Args>
+     */
     fun getReferenceData(): HashMap<String, Any> {
         var f: PsiFile? = null
         // if it references a block param
@@ -232,13 +235,23 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
     }
 
     override fun getAttributeDescriptor(attributeName: String?, context: XmlTag?): XmlAttributeDescriptor? {
-        if (attributeName == null) {
+        if (attributeName == null || context == null) {
             return null
         }
         if (attributeName == "as") {
         return AnyXmlAttributeDescriptor(attributeName)
     }
-        if (attributeName.matches(Regex("^\\|.*\\|$"))) {
+        val asIndex = context.attributes.indexOfFirst { it.text == "as" }
+        if (asIndex >= 0) {
+            // handle |param| or |param1 param2| or | param | or | param1 param2 | or | param1 param2|
+            // for referencing && renaming the pattern | x y | would be the best
+            // there is also a possiblity that this can be improved with value & valueTextRange
+            // attributes are always separated by spaces
+            val blockParams = context.attributes.toList().subList(asIndex + 1, context.attributes.size)
+            val index = blockParams.indexOfFirst { it.text == attributeName }
+            if (index == -1) {
+                return AnyXmlAttributeDescriptor(attributeName)
+            }
             val data = getReferenceData()
             val hash = hashMapOf(
                     "value" to attributeName,

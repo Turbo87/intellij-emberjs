@@ -10,6 +10,10 @@ data class EmberName(val type: String, val name: String) {
 
     val fullName by lazy { "$type:$name" }
 
+    val storageKey by lazy {
+        fullName
+    }
+
     val displayName by lazy {
         if (isComponentStyles) {
             "${name.removePrefix("components/").replace('/', '.')} component-styles"
@@ -50,7 +54,7 @@ data class EmberName(val type: String, val name: String) {
         fun from(fullName: String): EmberName? {
             val parts = fullName.split(":")
             return when {
-                parts.count() == 2 -> EmberName(parts[0], parts[1])
+                parts.count() >= 2 -> EmberName(parts[0], parts[1])
                 else -> null
             }
         }

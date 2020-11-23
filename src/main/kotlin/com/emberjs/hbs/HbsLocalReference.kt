@@ -30,6 +30,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.html.HtmlTag
 import com.intellij.psi.impl.source.html.HtmlTagImpl
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.templateLanguages.OuterLanguageElement
 import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlAttribute
@@ -124,18 +125,24 @@ fun handleEmberHelpers(element: PsiElement): HbsLocalReference? {
         val mustacheName = element.parent.children.find { it is HbMustacheName }?.text
         if (mustacheName == "let" || mustacheName == "each") {
             val param = PsiTreeUtil.findSiblingBackward(element, HbTokenTypes.PARAM, null)
+            if (param == null) {
+                return null
+            }
             if (mustacheName == "let") {
                 return HbsLocalReference(element, param)
             }
             if (mustacheName == "each") {
-                if (param?.references?.first()?.resolve() is HbPsiElement) {
+                val refResolved = param.references.firstOrNull()?.resolve()
+                        ?:
+                        PsiTreeUtil.collectElements(param, { it.elementType == HbTokenTypes.ID })
+                                .filter { it !is LeafPsiElement }
+                                .lastOrNull()?.references?.firstOrNull()?.resolve()
+                if (refResolved is HbPsiElement) {
                     return HbsLocalReference(element, param.parent)
-                } else {
-                    var jsRef = param?.references?.first()?.resolve()
-                    jsRef = resolveToJs(jsRef, emptyList(), false)
-                    if (jsRef is JSTypeOwner && jsRef.jsType is JSArrayType) {
-                        return HbsLocalReference(element, (jsRef.jsType as JSArrayType).type?.sourceElement)
-                    }
+                }
+                val jsRef = resolveToJs(refResolved, emptyList(), false)
+                if (jsRef is JSTypeOwner && jsRef.jsType is JSArrayType) {
+                    return HbsLocalReference(element, (jsRef.jsType as JSArrayType).type?.sourceElement)
                 }
             }
         }
@@ -145,7 +152,7 @@ fun handleEmberHelpers(element: PsiElement): HbsLocalReference? {
 
 fun toLocalReference(element: PsiElement): PsiReference? {
     val name = element.text.replace("IntellijIdeaRulezzz", "")
-    var sibling = PsiTreeUtil.findSiblingBackward(element, HbTokenTypes.ID, null)
+    val sibling = PsiTreeUtil.findSiblingBackward(element, HbTokenTypes.ID, null)
     if (name == "this" && sibling == null) {
         val fname = element.containingFile.name.split(".").first()
         var fileName = fname
@@ -173,19 +180,21 @@ fun toLocalReference(element: PsiElement): PsiReference? {
     }
 
     // any |block param|
+    // as mustache
     val hbblockRefs = PsiTreeUtil.collectElements(element.containingFile, { it is HbOpenBlockMustacheImpl })
             .filter {
                 PsiTreeUtil.collectElements(PsiTreeUtil.getNextSiblingOfType(it, HbStatementsImpl::class.java), { it == element }).isNotEmpty()
             }
+
+    // as html tag
     val htmlView = element.containingFile.viewProvider.getPsi(Language.findLanguageByID("HTML")!!)
     val angleBracketBlocks = PsiTreeUtil.collectElements(htmlView, { it is XmlAttribute && it.text.startsWith("|") })
-            .filter{ it.text.replace("|", "").split(" ").contains(name) }
+            .filter{ (it.parent as HtmlTag).attributes.map { it.text }.joinToString(" ").contains(Regex("\\|.*$name.*\\|")) }
             .map { it.parent }
 
+    // validate if the element is a child of the tag
     val validBlock = angleBracketBlocks.filter { it ->
-        val hbsFragments = PsiTreeUtil.collectElements(it) { it.elementType == HbTokenTypes.OUTER_ELEMENT_TYPE }.toList()
-        val hbsParts = hbsFragments.map { element.containingFile.findElementAt(it.textOffset)!!.parent.parent }
-        hbsParts.find { PsiTreeUtil.collectElements(it) { it == element }.isNotEmpty() } != null
+        it.textRange.contains(element.textRange)
     }.firstOrNull()
 
     val blockRef = hbblockRefs.find { it.text.contains(Regex("\\|.*$name.*\\|")) }
@@ -194,12 +203,12 @@ fun toLocalReference(element: PsiElement): PsiReference? {
 
     if (blockRef != null || blockVal != null || validBlock != null) {
         if (validBlock != null) {
-
-            val tag  = validBlock as HtmlTagImpl?
-            val r = tag?.attributes?.find { it.text.startsWith("|") }!!
+            val tag  = validBlock as HtmlTagImpl
+            val index = tag.attributes.indexOfFirst { it.text == "as" }
+            val blockParams = tag.attributes.toList().subList(index + 1, tag.attributes.size)
+            val r = blockParams.find { it.text.matches(Regex("^\\|*$name\\|*$")) }!!
             val desc = tag.descriptor?.getAttributeDescriptor(r)
-            val i = r.text.split("|")[1].split(" ").indexOf(name)
-            return HbsLocalReference(element, desc?.declaration?.references?.getOrNull(i)?.resolve())
+            return HbsLocalReference(element, desc?.declaration?.references?.getOrNull(0)?.resolve())
         }
         return HbsLocalReference(element, blockVal ?: blockRef)
     }

@@ -2,6 +2,7 @@ package com.emberjs.resolver
 
 import com.emberjs.cli.EmberCliProjectConfigurator
 import com.emberjs.utils.emberRoot
+import com.emberjs.utils.isEmberAddonFolder
 import com.emberjs.utils.isInRepoAddon
 import com.emberjs.utils.parents
 import com.intellij.lang.javascript.DialectDetector
@@ -55,11 +56,19 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
 
         /** Search the `/app` and `/addon` directories of the root and each in-repo-addon */
         val roots = modules
-                .flatMap { listOfNotNull(it.findChild("app"), it.findChild("addon"), it.findChild("addon-test-support")) }
+                .filter { it.isEmberAddonFolder }
+                .flatMap { listOfNotNull(it.findChild("addon"), it.findChild("app"), it.findChild("addon-test-support")) }
                 .map { JSExactFileReference(host, TextRange.create(offset, offset + packageName.length), listOf(it.path), null) }
 
+        if (roots.isEmpty()) {
+            return emptyArray()
+        }
         val refs : FileReferenceSet
         val startInElement = offset + packageName.length + 1
+
+        if (importPath == "") {
+            return roots.toTypedArray()
+        }
 
         try {
             refs = object : FileReferenceSet(importPath, host, startInElement, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
@@ -91,7 +100,11 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
             return arrayOf()
         }
 
-        return (roots + refs.allReferences).toTypedArray()
+        // filter out invalid references
+        // reference default export if available, otherwise file
+        return (roots + refs.allReferences)
+                .filter { it.resolve() != null }
+                .toTypedArray()
     }
 
     override fun isApplicable(host: PsiElement): Boolean = DialectDetector.isES6(host)

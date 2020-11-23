@@ -19,8 +19,8 @@ class EmberAttributeDescriptor(private val data: HashMap<String, Any?>) : XmlAtt
         this.attrName = "@" + (this.data["value"] as String?)!!
         this.description = this.data.getOrDefault("description", "") as String
         val reference = this.data.getOrDefault("reference", null) as PsiReference?
-        val references = (this.data.getOrDefault("references", null) as ArrayList<PsiReference>?)?.toTypedArray()
-        if (reference != null || references != null || references!!.isNotEmpty()) {
+        val references: Array<PsiReference>? = (this.data.getOrDefault("references", null) as ArrayList<PsiReference>?)?.toTypedArray()
+        if (reference != null || (references != null && references.isNotEmpty())) {
             this.declaration = EmberAttrDec(
                     this.description,
                     reference,
