@@ -31,7 +31,7 @@ val VirtualFile.isEmberAddonFolder: Boolean
         val packageJsonFile = findFileByRelativePath("package.json") ?: return false
         var text = ""
         try {
-            text = VfsUtilCore.loadText(packageJsonFile)
+            text = String(packageJsonFile.contentsToByteArray())
         } catch (var3: IOException) {
             return false
         }
