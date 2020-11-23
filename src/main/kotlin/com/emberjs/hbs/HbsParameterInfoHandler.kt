@@ -15,6 +15,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parents
 import org.jetbrains.annotations.NotNull
+import java.util.*
 
 
 class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterListElement?> {
@@ -61,7 +62,19 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterList
         if (func != null) {
             val modifier = resolveModifier(func.containingFile)
             if (modifier != null) {
-                context.itemsToShow = modifier.parameters.toList().takeLast(1).toTypedArray()
+                val args = emptyList<Any>().toMutableList()
+                val argType = modifier.parameters.last().jsType
+                if (argType is JSRecordType) {
+                    val positional = argType.findPropertySignature("positional")
+                    if (positional != null) {
+                        args.add(positional)
+                    }
+                    val named = argType.findPropertySignature("named")
+                    if (named != null) {
+                        args.add(named)
+                    }
+                }
+                context.itemsToShow = args.toTypedArray()
                 return modifier
             } else {
                 context.itemsToShow = func.parameters
@@ -97,12 +110,12 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterList
         }
         if (p.inferredType is JSArrayType || p.inferredType is JSTupleType) {
             val array = p
-            val names = array.children.getOrNull(0)?.children?.map { it.text }
             val type = array.jsType
             if (type is JSTupleType) {
+                val names = if (p.inferredType is JSTupleType) (p.inferredType as JSTupleType).names else emptyList()
                 text += names.mapIndexed { index, s -> "$s:${type.getTypeByIndex(index) ?: "unknown"}" }
             } else {
-                text += "params:" + (array.inferredType?.resolvedTypeText ?: "*")
+                text += array.name + ":" + (array.inferredType?.resolvedTypeText ?: "*")
             }
         }
 
@@ -116,7 +129,7 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterList
         if (text == "") {
             return
         }
-        context.setupUIComponentPresentation(text, -1, -1, false, false, false, context.defaultParameterColor)
+        context.setupUIComponentPresentation(text, 0, 0, false, false, false, context.defaultParameterColor)
     }
 
 }

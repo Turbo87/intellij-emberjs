@@ -14,22 +14,35 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.annotations.NotNull
 
 fun resolveModifier(file: PsiFile): JSFunction? {
-    val func = resolveHelper(file)
-    val installer: JSFunction? = PsiTreeUtil.collectElements(func?.parent, { it is JSFunction && it.name == "installModifier"}).firstOrNull() as JSFunction?
+    val func = resolveDefaultExport(file)
+    val installer: JSFunction? = PsiTreeUtil.collectElements(func, { it is JSFunction && it.name == "installModifier"}).firstOrNull() as JSFunction?
     return installer
 }
 
-fun resolveHelper(file: PsiFile): JSFunction? {
+fun resolveDefaultExport(file: PsiFile): PsiElement? {
     var exp = ES6PsiUtil.findDefaultExport(file)
     val exportImport = PsiTreeUtil.findChildOfType(file, ES6ImportExportDeclaration::class.java)
     if (exportImport != null && exportImport.children.find { it.text == "default" } != null) {
         exp = ES6PsiUtil.resolveDefaultExport(exportImport).firstOrNull() as JSElement? ?: exp
     }
+    var ref: Any? = exp?.children?.find { it is JSReferenceExpression } as JSReferenceExpression?
+    while (ref is JSReferenceExpression && ref.resolve() != null) {
+        ref = ref.resolve()
+    }
+    ref = ref as JSElement? ?: exp
+    val func = ref?.children?.find { it is JSCallExpression }
+    if (func != null) {
+        return func
+    }
+    val cls = ref?.children?.find { it is JSClassExpression }
+    if (cls != null) {
+        return cls
+    }
+    return ref as JSElement?
+}
 
-    // find class (helpers with class)
-    var cls: JSElement? = PsiTreeUtil.findChildOfType(exp, JSClassExpression::class.java)
-    // find function (for helpers)
-    cls = cls ?: PsiTreeUtil.findChildOfType(exp, JSCallExpression::class.java)
+fun resolveHelper(file: PsiFile): JSFunction? {
+    val cls = resolveDefaultExport(file)
     if (cls is JSCallExpression && cls.argumentList != null) {
         var func: PsiElement? = cls.argumentList!!.arguments.last()
         while (func is JSReferenceExpression) {
@@ -101,7 +114,7 @@ fun followReferences(element: PsiElement?): PsiElement? {
         return followReferences(resolveReference(element.reference))
     }
     if (element?.references != null && element.references.isNotEmpty()) {
-        return followReferences(resolveReference(element.references.first()))
+        return followReferences(element.references.map { resolveReference(it) }.filterNotNull().firstOrNull())
     }
     return element
 }

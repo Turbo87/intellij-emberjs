@@ -2,6 +2,7 @@ package com.emberjs.psi
 
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.HbPath
+import com.emberjs.EmberAttrDec
 import com.intellij.openapi.util.Comparing
 import com.intellij.pom.PomTargetPsiElement
 import com.intellij.psi.PsiElement
@@ -26,9 +27,8 @@ import kotlin.collections.set
 class RenamePropertyProcessor : RenamePsiElementProcessor() {
     override fun canProcessElement(element: PsiElement): Boolean {
         val mustacheId = element.elementType == HbTokenTypes.ID && element.prevSibling.elementType != HbTokenTypes.SEP
-        val htmlBlockParam = element is XMLAttribute && element.text.matches(Regex("\\|.*\\|"))
-        // todo: support html block param rename
-        return mustacheId
+        val htmlBlockParam = element is EmberAttrDec
+        return mustacheId || htmlBlockParam
     }
 
     override fun prepareRenaming(element: PsiElement, newName: String,

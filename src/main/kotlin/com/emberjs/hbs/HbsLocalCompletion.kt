@@ -115,13 +115,13 @@ class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
 
         // find all |blocks| from component tags, needs html view
         val htmlView = parameters.originalFile.viewProvider.getPsi(Language.findLanguageByID("HTML")!!)
-        val angleBracketBlocks = PsiTreeUtil.collectElements(htmlView, { it is XmlAttribute && it.text.startsWith("|") }).map { it }
+        val angleBracketBlocks = PsiTreeUtil.collectElements(htmlView, { it is XmlAttribute && it.text.startsWith("|") }).map { it.parent }
 
         // collect blocks which have the element as a child
         val validBlocks = angleBracketBlocks.filter { it ->
             val hbsFragments = PsiTreeUtil.collectElements(it) { it.elementType == HbTokenTypes.OUTER_ELEMENT_TYPE }.toList()
             val hbsParts = hbsFragments.map { element.containingFile.findElementAt(it.textOffset)!!.parent.parent }
-            hbsParts.find { PsiTreeUtil.collectElements(it) { it == element }.isNotEmpty() } != null
+            hbsParts.find { PsiTreeUtil.collectElements(it) { it == element.parent }.isNotEmpty() } != null
         }
         for (block in validBlocks) {
             val names = block.text.replace("|", "").split(" ")

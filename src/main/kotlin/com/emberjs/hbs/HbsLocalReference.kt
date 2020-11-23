@@ -181,6 +181,7 @@ fun toLocalReference(element: PsiElement): PsiReference? {
     val angleBracketBlocks = PsiTreeUtil.collectElements(htmlView, { it is XmlAttribute && it.text.startsWith("|") })
             .filter{ it.text.replace("|", "").split(" ").contains(name) }
             .map { it.parent }
+
     val validBlock = angleBracketBlocks.filter { it ->
         val hbsFragments = PsiTreeUtil.collectElements(it) { it.elementType == HbTokenTypes.OUTER_ELEMENT_TYPE }.toList()
         val hbsParts = hbsFragments.map { element.containingFile.findElementAt(it.textOffset)!!.parent.parent }
