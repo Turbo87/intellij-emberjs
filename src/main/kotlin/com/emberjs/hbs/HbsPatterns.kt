@@ -29,6 +29,8 @@ object HbsPatterns {
     val SUB_EXPR_NAME_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
             .withSuperParent(3, SUB_EXPR_NAME)
 
+    val MUSTACHE_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
+
     val STRING_PARAM: Capture<HbParam> = psiElement(HbParam::class.java)
             .withChild(psiElement(HbMustacheName::class.java)
                     .withChild(psiElement(HbStringLiteral::class.java)))
