@@ -4,6 +4,7 @@ import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.HbParam
 import com.dmarcotte.handlebars.psi.impl.HbBlockWrapperImpl
 import com.dmarcotte.handlebars.psi.impl.HbPathImpl
+import com.emberjs.utils.findFirstHbsParamFromParam
 import com.emberjs.utils.followReferences
 import com.emberjs.utils.parents
 import com.emberjs.utils.resolveHelper
@@ -102,9 +103,7 @@ class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
         val element = parameters.position
         val txt = element.parents.find { it is HbPathImpl }?.text!!.replace("IntellijIdeaRulezzz", "")
 
-        val helperElement = element.parentsWithSelf
-                .find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_SEXPR }
-                ?.children?.getOrNull(1)
+        val helperElement = findFirstHbsParamFromParam(element)
         if (helperElement != null) {
             addHelperCompletions(helperElement, result)
         }

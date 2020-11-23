@@ -50,12 +50,9 @@
         <fileBasedIndex  implementation="com.emberjs.index.EmberNameIndex"/>
         <gotoClassContributor implementation="com.emberjs.navigation.EmberGotoClassContributor"/>
         <gotoRelatedProvider implementation="com.emberjs.navigation.EmberGotoRelatedProvider"/>
-        <lang.documentationProvider language="Handlebars" order="first" implementationClass="com.emberjs.EmberHbsDocumentationProvider"/>
-        <lang.documentationProvider language="ECMAScript 6" order="first" implementationClass="com.emberjs.EmberHbsDocumentationProvider"/>
-        <lang.documentationProvider language="HTML" order="first" implementationClass="com.emberjs.EmberHbsDocumentationProvider"/>
         <codeInsight.parameterInfo language="Handlebars" implementationClass="com.emberjs.hbs.HbsParameterInfoHandler"/>
         <codeInsight.parameterNameHints language="Handlebars" implementationClass="com.emberjs.hbs.HbsParameterNameHints"/>
-        <renamePsiElementProcessor implementation="com.emberjs.psi.RenamePropertyProcessor"/>
+        <renamePsiElementProcessor implementation="com.emberjs.psi.RenameHbsIdProcessor"/>
         <lang.refactoringSupport language="Handlebars" implementationClass="com.emberjs.psi.HbsRefactoringSupportProvider"/>
         <annotator language="ECMAScript 6" implementationClass="com.emberjs.psi.EmberInjectionAnnotator"/>
         <annotator language="ECMAScript 6" implementationClass="com.emberjs.psi.EmberRelationshipAnnotator"/>

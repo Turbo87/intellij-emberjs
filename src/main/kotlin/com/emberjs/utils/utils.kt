@@ -1,5 +1,6 @@
 package com.emberjs.utils
 
+import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.emberjs.hbs.HbsModuleReference
 import com.intellij.lang.ecmascript6.psi.ES6ImportExportDeclaration
 import com.intellij.lang.ecmascript6.psi.JSClassExpression
@@ -11,12 +12,16 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parents
 import org.jetbrains.annotations.NotNull
 
-fun resolveModifier(file: PsiFile): JSFunction? {
+fun resolveModifier(file: PsiFile): Array<JSFunction?> {
     val func = resolveDefaultExport(file)
-    val installer: JSFunction? = PsiTreeUtil.collectElements(func, { it is JSFunction && it.name == "installModifier"}).firstOrNull() as JSFunction?
-    return installer
+    val installer: JSFunction? = PsiTreeUtil.collectElements(func) { it is JSFunction && it.name == "installModifier" }.firstOrNull() as JSFunction?
+    val updater: JSFunction? = PsiTreeUtil.collectElements(func, { it is JSFunction && it.name == "updateModifier"}).firstOrNull() as JSFunction?
+    val destroyer: JSFunction? = PsiTreeUtil.collectElements(func, { it is JSFunction && it.name == "destroyModifier"}).firstOrNull() as JSFunction?
+    return arrayOf(installer, updater, destroyer)
 }
 
 fun resolveDefaultExport(file: PsiFile): PsiElement? {
@@ -117,4 +122,22 @@ fun followReferences(element: PsiElement?): PsiElement? {
         return followReferences(element.references.map { resolveReference(it) }.filterNotNull().firstOrNull())
     }
     return element
+}
+
+
+fun findFirstHbsParamFromParam(psiElement: PsiElement?): PsiElement? {
+    val parent = psiElement?.parents
+            ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_SEXPR }
+            ?:
+            psiElement?.parents
+                    ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN }
+    if (parent == null) {
+        return null
+    }
+    // mustache name
+    val name = parent.children.getOrNull(1)
+    if (name?.references != null && name.references.isNotEmpty()) {
+        return name
+    }
+    return parent.children.getOrNull(1)?.children?.getOrNull(0)
 }

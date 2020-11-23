@@ -24,11 +24,11 @@ import kotlin.collections.forEach
 import kotlin.collections.set
 
 
-class RenamePropertyProcessor : RenamePsiElementProcessor() {
+class RenameHbsIdProcessor : RenamePsiElementProcessor() {
     override fun canProcessElement(element: PsiElement): Boolean {
         val mustacheId = element.elementType == HbTokenTypes.ID && element.prevSibling.elementType != HbTokenTypes.SEP
         val htmlBlockParam = element is EmberAttrDec
-        return mustacheId || htmlBlockParam
+        return mustacheId
     }
 
     override fun prepareRenaming(element: PsiElement, newName: String,

@@ -2,6 +2,7 @@ package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.HbParam
+import com.emberjs.utils.findFirstHbsParamFromParam
 import com.emberjs.utils.followReferences
 import com.emberjs.utils.resolveHelper
 import com.emberjs.utils.resolveModifier
@@ -14,8 +15,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parents
-import org.jetbrains.annotations.NotNull
-import java.util.*
 
 
 class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterListElement?> {
@@ -25,16 +24,9 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterList
 
     override fun getParametersForLookup(item: LookupElement?, context: ParameterInfoContext?): Array<JSParameterListElement>? {
         val psiElement = context?.file?.findElementAt(context.offset)
-        val helperElement = psiElement?.parents
-                ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_SEXPR }
-                ?:
-                psiElement?.parents
-                        ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_BLOCK }
-        if (helperElement == null) {
-            return null
-    }
+        val helper = findFirstHbsParamFromParam(psiElement)
 
-        val file = helperElement.children.getOrNull(1)?.children?.getOrNull(0)?.references?.getOrNull(0)?.resolve()?.containingFile
+        val file = helper?.references?.getOrNull(0)?.resolve()?.containingFile
         if (file == null) {
             return null
         }
@@ -42,28 +34,27 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterList
     }
 
     private fun findHelperFunction(psiElement: PsiElement?): JSFunction? {
-        val helperBlock = psiElement?.parents
-                ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_SEXPR }
-                ?:
-                psiElement?.parents
-                        ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_BLOCK }
-        if (helperBlock == null) {
-            return null
-        }
-        val helperElement = helperBlock.children.getOrNull(1)?.children?.getOrNull(0)
+        val helper = findFirstHbsParamFromParam(psiElement)
 
-        val file = followReferences(helperElement)
+        val file = followReferences(helper)
         return if (file is PsiFile) resolveHelper(file) else if (file is JSFunction) file else null
     }
 
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val psiElement = context.file.findElementAt(context.offset)
-        val func = findHelperFunction(psiElement)
-        if (func != null) {
-            val modifier = resolveModifier(func.containingFile)
-            if (modifier != null) {
+        val block = findFirstHbsParamFromParam(psiElement)
+        val ref = followReferences(block)
+        if (ref == null) {
+            return null
+        }
+        val func = resolveHelper(ref.containingFile)
+        if (func == null) {
+            val modifier = resolveModifier(ref.containingFile)
+            if (modifier.filterNotNull().isNotEmpty()) {
                 val args = emptyList<Any>().toMutableList()
-                val argType = modifier.parameters.last().jsType
+                val argType = modifier.first()?.parameters?.getOrNull(2)?.jsType
+                        ?: modifier[1]?.parameters?.getOrNull(1)?.jsType
+                        ?: modifier[2]?.parameters?.getOrNull(1)?.jsType
                 if (argType is JSRecordType) {
                     val positional = argType.findPropertySignature("positional")
                     if (positional != null) {
@@ -75,14 +66,11 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterList
                     }
                 }
                 context.itemsToShow = args.toTypedArray()
-                return modifier
-            } else {
-                context.itemsToShow = func.parameters
             }
-
-            return psiElement
+        } else {
+            context.itemsToShow = func.parameters
         }
-        return null
+        return psiElement
     }
 
     override fun showParameterInfo(element: PsiElement, context: CreateParameterInfoContext) {
@@ -90,8 +78,7 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterList
     }
 
     override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiElement? {
-        val psiElement = context.file.findElementAt(context.offset)
-        return findHelperFunction(psiElement)
+        return context.file.findElementAt(context.offset)
     }
 
     override fun updateParameterInfo(parameterOwner: PsiElement, context: UpdateParameterInfoContext) {
@@ -110,20 +97,19 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, JSParameterList
         }
         if (p.inferredType is JSArrayType || p.inferredType is JSTupleType) {
             val array = p
-            val type = array.jsType
+            val type = array.inferredType
             if (type is JSTupleType) {
                 val names = if (p.inferredType is JSTupleType) (p.inferredType as JSTupleType).names else emptyList()
                 text += names.mapIndexed { index, s -> "$s:${type.getTypeByIndex(index) ?: "unknown"}" }
             } else {
-                text += array.name + ":" + (array.inferredType?.resolvedTypeText ?: "*")
+                val arrayType = type as JSArrayType
+                text += array.name + ":" + (arrayType.type?.resolvedTypeText ?: "*")
             }
         }
 
         if (p.inferredType is JSRecordType) {
-            val type = p.inferredType
-            if (type != null) {
-                text += type.resolvedTypeText
-            }
+            val type = p.inferredType as JSRecordType
+            text += type.properties.map { it.memberName + ":" + it.jsType?.resolvedTypeText + "=" }.joinToString(",")
         }
 
         if (text == "") {
