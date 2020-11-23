@@ -179,7 +179,7 @@ fun toLocalReference(element: PsiElement): PsiReference? {
     // as mustache
     val hbblockRefs = PsiTreeUtil.collectElements(element.containingFile, { it is HbOpenBlockMustacheImpl })
             .filter {
-                PsiTreeUtil.collectElements(PsiTreeUtil.getNextSiblingOfType(it, HbStatementsImpl::class.java), { it == element }).isNotEmpty()
+                it.textRange.contains(element.textRange)
             }
 
     // as html tag

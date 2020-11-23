@@ -77,11 +77,9 @@ class EmberTagNameProvider : XmlTagNameProvider {
         // find mustache block |params|
         val hbsView = tag.containingFile.viewProvider.getPsi(Language.findLanguageByID("Handlebars")!!)
         val hbBlockRef = PsiTreeUtil.collectElements(hbsView, { it is HbOpenBlockMustacheImpl })
-                .filter { it.children[0].text.contains(Regex("\\|.*\\|")) }
+                .filter { it.text.contains(Regex("\\|.*\\|")) }
                 .filter { block ->
-                    val htmlContent = PsiTreeUtil.collectElements(block) { it.elementType == HbTokenTypes.CONTENT && it.text.contains(tag.name) }
-                    val htmlParts = htmlContent.map { hbsView.findElementAt(it.textOffset) }
-                    htmlParts.find { part -> PsiTreeUtil.collectElements(part) { it == tag }.isNotEmpty() } != null
+                    block.textRange.contains(tag.textRange)
                 }
         hbBlockRef.forEach {
             val group = Regex("\\|(.*)\\|").find(it.text)

@@ -22,12 +22,20 @@ object HbsPatterns {
     val BLOCK_MUSTACHE_NAME_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
             .withSuperParent(3, BLOCK_MUSTACHE_NAME)
 
+    val BLOCK_MUSTACHE_PARAM: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
+            .withParent(psiElement(HbTokenTypes.OPEN_BLOCK_STACHE))
+
+    val MUSTACHE_ID_MISSING: Capture<PsiElement> = psiElement(HbTokenTypes.ID).withParent(psiElement(HbPsiElement::class.java)
+            .afterSibling(psiElement(HbTokenTypes.SEP).afterSibling(psiElement(HbTokenTypes.ID))))
+
     val SUB_EXPR_NAME: Capture<HbMustacheName> = psiElement(HbMustacheName::class.java)
             .withParent(psiElement(HbTokenTypes.PARAM)
                     .afterLeaf(psiElement(HbTokenTypes.OPEN_SEXPR)))
 
     val SUB_EXPR_NAME_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
             .withSuperParent(3, SUB_EXPR_NAME)
+
+    val MUSTACHE_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
 
     val STRING_PARAM: Capture<HbParam> = psiElement(HbParam::class.java)
             .withChild(psiElement(HbMustacheName::class.java)
