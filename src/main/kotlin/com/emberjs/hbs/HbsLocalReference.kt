@@ -150,7 +150,7 @@ fun handleEmberHelpers(element: PsiElement): HbsLocalReference? {
     return null
 }
 
-fun toLocalReference(element: PsiElement): PsiReference? {
+fun createReference(element: PsiElement): PsiReference? {
     val name = element.text.replace("IntellijIdeaRulezzz", "")
     val sibling = PsiTreeUtil.findSiblingBackward(element, HbTokenTypes.ID, null)
     if (name == "this" && sibling == null) {

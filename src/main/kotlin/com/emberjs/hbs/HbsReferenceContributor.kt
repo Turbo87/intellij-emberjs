@@ -9,7 +9,7 @@ fun filter(element: PsiElement, fn: (PsiElement) -> PsiReference?): PsiReference
     if (element.text.contains(".")) {
         return null
     }
-    if (toLocalReference(element) != null) {
+    if (createReference(element) != null) {
         return null
     }
     return fn(element)
@@ -20,7 +20,7 @@ class HbsReferenceContributor : PsiReferenceContributor() {
         with(registrar) {
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { filter(it) { HbsComponentReference(it) } }
             register(HbsPatterns.BLOCK_MUSTACHE_NAME) { filter(it) { HbsComponentReference(it) } }
-            register(HbsPatterns.MUSTACHE_ID) { toLocalReference(it) }
+            register(HbsPatterns.MUSTACHE_ID) { createReference(it) }
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { filter(it) { HbsModuleReference(it, "helper") } }
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { filter(it) { HbsModuleReference(it, "modifier") } }
             register(HbsPatterns.SUB_EXPR_NAME) { filter(it) { HbsModuleReference(it, "helper") } }
