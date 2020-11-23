@@ -2,7 +2,6 @@ package com.emberjs.utils
 
 import com.google.gson.stream.JsonReader
 import com.intellij.javascript.nodejs.PackageJsonData
-import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.text.CharSequenceReader
 import java.io.IOException
@@ -32,9 +31,6 @@ val VirtualFile.isEmberAddonFolder: Boolean
         var text = ""
         try {
             text = String(packageJsonFile.contentsToByteArray())
-        } catch (var3: IOException) {
-            return false
-        }
         val reader = JsonReader(CharSequenceReader(text))
         reader.isLenient = true
         reader.beginObject()
@@ -55,6 +51,9 @@ val VirtualFile.isEmberAddonFolder: Boolean
         }
         cache[this.path] = false
         return false
+        } catch (var3: IOException) {
+            return false
+        }
     }
 
 
