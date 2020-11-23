@@ -108,7 +108,7 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, Any?> {
         if (type is JSArrayType || type is JSTupleType) {
             if (type is JSTupleType) {
                 val names = type.sourceElement?.children?.map { it.text } ?: emptyList<String>()
-                text += names.mapIndexed { index, s -> "$s:${type.getTypeByIndex(index) ?: "unknown"}" }
+                text += names.mapIndexed { index, s -> "$s:${type.getTypeByIndex(index) ?: "unknown"}" }.joinToString(",")
             } else {
                 val arrayType = type as JSArrayType
                 text += arrayName + ":" + (arrayType.type?.resolvedTypeText ?: "*")
