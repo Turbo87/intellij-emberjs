@@ -50,7 +50,7 @@ class HbsParameterNameHints : InlayParameterHintsProvider {
                 file = followReferences(firstParam.children[0])
                 if (file == firstParam.children[0]) {
                     val id = PsiTreeUtil.collectElements(firstParam) { it !is LeafPsiElement && it.elementType == HbTokenTypes.ID }.lastOrNull()
-                    file = followReferences(id, psiElement.text)
+                    file = followReferences(id)
                 }
             }
 
