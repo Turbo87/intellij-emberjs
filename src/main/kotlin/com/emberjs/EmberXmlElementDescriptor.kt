@@ -140,16 +140,6 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
         return null
     }
 
-    private fun resolve(element: PsiElement?): PsiElement? {
-        if (element?.reference != null) {
-            return resolve(element?.reference?.resolve())
-        }
-        if (element?.references != null && element.references.isNotEmpty()) {
-            return resolve(element.references.first().resolve())
-        }
-        return element
-    }
-
     /**
      * finds yields and data mustache `@xxx`
      * also check .ts/d.ts files for Component<Args>
@@ -158,7 +148,7 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
         var f: PsiFile? = null
         // if it references a block param
         if (this.declaration.containingFile == this.tag.containingFile) {
-            f = resolve((this.declaration as XmlAttributeImpl).descriptor?.declaration?.reference?.resolve())?.containingFile
+            f = followReferences((this.declaration as XmlAttributeImpl).descriptor?.declaration?.reference?.resolve())?.containingFile
         }
         val file = f ?: this.declaration.containingFile
         var name = file.name.split(".").first()
