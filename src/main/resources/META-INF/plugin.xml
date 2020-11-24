@@ -52,8 +52,6 @@
         <gotoRelatedProvider implementation="com.emberjs.navigation.EmberGotoRelatedProvider"/>
         <codeInsight.parameterInfo language="Handlebars" implementationClass="com.emberjs.hbs.HbsParameterInfoHandler"/>
         <codeInsight.parameterNameHints language="Handlebars" implementationClass="com.emberjs.hbs.HbsParameterNameHints"/>
-        <renamePsiElementProcessor implementation="com.emberjs.psi.RenameHbsIdProcessor"/>
-        <lang.refactoringSupport language="Handlebars" implementationClass="com.emberjs.psi.HbsRefactoringSupportProvider"/>
         <annotator language="ECMAScript 6" implementationClass="com.emberjs.psi.EmberInjectionAnnotator"/>
         <annotator language="ECMAScript 6" implementationClass="com.emberjs.psi.EmberRelationshipAnnotator"/>
 

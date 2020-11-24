@@ -12,7 +12,7 @@ import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.search.SearchScope
 import javax.swing.Icon
 
-class EmberAttrDec(private val description: String, private val ref: PsiReference?, private val references: Array<PsiReference>?) : PsiElement {
+class EmberAttrDec(private val name: String, private val description: String, ref: PsiReference?, private val references: Array<PsiReference>?) : PsiElement {
     private val userDataMap = HashMap<Any, Any>()
     private val reference: PsiReference
     override fun <T> getUserData(key: Key<T>): T? {
@@ -76,11 +76,11 @@ class EmberAttrDec(private val description: String, private val ref: PsiReferenc
     }
 
     override fun getStartOffsetInParent(): Int {
-        return -1
+        return 0
     }
 
     override fun getTextLength(): Int {
-        return 0
+        return name.length
     }
 
     override fun findElementAt(offset: Int): PsiElement? {
@@ -92,7 +92,7 @@ class EmberAttrDec(private val description: String, private val ref: PsiReferenc
     }
 
     override fun getTextOffset(): Int {
-        return -1
+        return 0
     }
 
     override fun getText(): String {
@@ -212,7 +212,7 @@ class EmberAttrDec(private val description: String, private val ref: PsiReferenc
     }
 
     override fun isPhysical(): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun getResolveScope(): GlobalSearchScope {

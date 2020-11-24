@@ -2,18 +2,20 @@ package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.file.HbFileType
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
+import com.dmarcotte.handlebars.psi.HbHash
 import com.dmarcotte.handlebars.psi.HbParam
 import com.dmarcotte.handlebars.psi.impl.HbHashImpl
 import com.dmarcotte.handlebars.psi.impl.HbPathImpl
+import com.intellij.lang.Language
 import com.intellij.lang.ecmascript6.psi.JSClassExpression
 import com.intellij.lang.javascript.psi.JSField
 import com.intellij.lang.javascript.psi.ecma6.TypeScriptPropertySignature
 import com.intellij.psi.PsiElement
+import com.intellij.psi.html.HtmlTag
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.assert
-import kotlin.test.assert
 
 class HbsReferencesTest : BasePlatformTestCase() {
     fun testLocalFromMustach() {
@@ -23,6 +25,7 @@ class HbsReferencesTest : BasePlatformTestCase() {
                 {{item.a}}
                 {{index}}
                 {{in-helper (fn item)}}
+                <item/>
             {{/each}}
         """.trimIndent()
         myFixture.configureByText(HbFileType.INSTANCE, hbs)
@@ -31,29 +34,36 @@ class HbsReferencesTest : BasePlatformTestCase() {
         val resolvedItemA = element.find { it.text == "item.a" }?.children?.get(0)?.references?.find { it is HbsLocalReference }?.resolve()
         val resolvedIndex = element.find { it.text == "index" }?.children?.get(0)?.references?.find { it is HbsLocalReference }?.resolve()
         val resolvedItemInFn = element.find { it.text == "item" }?.children?.get(0)?.references?.find { it is HbsLocalReference }?.resolve()
+        val htmlView = myFixture.file.viewProvider.getPsi(Language.findLanguageByID("HTML")!!)
+        val declaration = (PsiTreeUtil.collectElements(htmlView, { it is HtmlTag && it.name == "item" }).first() as HtmlTag).descriptor?.declaration
+        assert(declaration.elementType == HbTokenTypes.ID && declaration?.text == "item")
         assert(resolvedItem != null)
         assert(resolvedItemA != null)
         assert(resolvedIndex != null)
         assert(resolvedItemInFn != null)
     }
 
-    fun testLocalFromAnglebarcket() {
+    fun testLocalFromAngleBracket() {
         val hbs = """
-            <MyComponent as |item index|}}
+            <MyComponent as |item index|>
                 {{item}}
                 {{item.a}}
                 {{index}}
                 {{in-helper (fn item)}}
             </MyComponent>
         """.trimIndent()
-        myFixture.configureByText(HbFileType.INSTANCE, hbs)
+        myFixture.addFileToProject("app/components/my-component/template.hbs", "{{yield x y}}")
+        myFixture.addFileToProject("app/routes/index/template.hbs", hbs)
+        myFixture.addFileToProject("package.json", "{}")
+        myFixture.addFileToProject(".ember-cli", "")
+        myFixture.configureByFile("app/routes/index/template.hbs")
         val element = PsiTreeUtil.collectElements(myFixture.file, { it is HbPathImpl })
         val resolvedItem = element.find { it.text == "item" }?.children?.get(0)?.references?.find { it is HbsLocalReference }?.resolve()
-        val resolvedItemA = element.find { it.text == "item.a" }?.children?.get(0)?.references?.find { it is HbsLocalReference }?.resolve()
+        val resolvedItemAParent = element.find { it.text == "item.a" }?.children?.get(0)?.references?.find { it is HbsLocalReference }?.resolve()
         val resolvedIndex = element.find { it.text == "index" }?.children?.get(0)?.references?.find { it is HbsLocalReference }?.resolve()
         val resolvedItemInFn = element.find { it.text == "item" }?.children?.get(0)?.references?.find { it is HbsLocalReference }?.resolve()
         assert(resolvedItem != null)
-        assert(resolvedItemA != null)
+        assert(resolvedItemAParent != null)
         assert(resolvedIndex != null)
         assert(resolvedItemInFn != null)
     }
@@ -177,8 +187,7 @@ class HbsReferencesTest : BasePlatformTestCase() {
 
         assert(resolvedBlock is HbsLocalReference)
         val param = PsiTreeUtil.findSiblingBackward(element.find { it.parent.text == "self" }!!.parent, HbTokenTypes.PARAM, null)
-        val ref = PsiTreeUtil.collectElements(param, { it.elementType == HbTokenTypes.ID }).last()
-        assert(resolvedBlock.resolve() == ref.parent)
+        assert(resolvedBlock.resolve() == param)
         assert(resolvedA.first() is PsiElement && resolvedA[1] is JSField)
         assert(resolvedXB[0] is PsiElement && resolvedXB[1] is JSField /*&& resolvedXB[2] is TypeScriptPropertySignature*/)
         assert(resolvedYB.first() is PsiElement && resolvedA[1] is JSField /*&& need to resolve doc*/)
@@ -214,8 +223,7 @@ class HbsReferencesTest : BasePlatformTestCase() {
 
         assert(resolvedBlock is HbsLocalReference)
         val param = PsiTreeUtil.findSiblingBackward(element.find { it.parent.text == "self" }!!.parent, HbTokenTypes.PARAM, null)
-        val ref = PsiTreeUtil.collectElements(param, { it.elementType == HbTokenTypes.ID }).last()
-        assert(resolvedBlock.resolve() == ref.parent)
+        assert(resolvedBlock.resolve() == param)
         assert(resolvedA.first() is PsiElement && resolvedA[1] is TypeScriptPropertySignature)
     }
 
@@ -270,6 +278,6 @@ class HbsReferencesTest : BasePlatformTestCase() {
         val element = PsiTreeUtil.collectElements(myFixture.file, { it.elementType == HbTokenTypes.ID })
         val resolvedA = element.find { it.parent.text == "item.name" }!!.parent.children.map { it.references }
                 .filter { it.isNotEmpty() }.map { it.first().resolve() }
-        assert(resolvedA.first() is HbParam && resolvedA[1]?.parent is HbHashImpl)
+        assert(resolvedA.first() is HbParam && resolvedA[1] is HbHash)
     }
 }

@@ -6,6 +6,7 @@ import com.dmarcotte.handlebars.psi.impl.HbOpenBlockMustacheImpl
 import com.emberjs.hbs.HbsLocalReference
 import com.emberjs.icons.EmberIconProvider
 import com.emberjs.index.EmberNameIndex
+import com.emberjs.lookup.HbsInsertHandler
 import com.emberjs.resolver.EmberName
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertHandler
@@ -121,7 +122,7 @@ class EmberTagNameProvider : XmlTagNameProvider {
             .filter { EmberNameIndex.hasContainingFiles(it, scope) }
 
             // Convert search results for LookupElements
-            .map { Pair(it.path, toLookupElement(it)) }
+            .map { Pair(it.storageKey, toLookupElement(it)) }
             .toMap(componentMap)
 
         // Collect all component templates from the index
@@ -131,10 +132,10 @@ class EmberTagNameProvider : XmlTagNameProvider {
             .filter { EmberNameIndex.hasContainingFiles(it, scope) }
 
             // Filter out components that are already in the map
-            .filter { !componentMap.containsKey(it.path) }
+            .filter { !componentMap.containsKey(it.storageKey) }
 
             // Convert search results for LookupElements
-            .map { Pair(it.path, toLookupElement(it)) }
+            .map { Pair(it.storageKey, toLookupElement(it)) }
             .toMap(componentMap)
 
 
@@ -142,13 +143,19 @@ class EmberTagNameProvider : XmlTagNameProvider {
     }
 }
 
+class PathKeyClass : Key<String>("PATH")
+val PathKey = PathKeyClass()
+
+
 
 fun toLookupElement(name: EmberName, priority: Double = 90.0): LookupElement {
     val lookupElement = LookupElementBuilder
-            .create(name.angleBracketsName)
+            .create(name.tagName)
             .withTailText(" from ${name.path}")
             .withTypeText("component")
             .withIcon(EmberIconProvider.getIcon("component"))
             .withCaseSensitivity(true)
+            .withInsertHandler(HbsInsertHandler())
+    lookupElement.putUserData(PathKey, name.path)
     return PrioritizedLookupElement.withPriority(lookupElement, priority)
 }

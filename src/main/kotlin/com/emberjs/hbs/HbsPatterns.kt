@@ -2,12 +2,9 @@ package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.*
-import com.dmarcotte.handlebars.psi.impl.HbPathImpl
-import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PsiElementPattern.Capture
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiWhiteSpace
 
 object HbsPatterns {
@@ -39,10 +36,13 @@ object HbsPatterns {
             .withSuperParent(3, SUB_EXPR_NAME)
 
     val MUSTACHE_ID: Capture<PsiElement> = psiElement(HbTokenTypes.ID)
-    val IMPORT_PATH: Capture<PsiElement> = psiElement(HbTokenTypes.STRING)
-            .withParent(psiElement(HbMustacheName::class.java).withName("import"))
+    val IMPORT_PATH_AUTOCOMPLETE: Capture<PsiElement> = psiElement(HbTokenTypes.STRING).withSuperParent(3, (psiElement(HbTokenTypes.PARAM).afterSiblingSkipping(psiElement(HbTokenTypes.WHITE_SPACE), psiElement(HbTokenTypes.PARAM).withText("from"))))
+    val IMPORT_PATH_REF: Capture<PsiElement> = psiElement(HbTokenTypes.STRING).withSuperParent(2, (psiElement(HbTokenTypes.PARAM).afterSiblingSkipping(psiElement(HbTokenTypes.WHITE_SPACE), psiElement(HbTokenTypes.PARAM).withText("from"))))
 
-    val IMPORT_NAMES: Capture<PsiElement> = psiElement(HbTokenTypes.STRING).afterSibling(psiElement(HbParam::class.java).withName("import"))
+    val IMPORT_NAMES: Capture<PsiElement> = psiElement(HbTokenTypes.PARAM)
+            .afterSiblingSkipping(psiElement(HbTokenTypes.WHITE_SPACE),
+                    psiElement(HbTokenTypes.MUSTACHE_NAME).withText("import").afterSibling(psiElement(HbTokenTypes.OPEN))
+            )
 
 
     val STRING_PARAM: Capture<HbParam> = psiElement(HbParam::class.java)

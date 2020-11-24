@@ -1,22 +1,21 @@
 package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
-import com.dmarcotte.handlebars.psi.HbMustacheName
-import com.dmarcotte.handlebars.psi.HbOpenBlockMustache
-import com.dmarcotte.handlebars.psi.HbParam
-import com.dmarcotte.handlebars.psi.HbPsiElement
+import com.dmarcotte.handlebars.psi.*
 import com.dmarcotte.handlebars.psi.impl.HbOpenBlockMustacheImpl
-import com.dmarcotte.handlebars.psi.impl.HbSimpleMustacheImpl
+import com.dmarcotte.handlebars.psi.impl.HbPsiElementImpl
 import com.dmarcotte.handlebars.psi.impl.HbStatementsImpl
-import com.emberjs.utils.parents
-import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.emberjs.index.EmberNameIndex
+import com.emberjs.utils.*
 import com.intellij.lang.Language
+import com.intellij.lang.ecmascript6.psi.ES6ImportDeclaration
 import com.intellij.lang.ecmascript6.psi.JSClassExpression
-import com.intellij.lang.ecmascript6.psi.impl.ES6ClassExpressionImpl
 import com.intellij.lang.ecmascript6.resolve.ES6PsiUtil
-import com.intellij.lang.javascript.psi.*
+import com.intellij.lang.javascript.psi.JSCallExpression
+import com.intellij.lang.javascript.psi.JSElement
+import com.intellij.lang.javascript.psi.JSType
+import com.intellij.lang.javascript.psi.JSTypeOwner
 import com.intellij.lang.javascript.psi.ecma6.JSTypedEntity
-import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptFieldImpl
 import com.intellij.lang.javascript.psi.impl.JSReferenceExpressionImpl
 import com.intellij.lang.javascript.psi.impl.JSVariableImpl
 import com.intellij.lang.javascript.psi.jsdoc.impl.JSDocCommentImpl
@@ -24,18 +23,45 @@ import com.intellij.lang.javascript.psi.types.JSArrayType
 import com.intellij.lang.javascript.psi.types.JSRecordTypeImpl
 import com.intellij.lang.javascript.psi.types.JSSimpleRecordTypeImpl
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiReferenceBase
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.*
 import com.intellij.psi.html.HtmlTag
 import com.intellij.psi.impl.source.html.HtmlTagImpl
-import com.intellij.psi.templateLanguages.OuterLanguageElement
-import com.intellij.psi.util.*
+import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentsWithSelf
 import com.intellij.psi.xml.XmlAttribute
-import org.jetbrains.annotations.NotNull
 import kotlin.math.max
-import kotlin.math.min
+
+class ImportNameReferences(element: PsiElement) : PsiPolyVariantReferenceBase<PsiElement>(element, TextRange(0, element.textLength), true) {
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+        val names = element.text.split(",")
+        val named = names.map {
+            if (it.contains(" as ")) {
+                it.split(" as ").first()
+            } else {
+                it
+            }
+        }
+        val mustache = element.parents.find { it is HbMustache }!!
+        val path = mustache.children.findLast { it is HbParam }
+        val fileRef = path?.references?.firstOrNull()?.resolve()
+        if (fileRef is PsiDirectory) {
+            return named
+                    .map { fileRef.findFile(it) ?: fileRef.findSubdirectory(it) }
+                    .filterNotNull()
+                    .map { PsiElementResolveResult(it) }
+                    .toTypedArray()
+        }
+        if (fileRef == null) {
+            return emptyArray()
+        }
+        val ref = resolveToEmber(fileRef as PsiFile)
+        return arrayOf(PsiElementResolveResult(ref ?: fileRef))
+    }
+}
 
 fun resolveToJs(any: Any?, path: List<String>, resolveIncomplete: Boolean = false): PsiElement? {
 
@@ -64,16 +90,15 @@ fun resolveToJs(any: Any?, path: List<String>, resolveIncomplete: Boolean = fals
     }
 
     if (any is PsiFile) {
-        var cls = ES6PsiUtil.findDefaultExport(any)
-        // find class (components or helpers with class)
-        cls = PsiTreeUtil.findChildOfType(cls, JSClassExpression::class.java)
-        // find function (for helpers)
-        cls = cls ?: PsiTreeUtil.findChildOfType(cls, JSCallExpression::class.java)
-        if (cls == null) {
-            val ref = PsiTreeUtil.findChildOfType(any, JSReferenceExpressionImpl::class.java)
-            cls = ref?.resolve() as JSElement?
+        val helper = resolveHelper(any)
+        if (helper != null) {
+            return resolveToJs(helper, path, resolveIncomplete)
         }
-        return resolveToJs(cls, path, resolveIncomplete)
+        val modifier = resolveDefaultModifier(any)
+        if (modifier != null) {
+            return modifier
+        }
+        return resolveDefaultExport(any)
     }
 
     if (path.isEmpty()) {
@@ -102,7 +127,7 @@ fun resolveToJs(any: Any?, path: List<String>, resolveIncomplete: Boolean = fals
             val tag = doc.tags.find { it.text.startsWith("@type") }
             val res = tag?.value?.reference?.resolve()
             if (res != null) {
-                return resolveToJs(res, path.subList(1, max(path.lastIndex, 1)), resolveIncomplete)
+                return resolveToJs(res, path, resolveIncomplete)
             }
         }
         if (jsType is JSSimpleRecordTypeImpl) {
@@ -124,28 +149,29 @@ fun handleEmberHelpers(element: PsiElement): HbsLocalReference? {
         val mustacheName = element.parent.children.find { it is HbMustacheName }?.text
         if (mustacheName == "let" || mustacheName == "each") {
             val param = PsiTreeUtil.findSiblingBackward(element, HbTokenTypes.PARAM, null)
+            if (param == null) {
+                return null
+            }
             if (mustacheName == "let") {
                 return HbsLocalReference(element, param)
             }
             if (mustacheName == "each") {
-                if (param?.references?.first()?.resolve() is HbPsiElement) {
+                val refResolved = param.references.firstOrNull()?.resolve()
+                        ?:
+                        PsiTreeUtil.collectElements(param, { it.elementType == HbTokenTypes.ID })
+                                .filter { it !is LeafPsiElement }
+                                .lastOrNull()?.references?.firstOrNull()?.resolve()
+                if (refResolved is HbPsiElement) {
                     return HbsLocalReference(element, param.parent)
-                } else {
-                    var jsRef = param?.references?.first()?.resolve()
-                    jsRef = resolveToJs(jsRef, emptyList(), false)
+                }
+                val jsRef = resolveToJs(refResolved, emptyList(), false)
                     if (jsRef is JSTypeOwner && jsRef.jsType is JSArrayType) {
                         return HbsLocalReference(element, (jsRef.jsType as JSArrayType).type?.sourceElement)
                     }
                 }
             }
         }
-    }
     return null
-}
-
-fun referenceImports(name: String) {
-    val imports = PsiTreeUtil.collectElements(element.containingFile, { it.elementType == HbTokenTypes.OPEN && it.parent.text == "{{import"}).map { it.parent }
-    imports.find { it.children[2].text.split(",").contains(name) }
 }
 
 fun toLocalReference(element: PsiElement): PsiReference? {
@@ -167,11 +193,16 @@ fun toLocalReference(element: PsiElement): PsiReference? {
         }
     }
 
-    if (element.parents.find { it is HbOpenBlockMustache && it.text.startsWith("{{import")}) {
+    val insideImport = element.parents.find { it is HbMustache && it.children.getOrNull(1)?.text == "import"} != null
 
+    if (insideImport && element.text != "from" && element.text != "import") {
+        return null
     }
 
-    val importRef = referenceImports(element)
+    val importRef = referenceImports(element, name)
+    if (importRef != null) {
+        return HbsLocalReference(element, importRef)
+    }
 
     val ref = handleEmberHelpers(element)
     if (ref != null) {
@@ -184,19 +215,21 @@ fun toLocalReference(element: PsiElement): PsiReference? {
     }
 
     // any |block param|
+    // as mustache
     val hbblockRefs = PsiTreeUtil.collectElements(element.containingFile, { it is HbOpenBlockMustacheImpl })
             .filter {
                 PsiTreeUtil.collectElements(PsiTreeUtil.getNextSiblingOfType(it, HbStatementsImpl::class.java), { it == element }).isNotEmpty()
             }
+
+    // as html tag
     val htmlView = element.containingFile.viewProvider.getPsi(Language.findLanguageByID("HTML")!!)
     val angleBracketBlocks = PsiTreeUtil.collectElements(htmlView, { it is XmlAttribute && it.text.startsWith("|") })
-            .filter{ it.text.replace("|", "").split(" ").contains(name) }
+            .filter{ (it.parent as HtmlTag).attributes.map { it.text }.joinToString(" ").contains(Regex("\\|.*$name.*\\|")) }
             .map { it.parent }
 
+    // validate if the element is a child of the tag
     val validBlock = angleBracketBlocks.filter { it ->
-        val hbsFragments = PsiTreeUtil.collectElements(it) { it.elementType == HbTokenTypes.OUTER_ELEMENT_TYPE }.toList()
-        val hbsParts = hbsFragments.map { element.containingFile.findElementAt(it.textOffset)!!.parent.parent }
-        hbsParts.find { PsiTreeUtil.collectElements(it) { it == element }.isNotEmpty() } != null
+        it.textRange.contains(element.textRange)
     }.firstOrNull()
 
     val blockRef = hbblockRefs.find { it.text.contains(Regex("\\|.*$name.*\\|")) }
@@ -205,12 +238,12 @@ fun toLocalReference(element: PsiElement): PsiReference? {
 
     if (blockRef != null || blockVal != null || validBlock != null) {
         if (validBlock != null) {
-
-            val tag  = validBlock as HtmlTagImpl?
-            val r = tag?.attributes?.find { it.text.startsWith("|") }!!
+            val tag  = validBlock as HtmlTagImpl
+            val index = tag.attributes.indexOfFirst { it.text == "as" }
+            val blockParams = tag.attributes.toList().subList(index + 1, tag.attributes.size)
+            val r = blockParams.find { it.text.matches(Regex("^\\|*$name\\|*$")) }!!
             val desc = tag.descriptor?.getAttributeDescriptor(r)
-            val i = r.text.split("|")[1].split(" ").indexOf(name)
-            return HbsLocalReference(element, desc?.declaration?.references?.getOrNull(i)?.resolve())
+            return HbsLocalReference(element, desc?.declaration?.references?.getOrNull(0)?.resolve())
         }
         return HbsLocalReference(element, blockVal ?: blockRef)
     }
@@ -229,4 +262,5 @@ class HbsLocalReference(private val leaf: PsiElement, val target: PsiElement?) :
     override fun calculateDefaultRangeInElement(): TextRange {
         return leaf.textRangeInParent
     }
+
 }

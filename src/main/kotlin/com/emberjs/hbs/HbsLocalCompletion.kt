@@ -1,15 +1,15 @@
 package com.emberjs.hbs
 
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
+import com.dmarcotte.handlebars.psi.HbMustache
 import com.dmarcotte.handlebars.psi.HbParam
+import com.dmarcotte.handlebars.psi.HbStringLiteral
 import com.dmarcotte.handlebars.psi.impl.HbBlockWrapperImpl
 import com.dmarcotte.handlebars.psi.impl.HbPathImpl
-import com.emberjs.utils.findFirstHbsParamFromParam
-import com.emberjs.utils.followReferences
-import com.emberjs.utils.parents
-import com.emberjs.utils.resolveHelper
+import com.emberjs.lookup.HbsInsertHandler
+import com.emberjs.utils.*
 import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.codeInsight.lookup.LookupElementBuilder as IntelijLookupElementBuilder
 import com.intellij.lang.Language
 import com.intellij.lang.ecmascript6.psi.JSClassExpression
 import com.intellij.lang.javascript.psi.*
@@ -20,9 +20,18 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.parentsWithSelf
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.util.ProcessingContext
+
+
+class LookupElementBuilder {
+    companion object {
+        fun create(name: String): com.intellij.codeInsight.lookup.LookupElementBuilder {
+            return IntelijLookupElementBuilder.create(name)
+                    .withInsertHandler(HbsInsertHandler())
+        }
+    }
+}
 
 
 class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
@@ -98,15 +107,79 @@ class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
         }
     }
 
+    fun addImportPathCompletions(element: PsiElement, result: CompletionResultSet) {
+        if (element.elementType == HbTokenTypes.STRING && element.parents.find { it is HbMustache && it.children[1].text == "import"} != null) {
+            var text = element.text.replace("IntellijIdeaRulezzz ", "")
+            text = text.substring(1, text.length)
+            if (text == "") {
+                result.addElement(LookupElementBuilder.create("~/"))
+                result.addElement(LookupElementBuilder.create("."))
+            }
+            var rootFolder = element.originalVirtualFile?.parentEmberModule
+            if (text.startsWith(".")) {
+                rootFolder = element.originalVirtualFile?.parent
+                var i = 1
+                while (text[i] == '.') {
+                    rootFolder = rootFolder?.parent
+                    i++
+                }
+            }
+            if (!text.startsWith(".") && !text.startsWith("~")) {
+                rootFolder = rootFolder?.findChild("node_modules")
+            }
+            var path = text.split("/")
+            path = path.dropLast(1)
+            path.forEach {
+                if (rootFolder !=  null && rootFolder!!.isEmberAddonFolder) {
+                    rootFolder = rootFolder?.findChild("addon")
+                }
+                rootFolder = rootFolder?.findChild(it) ?: rootFolder
+            }
+            if (rootFolder != null) {
+                val validExtensions = arrayOf("css", "js", "ts")
+                val names = rootFolder!!.children.filter { validExtensions.contains(it.name.split(".").last()) }
+                        .map {
+                            val name = it.name + if(it.isDirectory) "/" else ""
+                            LookupElementBuilder.create(name.split(".").first())
+                        }
+                result.addAllElements(names)
+            }
+        }
+    }
+
+    fun addImportCompletions(element: PsiElement, result: CompletionResultSet) {
+        val imports = PsiTreeUtil.collectElements(element.containingFile, { it is HbMustache && it.children[1].text == "import"}).map { it }
+        imports.forEach() {
+            val importNames = it.children[2].text
+                    .replace("\"", "")
+                    .replace("'", "")
+            if (importNames.contains("*")) {
+                val name = importNames.split(" as ").last()
+                result.addElement(LookupElementBuilder.create(name))
+            }
+            val names = it.children[2].text.split(",")
+            result.addAllElements(names.map { LookupElementBuilder.create(it.replace(" ", "")) })
+        }
+    }
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val regex = Regex("\\|.*\\|")
         val element = parameters.position
-        val txt = element.parents.find { it is HbPathImpl }?.text!!.replace("IntellijIdeaRulezzz", "")
+        val txt = element.parents.find { it is HbPathImpl || it is HbStringLiteral }?.text!!.replace("IntellijIdeaRulezzz", "")
 
         val helperElement = findFirstHbsParamFromParam(element)
         if (helperElement != null) {
             addHelperCompletions(helperElement, result)
         }
+
+        if (parameters.position.parent.prevSibling.elementType == HbTokenTypes.SEP) {
+            resolve(parameters.position.parent.prevSibling?.prevSibling, result)
+            return
+        }
+
+        addImportPathCompletions(element, result)
+        addImportCompletions(element, result)
+
         // find all |blocks| from mustache
         val blocks = PsiTreeUtil.collectElements(parameters.originalFile) { it is HbBlockWrapperImpl }
                 .filter { it.children[0].text.contains(regex) }
@@ -118,12 +191,11 @@ class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
 
         // collect blocks which have the element as a child
         val validBlocks = angleBracketBlocks.filter { it ->
-            val hbsFragments = PsiTreeUtil.collectElements(it) { it.elementType == HbTokenTypes.OUTER_ELEMENT_TYPE }.toList()
-            val hbsParts = hbsFragments.map { element.containingFile.findElementAt(it.textOffset)!!.parent.parent }
-            hbsParts.find { PsiTreeUtil.collectElements(it) { it == element.parent }.isNotEmpty() } != null
+            it.textRange.contains(element.textRange)
         }
         for (block in validBlocks) {
-            val names = block.text.replace("|", "").split(" ")
+            val attrString = block.children.filter { it is XmlAttribute }.map { it.text }.joinToString(" ")
+            val names = Regex("\\|*\\|").find(attrString)!!.groups[0]!!.value.replace("|", "").split(" ")
             result.addAllElements(names.map { LookupElementBuilder.create(it) })
         }
         for (block in blocks) {
@@ -133,9 +205,7 @@ class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
         if ("this".startsWith(txt)) {
             result.addElement(LookupElementBuilder.create("this"))
         }
-        if (parameters.position.parent.prevSibling.elementType == HbTokenTypes.SEP) {
-            resolve(parameters.position.parent.prevSibling?.prevSibling, result)
-        }
+
         val mustache = parameters.position.parent
         val res = mustache?.references?.find { it.resolve() != null }
         if (res?.resolve() != null) {

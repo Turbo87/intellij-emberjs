@@ -3,7 +3,7 @@ package com.emberjs.hbs
 import com.emberjs.hbs.HbsPatterns.BLOCK_MUSTACHE_NAME_ID
 import com.emberjs.hbs.HbsPatterns.BLOCK_MUSTACHE_PARAM
 import com.emberjs.hbs.HbsPatterns.IMPORT_NAMES
-import com.emberjs.hbs.HbsPatterns.IMPORT_PATH
+import com.emberjs.hbs.HbsPatterns.IMPORT_PATH_AUTOCOMPLETE
 import com.emberjs.hbs.HbsPatterns.MUSTACHE_ID_MISSING
 import com.emberjs.hbs.HbsPatterns.MUSTACHE_ID
 import com.emberjs.hbs.HbsPatterns.SIMPLE_MUSTACHE_NAME_ID
@@ -12,47 +12,48 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 
 
-val InternalsWithBlock = (
-        "component\n" +
-        "each\n" +
-        "each-in\n" +
-        "if\n" +
-        "input\n" +
-        "let\n" +
-        "link-to\n" +
-        "mount\n" +
-        "outlet\n" +
-        "query-params\n" +
-        "textarea\n" +
-        "unbound\n" +
-        "unless\n" +
-        "with\n").split("\n")
+val InternalsWithBlock = arrayListOf(
+        "component",
+        "each",
+        "each-in",
+        "if",
+        "input",
+        "let",
+        "link-to",
+        "mount",
+        "outlet",
+        "query-params",
+        "textarea",
+        "unbound",
+        "unless",
+        "with")
 
-val InternalsWithoutBlock = ("action\n" +
-        "array\n" +
-        "component\n" +
-        "concat\n" +
-        "debugger\n" +
-        "fn\n" +
-        "get\n" +
-        "hasBlock\n" +
-        "hasBlockParams\n" +
-        "hash\n" +
-        "if\n" +
-        "in-element\n" +
-        "input\n" +
-        "link-to\n" +
-        "loc\n" +
-        "log\n" +
-        "mount\n" +
-        "mut\n" +
-        "on\n" +
-        "outlet\n" +
-        "query-params\n" +
-        "textarea\n" +
-        "unbound\n" +
-        "unless\n" +
-        "yield").split("\n")
+val InternalsWithoutBlock = arrayListOf(
+        "action",
+        "array",
+        "component",
+        "concat",
+        "debugger",
+        "fn",
+        "get",
+        "hasBlock",
+        "hasBlockParams",
+        "hash",
+        "if",
+        "in-element",
+        "input",
+        "link-to",
+        "loc",
+        "log",
+        "mount",
+        "mut",
+        "on",
+        "outlet",
+        "query-params",
+        "textarea",
+        "unbound",
+        "unless",
+        "yield")
 
 
 /**
@@ -71,7 +72,7 @@ class HbsCompletionContributor : CompletionContributor() {
         extend(CompletionType.BASIC, SUB_EXPR_NAME_ID, HbsLocalCompletion())
         extend(CompletionType.BASIC, MUSTACHE_ID, HbsLocalCompletion())
         extend(CompletionType.BASIC, IMPORT_NAMES, HbsLocalCompletion())
-        extend(CompletionType.BASIC, IMPORT_PATH, HbsLocalCompletion())
+        extend(CompletionType.BASIC, IMPORT_PATH_AUTOCOMPLETE, HbsLocalCompletion())
         extend(CompletionType.BASIC, BLOCK_MUSTACHE_PARAM, HbsLocalCompletion())
         extend(CompletionType.BASIC, MUSTACHE_ID_MISSING, HbsLocalCompletion())
     }
