@@ -1,5 +1,6 @@
 package com.emberjs.hbs
 
+import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.HbMustacheName
 import com.dmarcotte.handlebars.psi.HbParam
 import com.emberjs.utils.findFirstHbsParamFromParam
@@ -14,12 +15,17 @@ import com.intellij.lang.javascript.psi.*
 import com.intellij.lang.javascript.psi.types.JSTupleType
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parents
+import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import java.lang.Integer.max
 import java.util.*
 
 
-class HbsParameterNameHints : InlayParameterHintsProvider  {
+class HbsParameterNameHints : InlayParameterHintsProvider {
 
     override fun getParameterHints(psiElement: PsiElement): MutableList<InlayInfo> {
         if (psiElement is HbParam) {
@@ -31,51 +37,55 @@ class HbsParameterNameHints : InlayParameterHintsProvider  {
                     firstParam.parent.children.filter { it is HbParam }.indexOf(psiElement),
                     firstParam.parent.parent.children.filter { it is HbParam }.indexOf(psiElement)
             )
-            if (index <= 0 && firstParam !is HbMustacheName) {
-                // if its the helper itself
-                return emptyList<InlayInfo>().toMutableList()
-            } else {
+            if (firstParam !is HbParam) {
                 index += 1
             }
-
+            if (index <= 0) {
+                // if its the helper itself
+                return emptyList<InlayInfo>().toMutableList()
+            }
 
             var file = followReferences(firstParam)
             if (file == firstParam) {
-                file = followReferences(firstParam)
-            }
-
-            if (file != null) {
-                var func = if (file is PsiFile) resolveHelper(file) else if (file is JSFunction) file else null
-        var arrayName: String? = null
-        var array: JSType? =  null
-
-        if (func != null) {
-            arrayName = func.parameters.first().name ?: arrayName
-            array = func.parameters.first().jsType
-        } else {
-            val modifier = resolveModifier(file.containingFile)
-            val args = modifier.first()?.parameters?.getOrNull(2)?.jsType
-                    ?: modifier[1]?.parameters?.getOrNull(1)?.jsType
-                    ?: modifier[2]?.parameters?.getOrNull(1)?.jsType
-            array = null
-            if (args is JSRecordType) {
-                array = args.findPropertySignature("positional")?.jsType
-                arrayName = "positional"
-            }
-        }
-
-        val type = array
-        if (type is JSTupleType && type.sourceElement != null) {
-            val name = type.sourceElement!!.children.map { it.text }.getOrNull(index-1)
-            if (name != null) {
-                        return mutableListOf(InlayInfo(name, psiElement.startOffset))
-            } else {
-                if (index == 1 && arrayName != null) {
-                    return mutableListOf(InlayInfo(arrayName, psiElement.startOffset))
+                file = followReferences(firstParam.children[0])
+                if (file == firstParam.children[0]) {
+                    val id = PsiTreeUtil.collectElements(firstParam) { it !is LeafPsiElement && it.elementType == HbTokenTypes.ID }.lastOrNull()
+                    file = followReferences(id, psiElement.text)
                 }
             }
 
-            }
+            if (file != null) {
+                var func = resolveHelper(file.containingFile)
+                var arrayName: String? = null
+                var array: JSType? = null
+
+                if (func != null) {
+                    arrayName = func.parameters.first().name ?: arrayName
+                    array = func.parameters.first().jsType
+                } else {
+                    val modifier = resolveModifier(file.containingFile)
+                    val args = modifier.first()?.parameters?.getOrNull(2)?.jsType
+                            ?: modifier[1]?.parameters?.getOrNull(1)?.jsType
+                            ?: modifier[2]?.parameters?.getOrNull(1)?.jsType
+                    array = null
+                    if (args is JSRecordType) {
+                        array = args.findPropertySignature("positional")?.jsType
+                        arrayName = "positional"
+                    }
+                }
+
+                val type = array
+                if (type is JSTupleType && type.sourceElement != null) {
+                    val name = type.sourceElement!!.children.map { it.text }.getOrNull(index - 1)
+                    if (name != null) {
+                        return mutableListOf(InlayInfo(name, psiElement.startOffset))
+                    } else {
+                        if (index == 1 && arrayName != null) {
+                            return mutableListOf(InlayInfo(arrayName, psiElement.startOffset))
+                        }
+                    }
+
+                }
             }
         }
         return emptyList<InlayInfo>().toMutableList()
