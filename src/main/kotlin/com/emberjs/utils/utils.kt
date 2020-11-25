@@ -23,6 +23,14 @@ fun resolveModifier(file: PsiFile): Array<JSFunction?> {
     return arrayOf(installer, updater, destroyer)
 }
 
+fun resolveDefaultModifier(file: PsiFile): JSFunction? {
+    val modifier = resolveModifier(file)
+    val args = modifier.first()?.parameters?.getOrNull(2)
+            ?: modifier[1]?.parameters?.getOrNull(1)
+            ?: modifier[2]?.parameters?.getOrNull(1)
+    return modifier.find { it != null && it.parameters.contains(args) }
+}
+
 fun resolveDefaultExport(file: PsiFile): PsiElement? {
     var exp = ES6PsiUtil.findDefaultExport(file)
     val exportImport = PsiTreeUtil.findChildOfType(file, ES6ImportExportDeclaration::class.java)
@@ -42,7 +50,7 @@ fun resolveDefaultExport(file: PsiFile): PsiElement? {
     if (cls != null) {
         return cls
     }
-    return ref as JSElement?
+    return ref
 }
 
 fun resolveHelper(file: PsiFile): JSFunction? {
@@ -59,6 +67,21 @@ fun resolveHelper(file: PsiFile): JSFunction? {
     return null
 }
 
+fun resolveComponent(file: PsiFile): PsiElement? {
+    val cls = resolveDefaultExport(file)
+    if (cls is JSClassExpression) {
+        return cls
+    }
+    return null
+}
+
+fun resolveToEmber(file: PsiFile): PsiElement? {
+    return resolveComponent(file) ?: resolveHelper(file) ?: resolveDefaultModifier(file) ?: file
+}
+
+fun findHelperParams(file: PsiFile): Array<JSParameterListElement>? {
+    return resolveHelper(file)?.parameters
+}
 
 
 fun findDefaultExportClass(file: PsiFile): JSClass? {
@@ -101,7 +124,7 @@ fun findComponentArgsType(tsFile: PsiFile): TypeScriptObjectType? {
 }
 
 
-fun resolveReference(reference: PsiReference?): PsiElement? {
+fun resolveReference(reference: PsiReference?, path: String?): PsiElement? {
     var element = reference?.resolve()
     if (element == null && reference is HbsModuleReference) {
         element = reference.multiResolve(false).firstOrNull()?.element
@@ -109,13 +132,13 @@ fun resolveReference(reference: PsiReference?): PsiElement? {
     return element
 }
 
-fun followReferences(element: PsiElement?): PsiElement? {
+fun followReferences(element: PsiElement?, path: String? = null): PsiElement? {
 
     if (element?.reference != null) {
-        return followReferences(resolveReference(element.reference))
+        return followReferences(resolveReference(element.reference, path), path)
     }
     if (element?.references != null && element.references.isNotEmpty()) {
-        return followReferences(element.references.map { resolveReference(it) }.filterNotNull().firstOrNull())
+        return followReferences(element.references.map { resolveReference(it, path) }.filterNotNull().firstOrNull(), path)
     }
     return element
 }

@@ -1,10 +1,8 @@
 package com.emberjs.hbs
 
+import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.HbParam
-import com.emberjs.utils.findFirstHbsParamFromParam
-import com.emberjs.utils.followReferences
-import com.emberjs.utils.resolveHelper
-import com.emberjs.utils.resolveModifier
+import com.emberjs.utils.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.lang.javascript.psi.*
 import com.intellij.lang.javascript.psi.types.JSArrayType
@@ -12,6 +10,8 @@ import com.intellij.lang.javascript.psi.types.JSTupleType
 import com.intellij.lang.parameterInfo.*
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parents
 
 
 class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, Any?> {
@@ -39,12 +39,10 @@ class HbsParameterInfoHandler : ParameterInfoHandler<PsiElement, Any?> {
         }
         val func = resolveHelper(ref.containingFile)
         if (func == null) {
-            val modifier = resolveModifier(ref.containingFile)
-            if (modifier.filterNotNull().isNotEmpty()) {
+            val modifier = resolveDefaultModifier(ref.containingFile)
+            if (modifier != null) {
                 val args = emptyList<Any>().toMutableList()
-                val argType = modifier.first()?.parameters?.getOrNull(2)?.jsType
-                        ?: modifier[1]?.parameters?.getOrNull(1)?.jsType
-                        ?: modifier[2]?.parameters?.getOrNull(1)?.jsType
+                val argType = modifier.parameters.last().jsType
                 if (argType is JSRecordType) {
                     val positional = argType.findPropertySignature("positional")
                     if (positional != null) {
