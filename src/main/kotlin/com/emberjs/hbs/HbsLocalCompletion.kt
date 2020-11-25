@@ -106,6 +106,11 @@ class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
         if (helperElement != null) {
             addHelperCompletions(helperElement, result)
         }
+        // we are looking for x.y completions, do not check other completions
+        if (parameters.position.parent.prevSibling.elementType == HbTokenTypes.SEP) {
+            resolve(parameters.position.parent.prevSibling?.prevSibling, result)
+            return
+        }
         // find all |blocks| from mustache
         val blocks = PsiTreeUtil.collectElements(parameters.originalFile) { it is HbBlockWrapperImpl }
                 .filter { it.children[0].text.contains(regex) }
@@ -117,12 +122,11 @@ class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
 
         // collect blocks which have the element as a child
         val validBlocks = angleBracketBlocks.filter { it ->
-            val hbsFragments = PsiTreeUtil.collectElements(it) { it.elementType == HbTokenTypes.OUTER_ELEMENT_TYPE }.toList()
-            val hbsParts = hbsFragments.map { element.containingFile.findElementAt(it.textOffset)!!.parent.parent }
-            hbsParts.find { PsiTreeUtil.collectElements(it) { it == element.parent }.isNotEmpty() } != null
+            it.textRange.contains(element.textRange)
         }
         for (block in validBlocks) {
-            val names = block.text.replace("|", "").split(" ")
+            val attrString = block.children.filter { it is XmlAttribute }.map { it.text }.joinToString(" ")
+            val names = Regex("\\|*\\|").find(attrString)!!.groups[0]!!.value.replace("|", "").split(" ")
             result.addAllElements(names.map { LookupElementBuilder.create(it) })
         }
         for (block in blocks) {
@@ -132,9 +136,7 @@ class HbsLocalCompletion : CompletionProvider<CompletionParameters>() {
         if ("this".startsWith(txt)) {
             result.addElement(LookupElementBuilder.create("this"))
         }
-        if (parameters.position.parent.prevSibling.elementType == HbTokenTypes.SEP) {
-            resolve(parameters.position.parent.prevSibling?.prevSibling, result)
-        }
+
         val mustache = parameters.position.parent
         val res = mustache?.references?.find { it.resolve() != null }
         if (res?.resolve() != null) {

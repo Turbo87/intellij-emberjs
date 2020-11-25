@@ -1,11 +1,9 @@
 package com.emberjs
 
-import com.emberjs.index.EmberNameIndex
+import com.intellij.codeInsight.documentation.DocumentationManager.ORIGINAL_ELEMENT_KEY
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.source.html.dtd.HtmlNSDescriptorImpl
 import com.intellij.psi.impl.source.xml.XmlDescriptorUtil
-import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
 import com.intellij.xml.XmlAttributeDescriptor
@@ -18,37 +16,22 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
     val project = tag.project
 
     companion object {
-        fun forTag(tag: XmlTag?): EmberXmlElementDescriptor? {
-            if (tag == null) return null
 
-            val project = tag.project
-            val scope = ProjectScope.getAllScope(project)
-            val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
-
-            val componentTemplate = // Filter out components that are not related to this project
-                    EmberNameIndex.getFilteredKeys(scope) { it.isComponentTemplate && it.angleBracketsName == tag.name }
-                            // Filter out components that are not related to this project
-                            .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                            .mapNotNull { psiManager.findFile(it) }
-                            .firstOrNull()
-
-            if (componentTemplate != null) return EmberXmlElementDescriptor(tag, componentTemplate)
-
-            val component = EmberNameIndex.getFilteredKeys(scope) { it.type == "component" && it.angleBracketsName == tag.name }
-                    .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                    .mapNotNull { psiManager.findFile(it) }
-                    .firstOrNull()
-
-            if (component != null) return EmberXmlElementDescriptor(tag, component)
-
+        fun forTag(tag: XmlTag): EmberXmlElementDescriptor? {
+            val res = tag.references.last().resolve()
+            if (res == null) {
             return null
+        }
+            return EmberXmlElementDescriptor(tag, res)
         }
     }
 
-    override fun getDeclaration(): PsiElement = declaration
+    override fun getDeclaration(): PsiElement? = declaration
     override fun getName(context: PsiElement?): String = (context as? XmlTag)?.name ?: name
     override fun getName(): String = tag.localName
-    override fun init(element: PsiElement?) {}
+    override fun init(element: PsiElement?) {
+        element?.putUserData(ORIGINAL_ELEMENT_KEY, null)
+    }
     override fun getQualifiedName(): String = name
     override fun getDefaultName(): String = name
 
