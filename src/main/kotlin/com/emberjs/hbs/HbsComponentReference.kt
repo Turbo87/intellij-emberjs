@@ -7,4 +7,8 @@ class HbsComponentReference(element: PsiElement) : HbsModuleReference(element, "
     override fun matches(module: EmberName): Boolean {
         return super.matches(module) || (module.type == "template" && module.name == "components/$value")
     }
+
+    override fun resolve(): PsiElement? {
+        return multiResolve(false).firstOrNull()?.element
+    }
 }

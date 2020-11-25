@@ -27,6 +27,6 @@ object EmberTestFixtures {
             }
         }
 
-        else -> MockVirtualFile(file.name)
+        else -> MockVirtualFile(file.name, file.readText())
     }
 }

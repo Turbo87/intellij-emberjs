@@ -47,8 +47,6 @@ class HbsReferencesTest : BasePlatformTestCase() {
     }
 
     fun testLocalFromAngleBracket() {
-        myFixture.project.stateStore.clearStorages()
-
         val hbs = """
             <MyComponent as |item index|>
                 {{item}}

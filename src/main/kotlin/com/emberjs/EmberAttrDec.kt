@@ -12,7 +12,7 @@ import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.search.SearchScope
 import javax.swing.Icon
 
-class EmberAttrDec(private val description: String, private val ref: PsiReference?, private val references: Array<PsiReference>?) : PsiElement {
+class EmberAttrDec(private val name: String, private val description: String, ref: PsiReference?, private val references: Array<PsiReference>?) : PsiElement {
     private val userDataMap = HashMap<Any, Any>()
     private val reference: PsiReference
     override fun <T> getUserData(key: Key<T>): T? {

@@ -12,7 +12,24 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parents
 
+fun resolveModifier(file: PsiFile): Array<JSFunction?> {
+    val func = resolveDefaultExport(file)
+    val installer: JSFunction? = PsiTreeUtil.collectElements(func) { it is JSFunction && it.name == "installModifier" }.firstOrNull() as JSFunction?
+    val updater: JSFunction? = PsiTreeUtil.collectElements(func, { it is JSFunction && it.name == "updateModifier"}).firstOrNull() as JSFunction?
+    val destroyer: JSFunction? = PsiTreeUtil.collectElements(func, { it is JSFunction && it.name == "destroyModifier"}).firstOrNull() as JSFunction?
+    return arrayOf(installer, updater, destroyer)
+}
+
+fun resolveDefaultModifier(file: PsiFile): JSFunction? {
+    val modifier = resolveModifier(file)
+    val args = modifier.first()?.parameters?.getOrNull(2)
+            ?: modifier[1]?.parameters?.getOrNull(1)
+            ?: modifier[2]?.parameters?.getOrNull(1)
+    return modifier.find { it != null && it.parameters.contains(args) }
+}
 
 fun resolveDefaultExport(file: PsiFile): PsiElement? {
     var exp = ES6PsiUtil.findDefaultExport(file)
@@ -50,6 +67,21 @@ fun resolveHelper(file: PsiFile): JSFunction? {
     return null
 }
 
+fun resolveComponent(file: PsiFile): PsiElement? {
+    val cls = resolveDefaultExport(file)
+    if (cls is JSClassExpression) {
+        return cls
+    }
+    return null
+}
+
+fun resolveToEmber(file: PsiFile): PsiElement? {
+    return resolveComponent(file) ?: resolveHelper(file) ?: resolveDefaultModifier(file) ?: file
+}
+
+fun findHelperParams(file: PsiFile): Array<JSParameterListElement>? {
+    return resolveHelper(file)?.parameters
+}
 
 
 fun findDefaultExportClass(file: PsiFile): JSClass? {
@@ -92,10 +124,38 @@ fun findComponentArgsType(tsFile: PsiFile): TypeScriptObjectType? {
 }
 
 
-fun resolveReference(reference: PsiReference?): PsiElement? {
+fun resolveReference(reference: PsiReference?, path: String?): PsiElement? {
     var element = reference?.resolve()
     if (element == null && reference is HbsModuleReference) {
         element = reference.multiResolve(false).firstOrNull()?.element
     }
     return element
+}
+
+fun followReferences(element: PsiElement?, path: String? = null): PsiElement? {
+
+    if (element?.reference != null) {
+        return followReferences(resolveReference(element.reference, path), path)
+    }
+    if (element?.references != null && element.references.isNotEmpty()) {
+        return followReferences(element.references.map { resolveReference(it, path) }.filterNotNull().firstOrNull(), path)
+    }
+    return element
+}
+
+fun findFirstHbsParamFromParam(psiElement: PsiElement?): PsiElement? {
+    val parent = psiElement?.parents
+            ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN_SEXPR }
+            ?:
+            psiElement?.parents
+                    ?.find { it.children.getOrNull(0)?.elementType == HbTokenTypes.OPEN }
+    if (parent == null) {
+        return null
+    }
+    // mustache name
+    val name = parent.children.getOrNull(1)
+    if (name?.references != null && name.references.isNotEmpty()) {
+        return name
+    }
+    return parent.children.getOrNull(1)
 }

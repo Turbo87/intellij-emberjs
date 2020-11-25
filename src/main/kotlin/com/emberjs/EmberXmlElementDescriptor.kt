@@ -8,24 +8,15 @@ import com.emberjs.index.EmberNameIndex
 import com.emberjs.resolver.ClassOrFileReference
 import com.emberjs.utils.*
 import com.intellij.codeInsight.documentation.DocumentationManager.ORIGINAL_ELEMENT_KEY
-import com.intellij.lang.Language
-import com.intellij.lang.ecmascript6.resolve.ES6PsiUtil
-import com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
-import com.intellij.lang.javascript.psi.ecma6.TypeScriptInterface
-import com.intellij.lang.javascript.psi.ecma6.TypeScriptSingleType
 import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptPropertySignatureImpl
-import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptTypeAliasImpl
 import com.intellij.lang.javascript.psi.jsdoc.JSDocComment
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.impl.file.PsiDirectoryImpl
 import com.intellij.psi.impl.source.html.dtd.HtmlNSDescriptorImpl
 import com.intellij.psi.impl.source.xml.XmlAttributeImpl
 import com.intellij.psi.impl.source.xml.XmlDescriptorUtil
-import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.parentsWithSelf
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
 import com.intellij.xml.XmlAttributeDescriptor
@@ -39,63 +30,12 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
 
     companion object {
 
-        fun fromLocalBlock(tag: XmlTag): PsiElement? {
-            val name = tag.name.split(".").first()
-            // find html blocks with attribute |name|
-            val angleBracketBlock: XmlTag? = tag.parentsWithSelf
-                    .find {
-                        it is XmlTag && it.attributes.find {
-                            it.text.startsWith("|") && it.text.replace("|", "").split(" ").contains(name)
-                        } != null
-                    } as XmlTag?
-
-            if (angleBracketBlock != null) {
-                return angleBracketBlock.attributes.find {
-                    it.text.startsWith("|") && it.text.replace("|", "").split(" ").contains(name)
-                }
-            }
-
-            // find mustache block |params| which has tag as a child
-            val hbsView = tag.containingFile.viewProvider.getPsi(Language.findLanguageByID("Handlebars")!!)
-            val hbBlockRef = PsiTreeUtil.collectElements(hbsView, { it is HbOpenBlockMustacheImpl })
-                    .filter { it.text.contains(Regex("\\|.*$name.*\\|")) }
-                    .map { it.parent }
-                    .find { block ->
-                        block.textRange.contains(tag.textRange)
-                    }
-
-            return hbBlockRef?.children?.firstOrNull()?.children?.find { it.elementType == HbTokenTypes.ID && it.text == name}
-        }
-
-        fun forTag(tag: XmlTag?): EmberXmlElementDescriptor? {
-            if (tag == null) return null
-            val local = fromLocalBlock(tag)
-            if (local != null) {
-                return EmberXmlElementDescriptor(tag, local)
-            }
-
-            val project = tag.project
-            val scope = ProjectScope.getAllScope(project)
-            val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
-
-            val componentTemplate = // Filter out components that are not related to this project
-                    EmberNameIndex.getFilteredKeys(scope) { it.isComponentTemplate && it.angleBracketsName == tag.name }
-                            // Filter out components that are not related to this project
-                            .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                            .mapNotNull { psiManager.findFile(it) }
-                            .firstOrNull()
-
-            if (componentTemplate != null) return EmberXmlElementDescriptor(tag, componentTemplate)
-
-            val component = EmberNameIndex.getFilteredKeys(scope) { it.type == "component" && it.angleBracketsName == tag.name }
-                    .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                    .mapNotNull { psiManager.findFile(it) }
-                    .map { ClassOrFileReference(it).resolve() }
-                    .firstOrNull()
-
-            if (component != null) return EmberXmlElementDescriptor(tag, component)
-
+        fun forTag(tag: XmlTag): EmberXmlElementDescriptor? {
+            val res = tag.references.last().resolve()
+            if (res == null) {
             return null
+        }
+            return EmberXmlElementDescriptor(tag, res)
         }
     }
 
@@ -240,11 +180,12 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
             val blockParams = context.attributes.toList().subList(asIndex + 1, context.attributes.size)
             val index = blockParams.indexOfFirst { it.text == attributeName }
             if (index == -1) {
-                return AnyXmlAttributeDescriptor(attributeName)
+                return this.getAttributesDescriptors(context).find { it.name == attributeName }
             }
             val data = getReferenceData()
             val hash = hashMapOf(
                     "value" to attributeName,
+                    "isParam" to true,
                     "description" to (data["tplYields"] as MutableList<YieldReference>).map {
                         it.resolve()?.children?.filter { it.elementType == HbTokenTypes.PARAM }?.map { "yield" } ?: ""
                     }.joinToString(" or "),

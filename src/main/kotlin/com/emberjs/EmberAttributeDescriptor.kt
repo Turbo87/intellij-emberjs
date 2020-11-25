@@ -15,13 +15,20 @@ class EmberAttributeDescriptor(private val data: HashMap<String, Any?>) : XmlAtt
     private val declaration: PsiElement?
     private val isRequired: Boolean
     private val values: List<String>
+    val isParam: Boolean
     init {
-        this.attrName = "@" + (this.data["value"] as String?)!!
+        this.isParam = this.data.getOrDefault("isParam", false) as Boolean
+        if (!this.isParam) {
+            this.attrName = "@" + (this.data["value"] as String)
+        } else {
+            this.attrName = this.data["value"] as String
+        }
         this.description = this.data.getOrDefault("description", "") as String
         val reference = this.data.getOrDefault("reference", null) as PsiReference?
         val references: Array<PsiReference>? = (this.data.getOrDefault("references", null) as ArrayList<PsiReference>?)?.toTypedArray()
         if (reference != null || (references != null && references.isNotEmpty())) {
             this.declaration = EmberAttrDec(
+                    this.attrName,
                     this.description,
                     reference,
                     references

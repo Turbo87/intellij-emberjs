@@ -2,7 +2,10 @@ package com.emberjs.hbs
 
 import com.emberjs.translations.EmberTranslationHbsReferenceProvider
 import com.intellij.patterns.ElementPattern
+import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.XmlTagPattern
 import com.intellij.psi.*
+import com.intellij.psi.xml.XmlAttribute
 import com.intellij.util.ProcessingContext
 
 fun filter(element: PsiElement, fn: (PsiElement) -> PsiReference?): PsiReference? {
@@ -18,6 +21,8 @@ fun filter(element: PsiElement, fn: (PsiElement) -> PsiReference?): PsiReference
 class HbsReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         with(registrar) {
+            registerReferenceProvider(XmlTagPattern.Capture(), TagReferencesProvider())
+            register(PlatformPatterns.psiElement(XmlAttribute::class.java)) { toAttributeReference(it as XmlAttribute) }
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { filter(it) { HbsComponentReference(it) } }
             register(HbsPatterns.BLOCK_MUSTACHE_NAME) { filter(it) { HbsComponentReference(it) } }
             register(HbsPatterns.MUSTACHE_ID) { createReference(it) }

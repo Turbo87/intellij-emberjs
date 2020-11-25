@@ -9,6 +9,9 @@ import com.dmarcotte.handlebars.psi.impl.HbOpenBlockMustacheImpl
 import com.dmarcotte.handlebars.psi.impl.HbSimpleMustacheImpl
 import com.dmarcotte.handlebars.psi.impl.HbStatementsImpl
 import com.emberjs.utils.parents
+import com.emberjs.utils.resolveDefaultExport
+import com.emberjs.utils.resolveDefaultModifier
+import com.emberjs.utils.resolveHelper
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.Language
 import com.intellij.lang.ecmascript6.psi.JSClassExpression
@@ -65,16 +68,15 @@ fun resolveToJs(any: Any?, path: List<String>, resolveIncomplete: Boolean = fals
     }
 
     if (any is PsiFile) {
-        var cls = ES6PsiUtil.findDefaultExport(any)
-        // find class (components or helpers with class)
-        cls = PsiTreeUtil.findChildOfType(cls, JSClassExpression::class.java)
-        // find function (for helpers)
-        cls = cls ?: PsiTreeUtil.findChildOfType(cls, JSCallExpression::class.java)
-        if (cls == null) {
-            val ref = PsiTreeUtil.findChildOfType(any, JSReferenceExpressionImpl::class.java)
-            cls = ref?.resolve() as JSElement?
+        val helper = resolveHelper(any)
+        if (helper != null) {
+            return resolveToJs(helper, path, resolveIncomplete)
         }
-        return resolveToJs(cls, path, resolveIncomplete)
+        val modifier = resolveDefaultModifier(any)
+        if (modifier != null) {
+            return modifier
+        }
+        return resolveDefaultExport(any)
     }
 
     if (path.isEmpty()) {
@@ -103,7 +105,7 @@ fun resolveToJs(any: Any?, path: List<String>, resolveIncomplete: Boolean = fals
             val tag = doc.tags.find { it.text.startsWith("@type") }
             val res = tag?.value?.reference?.resolve()
             if (res != null) {
-                return resolveToJs(res, path.subList(1, max(path.lastIndex, 1)), resolveIncomplete)
+                return resolveToJs(res, path, resolveIncomplete)
             }
         }
         if (jsType is JSSimpleRecordTypeImpl) {
