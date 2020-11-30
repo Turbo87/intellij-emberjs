@@ -10,6 +10,7 @@ import com.emberjs.resolver.JsOrFileReference
 import com.emberjs.utils.EmberUtils
 import com.emberjs.utils.parents
 import com.intellij.lang.Language
+import com.intellij.lang.javascript.psi.JSObjectLiteralExpression
 import com.intellij.lang.javascript.psi.JSReferenceExpression
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -129,9 +130,12 @@ class TagReferencesProvider : PsiReferenceProvider() {
             return local
         }
 
-        if (HbsModuleReference.internalComponents.properties.map { it.text }.contains(name)) {
-            val prop = HbsModuleReference.internalComponents.properties.find { it.text == element.text }
-            return (prop?.jsType?.sourceElement as JSReferenceExpression).resolve())
+        val internalComponentsFile = PsiFileFactory.getInstance(tag.project).createFileFromText("intellij-emberjs/internal/components-stub", Language.findLanguageByID("TypeScript")!!, this::class.java.getResource("/com/emberjs/external/ember-components.ts").readText())
+        val internalComponents = EmberUtils.resolveDefaultExport(internalComponentsFile) as JSObjectLiteralExpression
+
+        if (internalComponents.properties.map { it.text }.contains(tag.name)) {
+            val prop = internalComponents.properties.find { it.text == tag.name }
+            return (prop?.jsType?.sourceElement as JSReferenceExpression).resolve()
         }
 
         val project = tag.project
