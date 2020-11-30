@@ -2,10 +2,7 @@ package com.emberjs
 
 import com.dmarcotte.handlebars.parsing.HbTokenTypes
 import com.dmarcotte.handlebars.psi.impl.HbDataImpl
-import com.dmarcotte.handlebars.psi.impl.HbOpenBlockMustacheImpl
 import com.dmarcotte.handlebars.psi.impl.HbPathImpl
-import com.emberjs.index.EmberNameIndex
-import com.emberjs.resolver.ClassOrFileReference
 import com.emberjs.utils.*
 import com.intellij.codeInsight.documentation.DocumentationManager.ORIGINAL_ELEMENT_KEY
 import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptPropertySignatureImpl
@@ -24,6 +21,19 @@ import com.intellij.xml.XmlElementDescriptor
 import com.intellij.xml.XmlElementsGroup
 import com.intellij.xml.XmlNSDescriptor
 import com.intellij.xml.impl.schema.AnyXmlAttributeDescriptor
+
+class ArgData(
+        var value: String = "",
+        var description: String? = null,
+        var reference: AttrPsiReference? = null) {}
+
+class ComponentReferenceData(
+        public val hasSplattributes: Boolean = false,
+        public val yields: MutableList<EmberXmlElementDescriptor.YieldReference> = mutableListOf(),
+        public val args: MutableList<ArgData> = mutableListOf()
+) {
+
+}
 
 class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration: PsiElement) : XmlElementDescriptor {
     val project = tag.project
@@ -57,8 +67,13 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
     }
 
     class YieldReference(element: PsiElement): PsiReferenceBase<PsiElement>(element) {
+
+        val yieldBlock by lazy {
+            element.parent.parent
+        }
+
         override fun resolve(): PsiElement? {
-            return PsiTreeUtil.collectElements(element.parent.parent) { it.elementType == HbTokenTypes.PARAM }.first()
+            return yieldBlock.children.find { it.elementType == HbTokenTypes.PARAM }
         }
     }
 
@@ -84,11 +99,11 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
      * finds yields and data mustache `@xxx`
      * also check .ts/d.ts files for Component<Args>
      */
-    fun getReferenceData(): HashMap<String, Any> {
+    fun getReferenceData(): ComponentReferenceData {
         var f: PsiFile? = null
         // if it references a block param
         if (this.declaration.containingFile == this.tag.containingFile) {
-            f = followReferences((this.declaration as XmlAttributeImpl).descriptor?.declaration?.reference?.resolve())?.containingFile
+            f = EmberUtils.followReferences((this.declaration as XmlAttributeImpl).descriptor?.declaration?.reference?.resolve())?.containingFile
         }
         val file = f ?: this.declaration.containingFile
         var name = file.name.split(".").first()
@@ -109,14 +124,14 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
         val fullPathToHbs = path.replace("app/", "addon/") + "/$name.hbs"
         template = template ?: getFileByPath(parentModule, fullPathToHbs)
 
-        val tplArgs = emptyArray<HashMap<String, Any>>().toMutableList()
+        val tplArgs = emptyArray<ArgData>().toMutableList()
         val tplYields = emptyArray<YieldReference>().toMutableList()
         if (template?.node?.psi != null) {
             val args = PsiTreeUtil.collectElementsOfType(template.node.psi, HbDataImpl::class.java)
             for (arg in args) {
                 val argName = arg.text.split(".").first()
-                if (tplArgs.find { it["value"] == argName } == null) {
-                    tplArgs.add(hashMapOf("value" to argName as Any, "reference" to AttrPsiReference(arg)))
+                if (tplArgs.find { it.value == argName } == null) {
+                    tplArgs.add(ArgData())
                 }
             }
 
@@ -134,32 +149,32 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
         val fullPathToDts = path.replace("app/", "addon/") + "/$name.d.ts"
         val tsFile = getFileByPath(parentModule, fullPathToTs) ?: getFileByPath(parentModule, fullPathToDts)
         if (tsFile != null) {
-            val argsElem = findComponentArgsType(tsFile)
+            val argsElem = EmberUtils.findComponentArgsType(tsFile)
             val signatures = PsiTreeUtil.collectElements(argsElem) { it is TypeScriptPropertySignatureImpl }
             for (sign in signatures) {
                 val comment = sign.children.find { it is JSDocComment }
 //                val s: TypeScriptSingleTypeImpl? = sign.children.find { it is TypeScriptSingleTypeImpl } as TypeScriptSingleTypeImpl?
                 val attr = sign.toString().split(":").last()
-                val data = tplArgs.find { it["value"] as String == attr } ?: HashMap()
-                data["value"] = attr
-                data["reference"] = AttrPsiReference(sign)
-                data["description"] = comment?.text ?: ""
-                if (tplArgs.find { it["value"] as String == attr } == null) {
+                val data = tplArgs.find { it.value == attr } ?: ArgData()
+                data.value = attr
+                data.reference = AttrPsiReference(sign)
+                data.description = comment?.text ?: ""
+                if (tplArgs.find { it.value == attr } == null) {
                     tplArgs.add(data)
                 }
             }
         }
-        return hashMapOf("hasSplattributes" to hasSplattributes, "tplArgs" to tplArgs, "tplYields" to tplYields)
+        return ComponentReferenceData(hasSplattributes, tplYields, tplArgs)
     }
 
     override fun getAttributesDescriptors(context: XmlTag?): Array<out XmlAttributeDescriptor> {
         val result = mutableListOf<XmlAttributeDescriptor>()
         val commonHtmlAttributes = HtmlNSDescriptorImpl.getCommonAttributeDescriptors(context)
         val data = getReferenceData()
-        val attributes = (data["tplArgs"] as MutableList<HashMap<String, Any?>>).map { EmberAttributeDescriptor(it)  }
+        val attributes = data.args.map { EmberAttributeDescriptor(it.value, false, it.description, it.reference, null)  }
         result.addAll(attributes)
-        if (data["hasSplattributes"]!! as Boolean) {
-        result.addAll(commonHtmlAttributes)
+        if (data.hasSplattributes) {
+            result.addAll(commonHtmlAttributes)
         }
         return result.toTypedArray()
     }
@@ -183,15 +198,7 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
                 return this.getAttributesDescriptors(context).find { it.name == attributeName }
             }
             val data = getReferenceData()
-            val hash = hashMapOf(
-                    "value" to attributeName,
-                    "isParam" to true,
-                    "description" to (data["tplYields"] as MutableList<YieldReference>).map {
-                        it.resolve()?.children?.filter { it.elementType == HbTokenTypes.PARAM }?.map { "yield" } ?: ""
-                    }.joinToString(" or "),
-                    "references" to data["tplYields"]
-            )
-            return EmberAttributeDescriptor(hash)
+            return EmberAttributeDescriptor(attributeName, true, "yield", null, data.yields.toTypedArray())
         }
         return this.getAttributesDescriptors(context).find { it.name == attributeName }
     }

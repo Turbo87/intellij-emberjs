@@ -15,7 +15,6 @@ class EmberTagNameProvider : XmlTagNameProvider {
 
     override fun addTagNameVariants(elements: MutableList<LookupElement>?, tag: XmlTag, prefix: String?) {
         if (elements == null) return
-        if (prefix != null && !prefix.isEmpty()) return
 
         val containingFile = tag.containingFile as? HtmlFileImpl ?: return
         val language = containingFile.contentElementType?.language ?: return

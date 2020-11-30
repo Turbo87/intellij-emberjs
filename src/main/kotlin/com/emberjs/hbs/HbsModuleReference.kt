@@ -2,8 +2,12 @@ package com.emberjs.hbs
 
 import com.emberjs.index.EmberNameIndex
 import com.emberjs.lookup.EmberLookupElementBuilder
-import com.emberjs.resolver.ClassOrFileReference
+import com.emberjs.resolver.JsOrFileReference
 import com.emberjs.resolver.EmberName
+import com.emberjs.utils.EmberUtils
+import com.intellij.lang.Language
+import com.intellij.lang.javascript.psi.JSObjectLiteralExpression
+import com.intellij.lang.javascript.psi.JSReferenceExpression
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.PsiElementResolveResult.createResults
@@ -14,6 +18,13 @@ open class HbsModuleReference(element: PsiElement, val moduleType: String) :
 
     val project = element.project
     private val scope = ProjectScope.getAllScope(project)
+    private val internalHelpersFile = PsiFileFactory.getInstance(project).createFileFromText("intellij-emberjs/internal/helpers-stub", Language.findLanguageByID("TypeScript")!!, this::class.java.getResource("/com/emberjs/external/ember-helpers.ts").readText())
+    private val internalModifiersFile = PsiFileFactory.getInstance(project).createFileFromText("intellij-emberjs/internal/modifiers-stub", Language.findLanguageByID("TypeScript")!!, this::class.java.getResource("/com/emberjs/external/ember-modifiers.ts").readText())
+    private val internalComponentsFile = PsiFileFactory.getInstance(project).createFileFromText("intellij-emberjs/internal/components-stub", Language.findLanguageByID("TypeScript")!!, this::class.java.getResource("/com/emberjs/external/ember-components.ts").readText())
+
+    private val internalHelpers = EmberUtils.resolveDefaultExport(internalHelpersFile) as JSObjectLiteralExpression
+    private val internalModifiers = EmberUtils.resolveDefaultExport(internalModifiersFile) as JSObjectLiteralExpression
+    protected val internalComponents = EmberUtils.resolveDefaultExport(internalComponentsFile) as JSObjectLiteralExpression
 
     private val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
 
@@ -22,6 +33,21 @@ open class HbsModuleReference(element: PsiElement, val moduleType: String) :
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         // Collect all components from the index
+
+        if (moduleType == "helper") {
+            if (internalHelpers.properties.map { it.text }.contains(element.text)) {
+                val prop = internalHelpers.properties.find { it.text == element.text }
+                return createResults((prop?.jsType?.sourceElement as JSReferenceExpression).resolve())
+            }
+        }
+
+        if (moduleType == "modifier") {
+            if (internalModifiers.properties.map { it.text }.contains(element.text)) {
+                val prop = internalModifiers.properties.find { it.text == element.text }
+                return createResults((prop?.jsType?.sourceElement as JSReferenceExpression).resolve())
+            }
+        }
+
         return EmberNameIndex.getFilteredKeys(scope) { matches(it) }
 
                 // Filter out components that are not related to this project
@@ -30,7 +56,8 @@ open class HbsModuleReference(element: PsiElement, val moduleType: String) :
                 // Convert search results for LookupElements
                 .map { psiManager.findFile(it) }
                 .filterNotNull()
-                .map { ClassOrFileReference(it).resolve() }
+                .map { JsOrFileReference(it).resolve() }
+                .take(1)
                 .let(::createResults)
     }
 

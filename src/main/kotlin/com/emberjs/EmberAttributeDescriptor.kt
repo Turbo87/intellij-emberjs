@@ -9,23 +9,21 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlElement
 import com.intellij.xml.XmlAttributeDescriptor
 
-class EmberAttributeDescriptor(private val data: HashMap<String, Any?>) : XmlAttributeDescriptor {
+class EmberAttributeDescriptor(value: String, isYield: Boolean = false, description: String?, reference: PsiReference?, references: Array<PsiReference>?) : XmlAttributeDescriptor {
     private val attrName: String
     private val description: String
     private val declaration: PsiElement?
     private val isRequired: Boolean
     private val values: List<String>
-    val isParam: Boolean
+    val isYield: Boolean
     init {
-        this.isParam = this.data.getOrDefault("isParam", false) as Boolean
-        if (!this.isParam) {
-            this.attrName = "@" + (this.data["value"] as String)
+        this.isYield = isYield
+        if (!this.isYield) {
+            this.attrName = "@" + value
         } else {
-            this.attrName = this.data["value"] as String
+            this.attrName = value
         }
-        this.description = this.data.getOrDefault("description", "") as String
-        val reference = this.data.getOrDefault("reference", null) as PsiReference?
-        val references: Array<PsiReference>? = (this.data.getOrDefault("references", null) as ArrayList<PsiReference>?)?.toTypedArray()
+        this.description = description ?: ""
         if (reference != null || (references != null && references.isNotEmpty())) {
             this.declaration = EmberAttrDec(
                     this.attrName,
@@ -37,7 +35,7 @@ class EmberAttributeDescriptor(private val data: HashMap<String, Any?>) : XmlAtt
             this.declaration = null
         }
 
-        val ref = this.data.getOrDefault("reference", null) as PsiReference?
+        val ref = reference
         if (ref != null) {
             val type = PsiTreeUtil.collectElementsOfType(ref.element, TypeScriptPropertySignatureImpl::class.java).firstOrNull()
             val types = type?.children?.find { it is TypeScriptUnionOrIntersectionType }?.children
@@ -47,11 +45,11 @@ class EmberAttributeDescriptor(private val data: HashMap<String, Any?>) : XmlAtt
             if (types != null && types.all { it is TypeScriptStringLiteralTypeImpl }) {
                 this.values = typesStr
             } else {
-                this.values = arrayListOf<String>()
+                this.values = arrayListOf()
             }
         } else {
             this.isRequired = false
-            this.values = arrayListOf<String>()
+            this.values = arrayListOf()
         }
     }
 
