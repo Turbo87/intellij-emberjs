@@ -197,13 +197,212 @@ class LinkToComponent extends Component<LinkToArgs> {
 
     }
 
-class InputComponent extends Component<any> {
+/**
+ The `Input` component lets you create an HTML `<input>` element.
+ ```handlebars
+ <Input @value="987" />
+ ```
+ creates an `<input>` element with `type="text"` and value set to 987.
+ ### Text field
+ If no `type` argument is specified, a default of type 'text' is used.
+ ```handlebars
+ Search:
+ <Input @value={{this.searchWord}} />
+ ```
+ In this example, the initial value in the `<input>` will be set to the value of
+ `this.searchWord`. If the user changes the text, the value of `this.searchWord` will also be
+ updated.
+ ### Actions
+ The `Input` component takes a number of arguments with callbacks that are invoked in response to
+ user events.
+ * `enter`
+ * `insert-newline`
+ * `escape-press`
+ * `focus-in`
+ * `focus-out`
+ * `key-down`
+ * `key-press`
+ * `key-up`
+ These callbacks are passed to `Input` like this:
+ ```handlebars
+ <Input @value={{this.searchWord}} @enter={{this.query}} />
+ ```
+ ### `<input>` HTML Attributes to Avoid
+ In most cases, if you want to pass an attribute to the underlying HTML `<input>` element, you
+ can pass the attribute directly, just like any other Ember component.
+ ```handlebars
+ <Input @type="text" size="10" />
+ ```
+ In this example, the `size` attribute will be applied to the underlying `<input>` element in the
+ outputted HTML.
+ However, there are a few attributes where you **must** use the `@` version.
+ * `@type`: This argument is used to control which Ember component is used under the hood
+ * `@value`: The `@value` argument installs a two-way binding onto the element. If you wanted a
+ one-way binding, use `<input>` with the `value` property and the `input` event instead.
+ * `@checked` (for checkboxes): like `@value`, the `@checked` argument installs a two-way binding
+ onto the element. If you wanted a one-way binding, use `<input type="checkbox">` with
+ `checked` and the `input` event instead.
+ ### Extending `TextField`
+ Internally, `<Input @type="text" />` creates an instance of `TextField`, passing arguments from
+ the helper to `TextField`'s `create` method. Subclassing `TextField` is supported but not
+ recommended.
+ See [TextField](/ember/release/classes/TextField)
+ ### Checkbox
+ To create an `<input type="checkbox">`:
+ ```handlebars
+ Emberize Everything:
+ <Input @type="checkbox" @checked={{this.isEmberized}} name="isEmberized" />
+ ```
+ This will bind the checked state of this checkbox to the value of `isEmberized` -- if either one
+ changes, it will be reflected in the other.
+ ### Extending `Checkbox`
+ Internally, `<Input @type="checkbox" />` creates an instance of `Checkbox`. Subclassing
+ `TextField` is supported but not recommended.
+ See [Checkbox](/ember/release/classes/Checkbox)
+ @method Input
+ @for Ember.Templates.components
+ @see {TextField}
+ @see {Checkbox}
+ @see https://api.emberjs.com/ember/release/classes/Ember.Templates.components/methods/Input?anchor=Input
+ @param {Hash} options
+ @public
+ */
+class InputComponent extends Component<{
+  /**
+   *  The @value argument installs a two-way binding onto the element. If you wanted a one-way binding, use <input> with the value property and the input event instead.
+   */
+  value?: any
+  /**
+   *  (for checkboxes): like @value, the @checked argument installs a two-way binding onto the element. If you wanted a one-way binding, use <input type="checkbox"> with checked and the input event instead.
+   */
+  checked?: boolean
+  /**
+   *  This argument is used to control which Ember component is used under the hood
+   */
+  type?: 'checkbox|button|color|date|datetime-local|email|file|hidden|image|month|number|password|radio|range|reset|search|submit|tel|text|time|url|week'
+  'enter'?: Function,
+  'insert-newline'?: Function,
+  'escape-press'?: Function,
+  'focus-in'?: Function,
+  'focus-out'?: Function,
+  'key-press'?: Function,
+  'key-down'?: Function,
+  'key-up'?: Function
+}> {
 
-    }
+}
 
-class TextareaComponent extends Component<any> {
+/**
+ The `Textarea` component inserts a new instance of `<textarea>` tag into the template.
+ The `@value` argument provides the content of the `<textarea>`.
+ This template:
+ ```handlebars
+ <Textarea @value="A bunch of text" />
+ ```
+ Would result in the following HTML:
+ ```html
+ <textarea class="ember-text-area">
+ A bunch of text
+ </textarea>
+ ```
+ The `@value` argument is two-way bound. If the user types text into the textarea, the `@value`
+ argument is updated. If the `@value` argument is updated, the text in the textarea is updated.
+ In the following example, the `writtenWords` property on the component will be updated as the user
+ types 'Lots of text' into the text area of their browser's window.
+ ```app/components/word-editor.js
+ import Component from '@glimmer/component';
+ import { tracked } from '@glimmer/tracking';
+ export default class WordEditorComponent extends Component {
+    @tracked writtenWords = "Lots of text that IS bound";
+  }
+ ```
+ ```handlebars
+ <Textarea @value={{writtenWords}} />
+ ```
+ Would result in the following HTML:
+ ```html
+ <textarea class="ember-text-area">
+ Lots of text that IS bound
+ </textarea>
+ ```
+ If you wanted a one way binding, you could use the `<textarea>` element directly, and use the
+ `value` DOM property and the `input` event.
+ ### Actions
+ The `Textarea` component takes a number of arguments with callbacks that are invoked in
+ response to user events.
+ * `enter`
+ * `insert-newline`
+ * `escape-press`
+ * `focus-in`
+ * `focus-out`
+ * `key-press`
+ These callbacks are passed to `Textarea` like this:
+ ```handlebars
+ <Textarea @value={{this.searchWord}} @enter={{this.query}} />
+ ```
+ ## Classic Invocation Syntax
+ The `Textarea` component can also be invoked using curly braces, just like any other Ember
+ component.
+ For example, this is an invocation using angle-bracket notation:
+ ```handlebars
+ <Textarea @value={{this.searchWord}} @enter={{this.query}} />
+ ```
+ You could accomplish the same thing using classic invocation:
+ ```handlebars
+ {{textarea value=this.searchWord enter=this.query}}
+ ```
+ The main difference is that angle-bracket invocation supports any HTML attribute using HTML
+ attribute syntax, because attributes and arguments have different syntax when using angle-bracket
+ invocation. Curly brace invocation, on the other hand, only has a single syntax for arguments,
+ and components must manually map attributes onto component arguments.
+ When using classic invocation with `{{textarea}}`, only the following attributes are mapped onto
+ arguments:
+ * rows
+ * cols
+ * name
+ * selectionEnd
+ * selectionStart
+ * autocomplete
+ * wrap
+ * lang
+ * dir
+ * value
+ ## Classic `layout` and `layoutName` properties
+ Because HTML `textarea` elements do not contain inner HTML the `layout` and
+ `layoutName` properties will not be applied.
+ @method Textarea
+ @for Ember.Templates.components
+ @see {TextArea}
+ @see https://api.emberjs.com/ember/3.22/classes/Ember.Templates.components/methods/Textarea?anchor=Textarea
+ @public
+ */
+class TextareaComponent extends Component<{
+  rows?: number,
+  cols?: number,
+  name?: string,
+  selectionEnd?: number,
+  selectionStart?: number
+  /**
+   * This attribute indicates whether the value of the control can be automatically completed by the browser. Possible values are:
+   off: The user must explicitly enter a value into this field for every use, or the document provides its own auto-completion method; the browser does not automatically complete the entry.
+   on: The browser can automatically complete the value based on values that the user has entered during previous uses.
+   If the autocomplete attribute is not specified on a <textarea> element, then the browser uses the autocomplete attribute value of the <textarea> element's form owner. The form owner is either the <form> element that this <textarea> element is a descendant of or the form element whose id is specified by the form attribute of the input element. For more information, see the autocomplete attribute in <form>.
+   @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#attr-autocomplete
+   */
+  autocomplete?: boolean
+  wrap?: boolean
+  lang?: string
+  dir?: string
+  value?: any
+  'enter'?: Function,
+  'insert-newline'?: Function,
+  'escape-press'?: Function,
+  'focus-in'?: Function,
+  'focus-out'?: Function,
+  'key-press'?: Function,
+}> {
 
-    }
+}
 
 const components = {
     LinkTo: LinkToComponent,
