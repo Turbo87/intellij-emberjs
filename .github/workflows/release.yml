@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          submodules: true
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '1.8'
+
+      - run: ./gradlew buildPlugin
+      - run: ./gradlew publishPlugin
+        env:
+          ORG_GRADLE_PROJECT_intellijPublishToken: ${{ secrets.ORG_GRADLE_PROJECT_INTELLIJPUBLISHTOKEN }}
