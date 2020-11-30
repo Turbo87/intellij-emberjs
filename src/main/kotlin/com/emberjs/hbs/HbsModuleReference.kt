@@ -3,6 +3,7 @@ package com.emberjs.hbs
 import com.emberjs.index.EmberNameIndex
 import com.emberjs.lookup.EmberLookupElementBuilder
 import com.emberjs.resolver.EmberName
+import com.emberjs.resolver.JsOrFileReference
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult.createResults
@@ -32,6 +33,8 @@ open class HbsModuleReference(element: PsiElement, val moduleType: String) :
                 // Convert search results for LookupElements
                 .map { psiManager.findFile(it) }
                 .filterNotNull()
+                .map { JsOrFileReference(it).resolve() }
+                .take(1)
                 .let(::createResults)
     }
 
