@@ -10,11 +10,9 @@ import com.emberjs.resolver.JsOrFileReference
 import com.emberjs.utils.EmberUtils
 import com.emberjs.utils.parents
 import com.intellij.lang.Language
+import com.intellij.lang.javascript.psi.JSReferenceExpression
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiManager
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.*
 import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
@@ -38,7 +36,6 @@ class RangedReference(element: PsiElement, val target: PsiElement?, val range: T
  * this is mostly to remove leading and trailing `|` from attribute references
  */
 fun toAttributeReference(attribute: XmlAttribute): RangedReference? {
-    attribute.ownReferences
     val name = attribute.name
     if (name.startsWith("|") || name.endsWith("|")) {
         var range = TextRange(0, name.length)
@@ -48,7 +45,7 @@ fun toAttributeReference(attribute: XmlAttribute): RangedReference? {
         if (name.endsWith("|")) {
             range = TextRange(range.startOffset, range.endOffset - 1)
         }
-        return RangedReference(attribute, attribute.descriptor!!.declaration!!, range)
+        return RangedReference(attribute, attribute.descriptor?.declaration, range)
     }
     return null
 }
@@ -130,6 +127,11 @@ class TagReferencesProvider : PsiReferenceProvider() {
         val local = fromLocalBlock(tag, fullName)
         if (local != null) {
             return local
+        }
+
+        if (HbsModuleReference.internalComponents.properties.map { it.text }.contains(name)) {
+            val prop = HbsModuleReference.internalComponents.properties.find { it.text == element.text }
+            return (prop?.jsType?.sourceElement as JSReferenceExpression).resolve())
         }
 
         val project = tag.project
