@@ -2,12 +2,14 @@ package com.emberjs.hbs
 
 import com.emberjs.translations.EmberTranslationHbsReferenceProvider
 import com.intellij.patterns.ElementPattern
+import com.intellij.patterns.XmlTagPattern
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 
 class HbsReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         with(registrar) {
+            registerReferenceProvider(XmlTagPattern.Capture(), TagReferencesProvider())
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsComponentReference(it) }
             register(HbsPatterns.BLOCK_MUSTACHE_NAME) { HbsComponentReference(it) }
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsModuleReference(it, "helper") }
