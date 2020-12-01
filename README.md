@@ -2,9 +2,6 @@
 ![Logo](doc/logo.png) intellij-emberjs
 ===============================================================================
 
-[![TravisCI](https://img.shields.io/travis/Turbo87/intellij-emberjs/master.svg?label=TravisCI)](https://travis-ci.org/Turbo87/intellij-emberjs/)
-[![AppVeyor](https://img.shields.io/appveyor/ci/Turbo87/intellij-emberjs/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/Turbo87/intellij-emberjs)
-
 This plugin provides basic [Ember.js](http://emberjs.com/) support to all
 [JetBrains](https://www.jetbrains.com/) IDEs that support JavaScript.
 
