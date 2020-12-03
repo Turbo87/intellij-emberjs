@@ -12,6 +12,8 @@ class HbsReferenceContributor : PsiReferenceContributor() {
             register(HbsPatterns.BLOCK_MUSTACHE_NAME) { HbsComponentReference(it) }
             register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsModuleReference(it, "helper") }
             register(HbsPatterns.SUB_EXPR_NAME) { HbsModuleReference(it, "helper") }
+            register(HbsPatterns.SIMPLE_MUSTACHE_NAME) { HbsModuleReference(it, "modifier") }
+            register(HbsPatterns.SUB_EXPR_NAME) { HbsModuleReference(it, "modifier") }
             registerReferenceProvider(HbsPatterns.LINK_TO_BLOCK_TARGET, HbsLinkToReferenceProvider())
             registerReferenceProvider(HbsPatterns.LINK_TO_SIMPLE_TARGET, HbsLinkToReferenceProvider())
             registerReferenceProvider(HbsPatterns.TRANSLATION_KEY, EmberTranslationHbsReferenceProvider())
