@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2020.3.1
+
+- Change IntelliJ target version to v2020.3 (#355)
+
+
 ## v2020.2.3
 
 - Fix off-by-one issue in the ember-template-lint annotator (#327)
