@@ -16,6 +16,10 @@ class EmberServeConfigurationFactory(type: ConfigurationType) : ConfigurationFac
         return FACTORY_NAME
     }
 
+    override fun getId(): String {
+        return "Ember Serve"
+    }
+
     companion object {
         private val FACTORY_NAME = "Ember serve configuration factory"
     }

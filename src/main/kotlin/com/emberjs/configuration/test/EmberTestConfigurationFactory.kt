@@ -12,7 +12,11 @@ class EmberTestConfigurationFactory(type: ConfigurationType) : ConfigurationFact
     }
 
     override fun getName(): String {
-        return FACTORY_NAME;
+        return FACTORY_NAME
+    }
+
+    override fun getId(): String {
+        return "Ember Test"
     }
 
     companion object {
