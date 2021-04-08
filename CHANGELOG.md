@@ -4,6 +4,11 @@ Changelog
 ===============================================================================
 
 
+## v2021.1.1
+
+- Change IntelliJ target version to v2021.1 (#369)
+
+
 ## v2020.3.1
 
 - Change IntelliJ target version to v2020.3 (#355)
