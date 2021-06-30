@@ -62,6 +62,10 @@ intellij {
     }
 }
 
+runIdea {
+    jvmArgs = [ '-Xmx1g' ]
+}
+
 test {
     testLogging {
         exceptionFormat = 'full'

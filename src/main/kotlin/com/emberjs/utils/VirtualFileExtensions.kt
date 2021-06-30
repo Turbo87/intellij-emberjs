@@ -40,6 +40,12 @@ val VirtualFile.parentModule: VirtualFile?
 val VirtualFile.parentEmberModule: VirtualFile?
     get() = this.parentModule?.let { if (it.isEmberFolder || it.isInRepoAddon) it else null }
 
+/**
+ * Searches parent paths to find the Ember application, skipping in-repo addons.
+ */
+val VirtualFile.parentEmberApp: VirtualFile?
+    get() = this.parents.find { it.isEmberFolder }
+
 fun findMainPackageJsonFile(file: VirtualFile) = file.parents.asSequence()
         .filter { it.isEmberFolder }
         .map { it.findChild("package.json") }
