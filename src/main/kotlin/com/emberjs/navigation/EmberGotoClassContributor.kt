@@ -41,21 +41,15 @@ class EmberGotoClassContributor : GotoClassContributor {
         val psiManager = PsiManager.getInstance(project)
 
         // Collect all matching modules from the index
-        return EmberNameIndex.getFilteredKeys(scope) { it.displayName == name }
-
+        return EmberNameIndex.getFilteredPairs(scope) { it.displayName == name }
                 // Find the corresponding PsiFiles
-                .flatMap { module ->
-                    EmberNameIndex.getContainingFiles(module, scope)
-                            .map { psiManager.findFile(it)?.let { Pair(module, it) } }
-                            .filterNotNull()
-                }
-
+                .mapNotNull { (module, file) -> psiManager.findFile(file)?.let { Pair(module, it) } }
                 // Convert search results for LookupElements
                 .map { convert(it.first, it.second) }
                 .toTypedArray()
     }
 
-    private fun convert(module: EmberName, file: PsiFile): DelegatingNavigationItem {
+    private fun  convert(module: EmberName, file: PsiFile): DelegatingNavigationItem {
         val presentation = DelegatingItemPresentation(file.presentation)
                 .withPresentableText(module.displayName)
                 .withLocationString(getLocation(file))

@@ -33,8 +33,7 @@ class EmberInjectionAnnotator : Annotator {
         val scope = ProjectScope.getAllScope(project)
         val psiManager = PsiManager.getInstance(project)
 
-        val referencedFiles = EmberNameIndex.getFilteredKeys(scope) { it == name }
-                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
+        val referencedFiles = EmberNameIndex.getFilteredFiles(scope) { it == name }
                 .map { psiManager.findFile(it) }
                 .filterNotNull()
 

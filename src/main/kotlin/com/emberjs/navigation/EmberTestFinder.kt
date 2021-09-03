@@ -26,11 +26,7 @@ class EmberTestFinder : TestFinder {
         val psiManager = PsiManager.getInstance(project)
         val scope = ProjectScope.getAllScope(project)
 
-        return EmberNameIndex.getFilteredKeys(scope) { it in search }
-                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                .filterNotNull()
-                .map { psiManager.findFile(it) }
-                .filterNotNull()
+        return EmberNameIndex.getFilteredFiles(scope) { it in search }.mapNotNull { psiManager.findFile(it) }
     }
 
     override fun findClassesForTest(element: PsiElement): Collection<PsiElement> {
@@ -44,11 +40,7 @@ class EmberTestFinder : TestFinder {
         val psiManager = PsiManager.getInstance(project)
         val scope = ProjectScope.getAllScope(project)
 
-        return EmberNameIndex.getFilteredKeys(scope) { it == search }
-                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                .filterNotNull()
-                .map { psiManager.findFile(it) }
-                .filterNotNull()
+        return EmberNameIndex.getFilteredFiles(scope) { it == search }.mapNotNull { psiManager.findFile(it) }
     }
 
     override fun isTest(element: PsiElement): Boolean {

@@ -21,11 +21,7 @@ class HbsLinkToReference(element: PsiElement, range: TextRange, val moduleName: 
 
     override fun getVariants(): Array<out Any> {
         // Collect all components from the index
-        return EmberNameIndex.getFilteredKeys(scope) { matches(it) }
-
-                // Filter out components that are not related to this project
-                .filter { EmberNameIndex.hasContainingFiles(it, scope) }
-
+        return EmberNameIndex.getFilteredProjectKeys(scope) { matches(it) }
                 // Convert search results for LookupElements
                 .map { EmberLookupElementBuilder.create(it) }
                 .toTypedArray()
@@ -33,14 +29,9 @@ class HbsLinkToReference(element: PsiElement, range: TextRange, val moduleName: 
 
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         // Collect all components from the index
-        return EmberNameIndex.getFilteredKeys(scope) { matches(it) && it.name == moduleName }
-
-                // Filter out components that are not related to this project
-                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-
+        return EmberNameIndex.getFilteredFiles(scope) { matches(it) && it.name == moduleName }
                 // Convert search results for LookupElements
-                .map { psiManager.findFile(it) }
-                .filterNotNull()
+                .mapNotNull { psiManager.findFile(it) }
                 .let(::createResults)
     }
 

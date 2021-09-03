@@ -25,19 +25,15 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
             val scope = ProjectScope.getAllScope(project)
             val psiManager: PsiManager by lazy { PsiManager.getInstance(project) }
 
-            val componentTemplate = // Filter out components that are not related to this project
-                    EmberNameIndex.getFilteredKeys(scope) { it.isComponentTemplate && it.angleBracketsName == tag.name }
-                            // Filter out components that are not related to this project
-                            .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                            .mapNotNull { psiManager.findFile(it) }
-                            .firstOrNull()
+            val componentTemplate =
+                EmberNameIndex.getFilteredFiles(scope) { it.isComponentTemplate && it.angleBracketsName == tag.name }
+                    .firstNotNullOfOrNull { psiManager.findFile(it) }
 
             if (componentTemplate != null) return EmberXmlElementDescriptor(tag, componentTemplate)
 
-            val component = EmberNameIndex.getFilteredKeys(scope) { it.type == "component" && it.angleBracketsName == tag.name }
-                    .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-                    .mapNotNull { psiManager.findFile(it) }
-                    .firstOrNull()
+            val component =
+                EmberNameIndex.getFilteredFiles(scope) { it.type == "component" && it.angleBracketsName == tag.name }
+                    .firstNotNullOfOrNull { psiManager.findFile(it) }
 
             if (component != null) return EmberXmlElementDescriptor(tag, component)
 

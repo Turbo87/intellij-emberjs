@@ -26,21 +26,13 @@ class EmberTagNameProvider : XmlTagNameProvider {
         val componentMap = hashMapOf<String, LookupElement>()
 
         // Collect all components from the index
-        EmberNameIndex.getFilteredKeys(scope) { it.type == "component" }
-
-            // Filter out components that are not related to this project
-            .filter { EmberNameIndex.hasContainingFiles(it, scope) }
-
+        EmberNameIndex.getFilteredProjectKeys(scope) { it.type == "component" }
             // Convert search results for LookupElements
             .map { Pair(it.angleBracketsName, toLookupElement(it)) }
             .toMap(componentMap)
 
         // Collect all component templates from the index
-        EmberNameIndex.getFilteredKeys(scope) { it.isComponentTemplate }
-
-            // Filter out components that are not related to this project
-            .filter { EmberNameIndex.hasContainingFiles(it, scope) }
-
+        EmberNameIndex.getFilteredProjectKeys(scope) { it.isComponentTemplate }
             // Filter out components that are already in the map
             .filter { !componentMap.containsKey(it.angleBracketsName) }
 
