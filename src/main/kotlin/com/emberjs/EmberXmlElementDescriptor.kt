@@ -27,13 +27,15 @@ class EmberXmlElementDescriptor(private val tag: XmlTag, private val declaration
 
             val componentTemplate =
                 EmberNameIndex.getFilteredFiles(scope) { it.isComponentTemplate && it.angleBracketsName == tag.name }
-                    .firstNotNullOfOrNull { psiManager.findFile(it) }
+                    .mapNotNull { psiManager.findFile(it) }
+                    .firstOrNull()
 
             if (componentTemplate != null) return EmberXmlElementDescriptor(tag, componentTemplate)
 
             val component =
                 EmberNameIndex.getFilteredFiles(scope) { it.type == "component" && it.angleBracketsName == tag.name }
-                    .firstNotNullOfOrNull { psiManager.findFile(it) }
+                    .mapNotNull { psiManager.findFile(it) }
+                    .firstOrNull()
 
             if (component != null) return EmberXmlElementDescriptor(tag, component)
 
