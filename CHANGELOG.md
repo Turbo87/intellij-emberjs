@@ -4,6 +4,20 @@ Changelog
 ===============================================================================
 
 
+## v2021.2.1 (2021-09-08)
+
+#### :rocket: Enhancement
+* [#388](https://github.com/Turbo87/intellij-emberjs/pull/388) Update IntelliJ to v2021.2 ([@stukalin](https://github.com/stukalin))
+
+#### :house: Internal
+* [#392](https://github.com/Turbo87/intellij-emberjs/pull/392) Rework `EmberNameIndex` into `CachedValue` ([@tomblachut](https://github.com/tomblachut))
+* [#384](https://github.com/Turbo87/intellij-emberjs/pull/384) Use modern intellij-platform-plugin-template ([@stukalin](https://github.com/stukalin))
+
+#### Committers: 2
+- Andrey Stukalin ([@stukalin](https://github.com/stukalin))
+- Tomasz Błachut([@tomblachut](https://github.com/tomblachut))
+
+
 ## v2021.1.1
 
 - Change IntelliJ target version to v2021.1 (#369)
