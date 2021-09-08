@@ -29,23 +29,13 @@ class EmberJSLiteralReference(element: JSLiteralExpression, val types: Iterable<
     private fun resolve(value: String): Collection<PsiElement> {
         val names = arrayOf(value, value.removeSuffix("s"))
 
-        // Collect all matching modules from the index
-        return EmberNameIndex.getFilteredKeys(scope) { it.type in types && it.name in names }
-
-                // Filter out components that are not related to this project
-                .flatMap { EmberNameIndex.getContainingFiles(it, scope) }
-
-                // Lookup corresponding PsiFiles
+        return EmberNameIndex.getFilteredFiles(scope) { it.type in types && it.name in names }
                 .map { psiManager.findFile(it) }
                 .filterNotNull()
     }
 
     override fun getVariants(): Array<out Any> {
-        return EmberNameIndex.getFilteredKeys(scope) { it.type == types.firstOrNull() }
-
-                // Filter out modules that are not related to this project
-                .filter { EmberNameIndex.hasContainingFiles(it, scope) }
-
+        return EmberNameIndex.getFilteredProjectKeys(scope) { it.type == types.firstOrNull() }
                 // Convert search results for LookupElements
                 .map { EmberLookupElementBuilder.create(it) }
                 .toTypedArray()

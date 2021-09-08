@@ -44,9 +44,6 @@ class EmberTestFinderTest : BasePlatformTestCase() {
         // Load fixture files into the project
         val root = myFixture.copyDirectoryToProject(fixtureName, "/")
 
-        // Rebuild index now that the `package.json` file is copied over
-        FileBasedIndex.getInstance().requestRebuild(EmberNameIndex.NAME)
-
         val project = myFixture.project
         val psiManager = PsiManager.getInstance(project)
 

@@ -24,7 +24,7 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
                 .filterNotNull()
     }
 
-    fun getItems(file: VirtualFile, project: Project): List<Pair<EmberName, VirtualFile>> {
+    fun getItems(file: VirtualFile, project: Project): Collection<Pair<EmberName, VirtualFile>> {
         val name = EmberName.from(file) ?: return listOf()
 
         val modulesToSearch = when {
@@ -51,8 +51,7 @@ class EmberGotoRelatedProvider : GotoRelatedProvider() {
 
         val scope = ProjectScope.getAllScope(project)
 
-        return EmberNameIndex.getFilteredKeys(scope) { it in modulesToSearch }
-                .flatMap { module -> EmberNameIndex.getContainingFiles(module, scope).map { module to it } }
+        return EmberNameIndex.getFilteredPairs(scope) { it in modulesToSearch }
     }
 
     companion object {

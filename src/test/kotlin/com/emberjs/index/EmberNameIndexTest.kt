@@ -16,12 +16,6 @@ class EmberNameIndexTest : BasePlatformTestCase() {
         // Load fixture files into the project
         myFixture.copyDirectoryToProject(getTestName(true), "/")
 
-        // Rebuild index now that the `package.json` file is copied over
-        FileBasedIndex.getInstance().apply {
-            ensureUpToDate(EmberNameIndex.NAME, myFixture.project, null)
-            requestRebuild(EmberNameIndex.NAME)
-        }
-
         assertThat(EmberNameIndex.getAllKeys(myFixture.project))
                 .containsOnly(*modules.map { EmberName.from(it) }.toTypedArray())
     }
