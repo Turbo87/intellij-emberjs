@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "config:base",
+    ":automergePatch",
+    ":dependencyDashboard",
+    ":maintainLockFilesWeekly",
+    ":pinDependencies",
+    ":prConcurrentLimitNone",
+    ":prHourlyLimitNone",
+    ":semanticCommitsDisabled"
+  ],
+  "packageRules": [
+    {
+      "matchCurrentVersion": ">= 1.0.0",
+      "updateTypes": ["minor"],
+      "automerge": true
+    },
+    {
+      "depTypeList": ["devDependencies"],
+      "automerge": true
+    }
+  ]
+}
