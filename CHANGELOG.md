@@ -4,6 +4,20 @@ Changelog
 ===============================================================================
 
 
+## v2021.2.2 (2021-11-11)
+
+#### :rocket: Enhancement
+* [#411](https://github.com/Turbo87/intellij-emberjs/pull/411) Add option to run `ember-template-lint --fix` on save ([@dwickern](https://github.com/dwickern))
+
+#### :house: Internal
+* [#403](https://github.com/Turbo87/intellij-emberjs/pull/403) CI: Pin GitHub Actions ([@Turbo87](https://github.com/Turbo87))
+* [#402](https://github.com/Turbo87/intellij-emberjs/pull/402) Gradle: Inline properties ([@Turbo87](https://github.com/Turbo87))
+
+#### Committers: 2
+- Derek Wickern ([@dwickern](https://github.com/dwickern))
+- Tobias Bieniek ([@Turbo87](https://github.com/Turbo87))
+
+
 ## v2021.2.1 (2021-09-08)
 
 #### :rocket: Enhancement
