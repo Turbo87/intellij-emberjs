@@ -19,7 +19,7 @@ class TemplateLintResultParser {
         private const val SEVERITY = "severity"
         private const val MESSAGE = "message"
 
-        private fun parseItem(map: JSONObject): JSLinterError? {
+        private fun parseItem(map: JSONObject): JSLinterError {
             val line = map.getInt(LINE)
             val column = map.getInt(COLUMN)
             val rule = map.getString(RULE)
@@ -36,12 +36,12 @@ class TemplateLintResultParser {
     }
 
     @Throws(Exception::class)
-    fun parse(stdout: String?): List<JSLinterError?>? {
+    fun parse(stdout: String?): List<JSLinterError>? {
         if (StringUtil.isEmptyOrSpaces(stdout)) {
             return null
         }
 
-        val errorList: ArrayList<JSLinterError?> = ArrayList()
+        val errorList: ArrayList<JSLinterError> = ArrayList()
         try {
             val obj = JSONObject(stdout)
 

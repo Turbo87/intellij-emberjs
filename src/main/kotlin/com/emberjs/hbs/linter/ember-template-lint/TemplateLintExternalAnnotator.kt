@@ -27,7 +27,7 @@ class TemplateLintExternalAnnotator(onTheFly: Boolean = true) : JSLinterExternal
     }
 
     override fun annotate(input: JSLinterInput<TemplateLintState>): JSLinterAnnotationResult? {
-        return TemplateLintExternalRunner(this.isOnTheFly).execute(input)
+        return TemplateLintExternalRunner(this.isOnTheFly).highlight(input)
     }
 
     override fun apply(file: PsiFile, annotationResult: JSLinterAnnotationResult?, holder: AnnotationHolder) {

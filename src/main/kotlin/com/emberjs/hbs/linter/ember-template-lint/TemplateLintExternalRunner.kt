@@ -27,7 +27,7 @@ class TemplateLintExternalRunner(private val myIsOnTheFly: Boolean = false) {
     companion object {
         private val LOG = Logger.getInstance(TemplateLintExternalRunner::class.java)
 
-        private fun templateLint(input: JSLinterInput<TemplateLintState>, sessionData: TemplateLintSessionData): JSLinterAnnotationResult? {
+        private fun templateLint(input: JSLinterInput<TemplateLintState>, sessionData: TemplateLintSessionData): JSLinterAnnotationResult {
             val startNanoTime = System.nanoTime()
             val result = runProcess(input, sessionData)
             logEnd(startNanoTime, result.errors.size)
@@ -35,7 +35,6 @@ class TemplateLintExternalRunner(private val myIsOnTheFly: Boolean = false) {
         }
 
         private fun runProcess(input: JSLinterInput<TemplateLintState>, sessionData: TemplateLintSessionData): JSLinterAnnotationResult {
-            var result: JSLinterAnnotationResult?
             try {
                 val commandLine = createCommandLine(sessionData)
                 logStart(sessionData, commandLine)
@@ -63,14 +62,13 @@ class TemplateLintExternalRunner(private val myIsOnTheFly: Boolean = false) {
                         }
                         return createFileLevelWarning(stdout, input, commandLine, processHandler, output)
                     }
-                    result = JSLinterAnnotationResult.createLinterResult(input, errors, null as VirtualFile?)
+                    return JSLinterAnnotationResult.createLinterResult(input, errors, null as VirtualFile?)
                 } catch (exception: Exception) {
                     return createFileLevelWarning(exception.message!!, input, commandLine, processHandler, output)
                 }
             } catch (executionException: ExecutionException) {
                 return createFileLevelWarning(executionException.message!!, input)
             }
-            return result!!
         }
 
         @Throws(IOException::class)
@@ -124,6 +122,10 @@ class TemplateLintExternalRunner(private val myIsOnTheFly: Boolean = false) {
             }
             // TODO: else case?
 
+            if (sessionData.fix) {
+                commandLine.addParameter("--fix")
+            }
+
             NodeCommandLineConfigurator
                     .find(sessionData.interpreter)
                     .configure(commandLine)
@@ -165,7 +167,15 @@ class TemplateLintExternalRunner(private val myIsOnTheFly: Boolean = false) {
         }
     }
 
-    fun execute(input: JSLinterInput<TemplateLintState>): JSLinterAnnotationResult? {
+    fun highlight(input: JSLinterInput<TemplateLintState>): JSLinterAnnotationResult? {
+        return execute(input, false)
+    }
+
+    fun fixFile(input: JSLinterInput<TemplateLintState>) {
+        execute(input, true)
+    }
+
+    private fun execute(input: JSLinterInput<TemplateLintState>, fix: Boolean): JSLinterAnnotationResult? {
         val fileToLint = input.virtualFile
         return if (fileToLint.isValid && fileToLint.parent != null) {
             try {
@@ -199,7 +209,7 @@ class TemplateLintExternalRunner(private val myIsOnTheFly: Boolean = false) {
                                 JSLinterAnnotationResult.create(input, error, null as VirtualFile?)
                             } else {
                                 val templateLintPackage = TemplateLintPackage.fromNodePackage(input.project, state.templateLintPackage)
-                                val sessionData = TemplateLintSessionData(interpreter, templateLintPackage, workingDirectory, fileToLint, input.fileContent)
+                                val sessionData = TemplateLintSessionData(interpreter, templateLintPackage, workingDirectory, fileToLint, input.fileContent, fix)
                                 templateLint(input, sessionData)
                             }
                         }

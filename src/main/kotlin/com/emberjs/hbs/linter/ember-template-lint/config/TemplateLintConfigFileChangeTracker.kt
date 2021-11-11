@@ -7,7 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 
 class TemplateLintConfigFileChangeTracker(project: Project) : JSLinterConfigChangeTracker(project, ::isTemplateLintConfigFile) {
     override fun isAnalyzerRestartNeeded(project: Project, file: VirtualFile): Boolean {
-        return JSLinterConfiguration.getInstance(project, TemplateLintConfiguration::class.java).extendedState.isEnabled
+        return TemplateLintConfiguration.getInstance(project).extendedState.isEnabled
     }
 
 }
