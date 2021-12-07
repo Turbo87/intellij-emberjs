@@ -4,6 +4,15 @@ Changelog
 ===============================================================================
 
 
+## v2021.3.1 (2021-12-07)
+
+#### :rocket: Enhancement
+* [#409](https://github.com/Turbo87/intellij-emberjs/pull/409) Update IntelliJ to v2021.3 ([@Turbo87](https://github.com/Turbo87))
+
+#### Committers: 1
+- Tobias Bieniek ([@Turbo87](https://github.com/Turbo87))
+
+
 ## v2021.2.2 (2021-11-11)
 
 #### :rocket: Enhancement
