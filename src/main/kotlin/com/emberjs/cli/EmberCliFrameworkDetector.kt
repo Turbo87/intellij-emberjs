@@ -30,7 +30,7 @@ class EmberCliFrameworkDetector : FrameworkDetector("Ember") {
 
     override fun getFrameworkType(): FrameworkType = EmberFrameworkType
 
-    override fun detect(newFiles: MutableCollection<VirtualFile>, context: FrameworkDetectionContext): MutableList<out DetectedFrameworkDescription> {
+    override fun detect(newFiles: MutableCollection<out VirtualFile>, context: FrameworkDetectionContext): MutableList<out DetectedFrameworkDescription> {
         val rootDir = newFiles.firstOrNull()?.parent
         if (rootDir != null && !isConfigured(newFiles, context.project)) {
             return mutableListOf(EmberFrameworkDescription(rootDir, newFiles))
