@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.emberjs"
-version = "2021.3.1"
+version = "2022.1"
 
 // Configure project's dependencies
 repositories {
@@ -27,7 +27,7 @@ intellij {
 
     // see https://www.jetbrains.com/intellij-repository/releases/
     // and https://www.jetbrains.com/intellij-repository/snapshots/
-    version.set("2021.3")
+    version.set("2022.1")
     type.set("IU")
 
     downloadSources.set(!System.getenv().containsKey("CI"))
@@ -37,7 +37,7 @@ intellij {
     // Example: platformPlugins = com.intellij.java, com.jetbrains.php:203.4449.22
     //
     // com.dmarcotte.handlebars: see https://plugins.jetbrains.com/plugin/6884-handlebars-mustache/versions
-    plugins.set(listOf("JavaScriptLanguage", "CSS", "yaml", "com.dmarcotte.handlebars:213.5744.190"))
+    plugins.set(listOf("JavaScriptLanguage", "CSS", "yaml", "com.dmarcotte.handlebars:221.5080.224"))
 
     sandboxDir.set(project.rootDir.canonicalPath + "/.sandbox")
 }
