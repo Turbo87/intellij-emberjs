@@ -6,8 +6,6 @@ import com.emberjs.utils.isInRepoAddon
 import com.intellij.ide.projectView.actions.MarkRootActionBase
 import com.intellij.lang.javascript.dialects.JSLanguageLevel
 import com.intellij.lang.javascript.library.JSLibraryManager
-import com.intellij.lang.javascript.linter.jshint.JSHintConfiguration
-import com.intellij.lang.javascript.linter.jshint.JSHintState
 import com.intellij.lang.javascript.settings.JSRootConfiguration
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
@@ -28,7 +26,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType
 
 class EmberCliProjectConfigurator : DirectoryProjectConfigurator {
-    override fun configureProject(project: Project, baseDir: VirtualFile, moduleRef: Ref<Module>) {
+    override fun configureProject(project: Project, baseDir: VirtualFile, moduleRef: Ref<Module>, isProjectCreatedWithWizard: Boolean) {
         val module = ModuleManager.getInstance(project).modules.singleOrNull()
         if (module != null && baseDir.isEmberFolder) {
             setupEmber(project, module, baseDir)
