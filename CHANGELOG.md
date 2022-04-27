@@ -4,6 +4,17 @@ Changelog
 ===============================================================================
 
 
+## v2022.1.1 (2022-04-27)
+
+#### :rocket: Enhancement
+* [#440](https://github.com/Turbo87/intellij-emberjs/pull/440) Fix `LineMarkerInfo` deprecation error ([@Turbo87](https://github.com/Turbo87))
+* [#436](https://github.com/Turbo87/intellij-emberjs/pull/436) Update IntelliJ to v2022.1 ([@ChrisCarini](https://github.com/ChrisCarini))
+
+#### Committers: 2
+- Chris Carini ([@ChrisCarini](https://github.com/ChrisCarini))
+- Tobias Bieniek ([@Turbo87](https://github.com/Turbo87))
+
+
 ## v2021.3.1 (2021-12-07)
 
 #### :rocket: Enhancement
