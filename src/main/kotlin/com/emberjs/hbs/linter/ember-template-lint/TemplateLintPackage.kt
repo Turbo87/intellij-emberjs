@@ -5,6 +5,7 @@ import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreter
 import com.intellij.javascript.nodejs.library.yarn.YarnPnpNodePackage
 import com.intellij.javascript.nodejs.util.NodePackage
 import com.intellij.openapi.project.Project
+import com.intellij.util.text.SemVer
 import java.io.File
 import java.io.IOException
 
@@ -12,11 +13,11 @@ class TemplateLintPackage(
         private val myProject: Project,
         private val myPkg: NodePackage
 ) {
+    val version: SemVer?
+        get() = myPkg.getVersion(myProject)
+
     val versionStr: String
-        get() {
-            val version = myPkg.getVersion(myProject)
-            return version?.rawVersion ?: "<unknown>"
-        }
+        get() = version?.rawVersion ?: "<unknown>"
 
     @Throws(ExecutionException::class)
     fun addMainEntryJsFile(commandLine: GeneralCommandLine, interpreter: NodeJsInterpreter) {
