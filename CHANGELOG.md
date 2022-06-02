@@ -4,6 +4,15 @@ Changelog
 ===============================================================================
 
 
+## v2022.1.2 (2022-06-02)
+
+#### :rocket: Enhancement
+* [#444](https://github.com/Turbo87/intellij-emberjs/pull/444) support ember-template-lint v4 command-line syntax ([@dwickern](https://github.com/dwickern))
+
+#### Committers: 1
+- Derek Wickern ([@dwickern](https://github.com/dwickern))
+
+
 ## v2022.1.1 (2022-04-27)
 
 #### :rocket: Enhancement
