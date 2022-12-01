@@ -4,6 +4,15 @@ Changelog
 ===============================================================================
 
 
+## v2022.3.1 (2022-12-01)
+
+#### :rocket: Enhancement
+* [#467](https://github.com/Turbo87/intellij-emberjs/pull/467) Update IntelliJ to 2022.3 ([@Turbo87](https://github.com/Turbo87))
+
+#### Committers: 1
+- Tobias Bieniek ([@Turbo87](https://github.com/Turbo87))
+
+
 ## v2022.2.1 (2022-08-09)
 
 #### :rocket: Enhancement
