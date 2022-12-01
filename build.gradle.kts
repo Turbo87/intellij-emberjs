@@ -27,7 +27,7 @@ intellij {
 
     // see https://www.jetbrains.com/intellij-repository/releases/
     // and https://www.jetbrains.com/intellij-repository/snapshots/
-    version.set("2022.2")
+    version.set("2022.3")
     type.set("IU")
 
     downloadSources.set(!System.getenv().containsKey("CI"))
@@ -37,7 +37,7 @@ intellij {
     // Example: platformPlugins = com.intellij.java, com.jetbrains.php:203.4449.22
     //
     // com.dmarcotte.handlebars: see https://plugins.jetbrains.com/plugin/6884-handlebars-mustache/versions
-    plugins.set(listOf("JavaScriptLanguage", "CSS", "yaml", "com.dmarcotte.handlebars:222.3345.108"))
+    plugins.set(listOf("JavaScript", "com.intellij.css", "yaml", "com.dmarcotte.handlebars:223.7571.117"))
 
     sandboxDir.set(project.rootDir.canonicalPath + "/.sandbox")
 }
