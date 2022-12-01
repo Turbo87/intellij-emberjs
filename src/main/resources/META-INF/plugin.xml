@@ -5,7 +5,7 @@
     <vendor url="https://github.com/turbo87/">Tobias Bieniek</vendor>
 
     <description><![CDATA[
-      This plugin provides basic <a href="http://emberjs.com/">Ember.js</a> support to all JetBrains IDEs that support JavaScript.
+      This plugin provides basic <a href="https://emberjs.com/">Ember.js</a> support to all JetBrains IDEs that support JavaScript.
       <p>Features:</p>
       <ul>
         <li>Ember.js project discovery when imported from existing sources</li>
