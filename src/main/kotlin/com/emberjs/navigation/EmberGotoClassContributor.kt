@@ -17,7 +17,7 @@ import com.intellij.util.indexing.FindSymbolParameters.searchScopeFor
 class EmberGotoClassContributor : GotoClassContributor {
     private val iconProvider by lazy { EmberIconProvider() }
 
-    override fun getQualifiedName(item: NavigationItem?): String? {
+    override fun getQualifiedName(item: NavigationItem): String? {
         if (item is DelegatingNavigationItem) {
             return item.presentation?.presentableText?.replace("-", qualifiedNameSeparator)
         }
