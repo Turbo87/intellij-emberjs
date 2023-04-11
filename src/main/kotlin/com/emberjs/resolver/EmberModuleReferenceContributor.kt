@@ -5,13 +5,11 @@ import com.emberjs.utils.emberRoot
 import com.emberjs.utils.isInRepoAddon
 import com.emberjs.utils.parents
 import com.intellij.lang.javascript.DialectDetector
-import com.intellij.lang.javascript.frameworks.amd.JSModuleReference
 import com.intellij.lang.javascript.frameworks.modules.JSExactFileReference
 import com.intellij.lang.javascript.psi.resolve.JSModuleReferenceContributor
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceSet
 import java.util.regex.Pattern
 
@@ -63,19 +61,6 @@ class EmberModuleReferenceContributor : JSModuleReferenceContributor {
 
         try {
             refs = object : FileReferenceSet(importPath, host, startInElement, provider, false, true, DialectDetector.JAVASCRIPT_FILE_TYPES_ARRAY) {
-                override fun createFileReference(range: TextRange, index: Int, text: String?): FileReference {
-                    return object : JSModuleReference(text, index, range, this, null, true) {
-                        override fun innerResolveInContext(referenceText: String, psiFileSystemItem: PsiFileSystemItem, resolveResults: MutableCollection<ResolveResult>, caseSensitive: Boolean) {
-                            super.innerResolveInContext(referenceText, psiFileSystemItem, resolveResults, caseSensitive)
-
-                            // don't suggest the current file, e.g. when navigating from /app to /addon
-                            resolveResults.removeAll { it.element?.containingFile == host.containingFile }
-                        }
-
-                        override fun isAllowFolders() = false
-                    }
-                }
-
                 override fun computeDefaultContexts(): MutableCollection<PsiFileSystemItem> {
                     return roots
                             .flatMap { it.multiResolve(false).asIterable() }
