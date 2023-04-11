@@ -3,18 +3,18 @@ package com.emberjs.icons
 import com.intellij.openapi.util.IconLoader
 
 object EmberIcons {
-    val ICON_16 = IconLoader.getIcon("/com/emberjs/icons/icon16.png")
-    val ICON_24 = IconLoader.getIcon("/com/emberjs/icons/icon24.png")
+    val ICON_16 = IconLoader.getIcon("/com/emberjs/icons/icon16.png", EmberIcons.javaClass.classLoader)
+    val ICON_24 = IconLoader.getIcon("/com/emberjs/icons/icon24.png", EmberIcons.javaClass.classLoader)
 
-    val EMPTY_16 = IconLoader.getIcon("/com/emberjs/icons/empty16.png")
-    val ADAPTER_16 = IconLoader.getIcon("/com/emberjs/icons/adapter16.png")
-    val COMPONENT_16 = IconLoader.getIcon("/com/emberjs/icons/component16.png")
-    val CONTROLLER_16 = IconLoader.getIcon("/com/emberjs/icons/controller16.png")
-    val MODEL_16 = IconLoader.getIcon("/com/emberjs/icons/model16.png")
-    val ROUTE_16 = IconLoader.getIcon("/com/emberjs/icons/route16.png")
-    val SERVICE_16 = IconLoader.getIcon("/com/emberjs/icons/service16.png")
+    val EMPTY_16 = IconLoader.getIcon("/com/emberjs/icons/empty16.png", EmberIcons.javaClass.classLoader)
+    val ADAPTER_16 = IconLoader.getIcon("/com/emberjs/icons/adapter16.png", EmberIcons.javaClass.classLoader)
+    val COMPONENT_16 = IconLoader.getIcon("/com/emberjs/icons/component16.png", EmberIcons.javaClass.classLoader)
+    val CONTROLLER_16 = IconLoader.getIcon("/com/emberjs/icons/controller16.png", EmberIcons.javaClass.classLoader)
+    val MODEL_16 = IconLoader.getIcon("/com/emberjs/icons/model16.png", EmberIcons.javaClass.classLoader)
+    val ROUTE_16 = IconLoader.getIcon("/com/emberjs/icons/route16.png", EmberIcons.javaClass.classLoader)
+    val SERVICE_16 = IconLoader.getIcon("/com/emberjs/icons/service16.png", EmberIcons.javaClass.classLoader)
 
-    val TEMPLATE_LINT_16 = IconLoader.getIcon("/com/emberjs/icons/template-lint16.png")
+    val TEMPLATE_LINT_16 = IconLoader.getIcon("/com/emberjs/icons/template-lint16.png", EmberIcons.javaClass.classLoader)
 
     val FILE_TYPE_ICONS = mapOf(
             "adapter" to ADAPTER_16,
