@@ -2,6 +2,7 @@ import com.dmarcotte.handlebars.file.HbFileType
 import com.emberjs.icons.EmberIcons
 import com.intellij.lang.javascript.linter.JSLinterFixAction
 import com.intellij.lang.javascript.linter.JSLinterInput
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.progress.ProgressIndicator
@@ -29,8 +30,7 @@ class TemplateLintFixAction : JSLinterFixAction(
                     fixFile(psiFile)
                 }
             }
-
-            completeCallback.run()
+            ApplicationManager.getApplication().invokeLater(completeCallback)
         }
     }
 
