@@ -4,6 +4,15 @@ Changelog
 ===============================================================================
 
 
+## v2023.1.2 (2023-04-21)
+
+#### :bug: Bug Fix
+* [#485](https://github.com/Turbo87/intellij-emberjs/pull/485) Fix deadlock running TemplateLint on save ([@dwickern](https://github.com/dwickern))
+
+#### Committers: 1
+- Derek Wickern ([@dwickern](https://github.com/dwickern))
+
+
 ## v2023.1.1 (2023-04-11)
 
 #### :rocket: Enhancement
