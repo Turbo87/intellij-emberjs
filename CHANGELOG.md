@@ -4,6 +4,15 @@ Changelog
 ===============================================================================
 
 
+## v2023.2.1 (2023-07-28)
+
+#### :rocket: Enhancement
+* [#490](https://github.com/Turbo87/intellij-emberjs/pull/490) Update IntelliJ to 2023.2 ([@Turbo87](https://github.com/Turbo87))
+
+#### Committers: 1
+- Tobias Bieniek ([@Turbo87](https://github.com/Turbo87))
+
+
 ## v2023.1.2 (2023-04-21)
 
 #### :bug: Bug Fix
