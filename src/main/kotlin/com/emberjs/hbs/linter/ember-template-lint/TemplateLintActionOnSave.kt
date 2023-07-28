@@ -8,12 +8,13 @@ import com.intellij.openapi.roots.ProjectFileIndex
 class TemplateLintActionOnSave : ActionOnSave() {
     override fun isEnabledForProject(project: Project): Boolean = isFixOnSaveEnabled(project)
 
-    override fun processDocuments(project: Project, documents: Array<out Document>) {
+    override fun processDocuments(project: Project, documents: Array<Document?>) {
         if (!this.isEnabledForProject(project)) return
 
         val manager = FileDocumentManager.getInstance()
         val fileIndex = ProjectFileIndex.getInstance(project)
         val files = documents
+                .filterNotNull()
                 .mapNotNull { manager.getFile(it) }
                 .filter { it.isInLocalFileSystem && fileIndex.isInContent(it) }
                 .toTypedArray()
