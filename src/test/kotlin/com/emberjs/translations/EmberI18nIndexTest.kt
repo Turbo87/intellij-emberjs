@@ -1,5 +1,6 @@
 package com.emberjs.translations
 
+import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import org.assertj.core.api.Assertions.assertThat
@@ -40,6 +41,8 @@ class EmberI18nIndexTest : BasePlatformTestCase() {
 
         // Rebuild index now that the `package.json` file is copied over
         FileBasedIndex.getInstance().requestRebuild(EmberI18nIndex.NAME)
+
+        PlatformTestUtil.dispatchAllEventsInIdeEventQueue()
     }
 
     private fun doTest(key: String, expected: Map<String, String>, fixtureName: String = "ember-i18n") {
