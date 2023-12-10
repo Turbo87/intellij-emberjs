@@ -4,6 +4,22 @@ Changelog
 ===============================================================================
 
 
+## v2023.3.1 (2023-12-10)
+
+#### :rocket: Enhancement
+* [#501](https://github.com/Turbo87/intellij-emberjs/pull/501) Update IntelliJ to 2023.3 ([@Turbo87](https://github.com/Turbo87))
+
+#### :house: Internal
+* [#478](https://github.com/Turbo87/intellij-emberjs/pull/478) Update dependency gradle to v8 ([@renovate[bot]](https://github.com/apps/renovate))
+* [#486](https://github.com/Turbo87/intellij-emberjs/pull/486) Update plugin org.jetbrains.intellij to v1.16.1 ([@renovate[bot]](https://github.com/apps/renovate))
+* [#450](https://github.com/Turbo87/intellij-emberjs/pull/450) Update dependency gradle to v7.6.3 ([@renovate[bot]](https://github.com/apps/renovate))
+* [#503](https://github.com/Turbo87/intellij-emberjs/pull/503) Replace deprecated `toUpper/LowerCase()` fns ([@Turbo87](https://github.com/Turbo87))
+* [#502](https://github.com/Turbo87/intellij-emberjs/pull/502) Remove obsolete `Process` extensions ([@Turbo87](https://github.com/Turbo87))
+
+#### Committers: 1
+- Tobias Bieniek ([@Turbo87](https://github.com/Turbo87))
+
+
 ## v2023.2.1 (2023-07-28)
 
 #### :rocket: Enhancement
