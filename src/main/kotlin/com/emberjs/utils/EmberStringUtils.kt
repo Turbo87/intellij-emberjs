@@ -10,23 +10,23 @@ private val STRING_CLASSIFY_REGEXP_3 = Regex("(^|\\/|\\.)([a-z])")
 
 fun String.classify(): String {
     val replace1: (MatchResult) -> String = {
-        it.groups[2]?.value?.toUpperCase()?.prepend("_").orEmpty()
+        it.groups[2]?.value?.uppercase()?.prepend("_").orEmpty()
     }
 
     val replace2: (MatchResult) -> String = {
-        it.groups[3]?.value?.toUpperCase().orEmpty().prepend(it.groups[1]?.value.orEmpty())
+        it.groups[3]?.value?.uppercase().orEmpty().prepend(it.groups[1]?.value.orEmpty())
     }
 
     return this.splitToSequence("/")
             .map { part -> part.replace(STRING_CLASSIFY_REGEXP_1, replace1) }
             .map { part -> part.replace(STRING_CLASSIFY_REGEXP_2, replace2) }
             .joinToString("/")
-            .replace(STRING_CLASSIFY_REGEXP_3) { it.value.toUpperCase() }
+            .replace(STRING_CLASSIFY_REGEXP_3) { it.value.uppercase() }
 }
 
 private val STRING_DECAMELIZE_REGEXP = Regex("([a-z\\d])([A-Z])")
 
-fun String.decamelize(): String = replace(STRING_DECAMELIZE_REGEXP, "$1_$2").toLowerCase(Locale.ROOT)
+fun String.decamelize(): String = replace(STRING_DECAMELIZE_REGEXP, "$1_$2").lowercase()
 
 private val STRING_DASHERIZE_REGEXP = Regex("[ _]")
 
