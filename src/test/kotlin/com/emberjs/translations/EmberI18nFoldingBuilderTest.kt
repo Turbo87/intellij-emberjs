@@ -1,5 +1,6 @@
 package com.emberjs.translations
 
+import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import java.nio.file.Paths
@@ -17,6 +18,8 @@ class EmberI18nFoldingBuilderTest : BasePlatformTestCase() {
 
         // Rebuild index now that the `package.json` file is copied over
         FileBasedIndex.getInstance().requestRebuild(EmberI18nIndex.NAME)
+
+        PlatformTestUtil.dispatchAllEventsInIdeEventQueue()
 
         myFixture.testFoldingWithCollapseStatus(
                 "$testDataPath/$fixtureName/app/templates/$templateName-expectation.hbs",
