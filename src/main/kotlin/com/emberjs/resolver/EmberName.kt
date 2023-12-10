@@ -32,10 +32,10 @@ data class EmberName(val type: String, val name: String) {
             if (it.value == "/") return@replace "::"
 
             if (it.range.first == 0 || !ALPHA.matches(baseName.subSequence(it.range.start - 1, it.range.start))) {
-                return@replace it.value.toUpperCase()
+                return@replace it.value.uppercase()
             }
 
-            if (it.value == "-") "" else it.value.toLowerCase()
+            if (it.value == "-") "" else it.value.lowercase()
         }
     }
 
@@ -103,14 +103,14 @@ data class EmberName(val type: String, val name: String) {
                 // detect flat and nested component layout (where hbs file lies in the components/ folder)
                 if (type == EmberFileType.COMPONENT) {
                     if (file.extension == "hbs") {
-                        return EmberName(EmberFileType.TEMPLATE.name.toLowerCase(), "components/$name")
+                        return EmberName(EmberFileType.TEMPLATE.name.lowercase(), "components/$name")
                     }
                     if (file.extension == "css" || file.extension == "scss") {
                         return EmberName("styles", "components/${name.removeSuffix(".module")}")
                     }
                 }
 
-                EmberName(type.name.toLowerCase(), name)
+                EmberName(type.name.lowercase(), name)
             }
         }
 
@@ -134,7 +134,7 @@ data class EmberName(val type: String, val name: String) {
 
                 val name = "$path/${file.nameWithoutExtension.removeSuffix("-test")}".removePrefix("/")
 
-                EmberName("${type.name.toLowerCase()}$testSuffix", name)
+                EmberName("${type.name.lowercase()}$testSuffix", name)
             }
         }
 
@@ -181,7 +181,7 @@ data class EmberName(val type: String, val name: String) {
                                 else -> it
                             }
                         }
-                        .let { EmberName(type.name.toLowerCase(), it) }
+                        .let { EmberName(type.name.lowercase(), it) }
             }
         }
 
@@ -212,7 +212,7 @@ data class EmberName(val type: String, val name: String) {
                             }
                         }
 
-                EmberName("${type.name.toLowerCase()}$testSuffix", name)
+                EmberName("${type.name.lowercase()}$testSuffix", name)
             }
         }
     }

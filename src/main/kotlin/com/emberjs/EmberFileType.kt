@@ -16,8 +16,8 @@ enum class EmberFileType(val fileExtension: String = "js") {
     TRANSFORM(),
     VIEW();
 
-    val fileName = "${name.toLowerCase()}.$fileExtension"
-    val folderName = "${name.toLowerCase()}s"
+    val fileName = "${name.lowercase()}.$fileExtension"
+    val folderName = "${name.lowercase()}s"
 
     companion object {
         val FILE_NAMES = values().associateBy({ it.fileName }, { it })
