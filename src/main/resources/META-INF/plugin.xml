@@ -42,6 +42,7 @@
 
         <applicationConfigurable
                 id="configurable.emberjs"
+                displayName="Ember.js Settings"
                 instance="com.emberjs.settings.EmberApplicationConfigurable"/>
         <framework.detector implementation="com.emberjs.cli.EmberCliFrameworkDetector"/>
         <directoryProjectConfigurator implementation="com.emberjs.cli.EmberCliProjectConfigurator"
