@@ -4,6 +4,15 @@ Changelog
 ===============================================================================
 
 
+## v2023.3.2 (2023-12-12)
+
+#### :bug: Bug Fix
+* [#505](https://github.com/Turbo87/intellij-emberjs/pull/505) Fix "No display name is specified for configurable" issue ([@Tolke](https://github.com/Tolke))
+
+#### Committers: 1
+- Miguel Angel Casanova ([@Tolke](https://github.com/Tolke))
+
+
 ## v2023.3.1 (2023-12-10)
 
 #### :rocket: Enhancement
