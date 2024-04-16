@@ -72,7 +72,7 @@ class ElementUtils {
         fun removeEnv(element: Element) {
             element.children
                     .find { it.name === "envs" }
-                    ?.let { it.parentElement.removeContent(it) }
+                    ?.let { it.parentElement?.removeContent(it) }
         }
 
         fun writeEnv(element: Element, map: Map<String, String>) {
