@@ -1,5 +1,6 @@
 package com.emberjs.translations
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
@@ -43,6 +44,7 @@ class EmberI18nIndexTest : BasePlatformTestCase() {
         FileBasedIndex.getInstance().requestRebuild(EmberI18nIndex.NAME)
 
         PlatformTestUtil.dispatchAllEventsInIdeEventQueue()
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
     }
 
     private fun doTest(key: String, expected: Map<String, String>, fixtureName: String = "ember-i18n") {
