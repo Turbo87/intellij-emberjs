@@ -19,7 +19,7 @@ jobs:
          os: [ubuntu-latest, windows-latest]
 
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: true
 
