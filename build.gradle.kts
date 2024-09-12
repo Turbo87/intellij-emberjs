@@ -17,6 +17,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
+    implementation("org.codehaus.jettison:jettison:1.5.1")
     testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
