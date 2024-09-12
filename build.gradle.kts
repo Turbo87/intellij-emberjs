@@ -4,13 +4,13 @@ plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.9.23"
+    id("org.jetbrains.kotlin.jvm") version "1.9.25"
     // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
-    id("org.jetbrains.intellij") version "1.16.1"
+    id("org.jetbrains.intellij") version "1.17.4"
 }
 
 group = "com.emberjs"
-version = "2023.3.2"
+version = "2024.1.1"
 
 // Configure project's dependencies
 repositories {
@@ -18,7 +18,7 @@ repositories {
 }
 dependencies {
     implementation("org.codehaus.jettison:jettison:1.5.1")
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.assertj:assertj-core:3.25.3")
 }
 
 // Configure gradle-intellij-plugin plugin.

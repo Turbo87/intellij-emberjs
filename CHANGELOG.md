@@ -4,6 +4,16 @@ Changelog
 ===============================================================================
 
 
+## v2024.1.1 (2024-04-16)
+
+#### :rocket: Enhancement
+* [#513](https://github.com/Turbo87/intellij-emberjs/pull/513) Update to IntelliJ 2024.1 ([@zimmermq](https://github.com/zimmermq) and [@dwickern](https://github.com/dwickern))
+
+#### Committers: 1
+- [@zimmermq](https://github.com/zimmermq)
+- Derek Wickern ([@dwickern](https://github.com/dwickern))
+
+
 ## v2023.3.2 (2023-12-12)
 
 #### :bug: Bug Fix
