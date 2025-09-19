@@ -17,7 +17,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    testImplementation("org.assertj:assertj-core:3.27.4")
+    testImplementation("org.assertj:assertj-core:3.27.5")
 }
 
 // Configure gradle-intellij-plugin plugin.
