@@ -1,5 +1,5 @@
 import com.intellij.javascript.nodejs.PackageJsonData
-import com.intellij.lang.javascript.JSBundle
+import com.intellij.lang.javascript.JavaScriptBundle
 import com.intellij.lang.javascript.linter.JSLinterGuesser
 import com.intellij.lang.javascript.linter.JSLinterUtil
 import com.intellij.notification.Notification
@@ -58,7 +58,7 @@ class TemplateLintEnabler : DirectoryProjectConfigurator {
         }
 
         fun notifyEnabled(project: Project, dependency: String) {
-            val message = JSBundle.message("js.linter.guesser.linter.enabled.because.of.package.json.section",
+            val message = JavaScriptBundle.message("js.linter.guesser.linter.enabled.because.of.package.json.section",
                     "TemplateLint",
                     dependency)
 
@@ -66,7 +66,7 @@ class TemplateLintEnabler : DirectoryProjectConfigurator {
                 override fun actionPerformed(e: AnActionEvent, notification: Notification) {
                     JSLinterGuesser.LOG.info("TemplateLint disabled by user")
                     templateLintEnabled(project, false)
-                    JSLinterUtil.NOTIFICATION_GROUP.createNotification(JSBundle.message("js.linter.guesser.linter.disabled", "TemplateLint"), MessageType.INFO).notify(project)
+                    JSLinterUtil.NOTIFICATION_GROUP.createNotification(JavaScriptBundle.message("js.linter.guesser.linter.disabled", "TemplateLint"), MessageType.INFO).notify(project)
                 }
             }).notify(project)
         }

@@ -45,4 +45,4 @@ fun findMainPackageJsonFile(file: VirtualFile) = file.parents.asSequence()
         .map { it.findChild("package.json") }
         .firstOrNull { it != null }
 
-fun findMainPackageJson(file: VirtualFile) = findMainPackageJsonFile(file)?.let { PackageJsonData.parse(it, null) }
+fun findMainPackageJson(file: VirtualFile) = findMainPackageJsonFile(file)?.let { PackageJsonData.getOrCreate(it) }
