@@ -1,6 +1,7 @@
 package com.emberjs.cli
 
 import com.emberjs.icons.EmberIcons
+import com.intellij.execution.filters.Filter
 import com.intellij.javascript.nodejs.util.NodePackage
 import com.intellij.lang.javascript.boilerplate.NpmPackageProjectGenerator
 import com.intellij.openapi.module.Module
@@ -29,7 +30,7 @@ open class EmberCliProjectGenerator : NpmPackageProjectGenerator() {
 
     override fun generatorArgs(project: Project, baseDir: VirtualFile) = arrayOf("init", "--name=${baseDir.name}")
 
-    override fun filters(project: Project, baseDir: VirtualFile) = arrayOf(EmberCliFilter(project, baseDir.path))
+    override fun filters(project: Project, baseDir: VirtualFile): Array<Filter> = arrayOf(EmberCliFilter(project, baseDir.path))
 
     override fun customizeModule(baseDir: VirtualFile, entry: ContentEntry?) = Unit
 

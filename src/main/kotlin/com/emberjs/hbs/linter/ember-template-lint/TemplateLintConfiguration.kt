@@ -24,7 +24,7 @@ class TemplateLintConfiguration(project: Project) : JSLinterConfiguration<Templa
     }
 
     override fun savePrivateSettings(state: TemplateLintState) {
-        this.myPackage.force(state.interpreterRef, state.templateLintPackage)
+        this.myPackage.force(state.interpreterRef, state.nodePackageRef)
     }
 
     override fun toXml(state: TemplateLintState): Element? {
