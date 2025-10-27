@@ -43,6 +43,12 @@ intellijPlatform {
     }
 
     sandboxContainer.set(project.rootDir.resolve(".sandbox"))
+
+    pluginVerification {
+        ides {
+            recommended()
+        }
+    }
 }
 
 tasks {
