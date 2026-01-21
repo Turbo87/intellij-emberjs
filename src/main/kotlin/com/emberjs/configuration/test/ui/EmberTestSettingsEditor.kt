@@ -122,10 +122,13 @@ class EmberTestSettingsEditor(
                 .forEach { (first, second) -> first?.let { second.get(configuration.options).writeTo(it) } }
 
         myModulesComboBox?.fillModules(configuration.project, EmberModuleType.instance)
-        val module = configuration.module
-        when (module) {
-            null -> myModulesComboBox?.selectedModule = myModulesComboBox?.model?.getElementAt(0)
-            else -> myModulesComboBox?.selectedModule = module
+        myModulesComboBox?.selectedModule = when (val module = configuration.module) {
+            null -> {
+                val size = myModulesComboBox?.model?.size ?: 0
+
+                if (size > 0) myModulesComboBox?.model?.getElementAt(0) else null
+            }
+            else -> module
         }
 
         myNodeInterpreterField?.interpreterRef = when (configuration.nodeInterpreter) {
